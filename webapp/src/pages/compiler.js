@@ -94,6 +94,16 @@ function Compiler(props) {
 	const { currentTheme } = useContext(CustomThemeContext)
 	const classes = useStyles()
 	const [halted, setHalted] = useState(false) // To check if compilation is halted, if this is true all buttons except compile are disabled
+	const [memory, setMemory] = useState([
+		['00', '00', '00', '00', '00', '00', '00', '00', '00', '00', '00', '00', '00', '00', '00', '00'],
+		['00', '00', '00', '00', '00', '00', '00', '00', '00', '00', '00', '00', '00', '00', '00', '00'],
+		['00', '00', '00', '00', '00', '00', '00', '00', '00', '00', '00', '00', '00', '00', '00', '00'],
+		['00', '00', '00', '00', '00', '00', '00', '00', '00', '00', '00', '00', '00', '00', '00', '00'],
+		['00', '00', '00', '00', '00', '00', '00', '00', '00', '00', '00', '00', '00', '00', '00', '00'],
+		['00', '00', '00', '00', '00', '00', '00', '00', '00', '00', '00', '00', '00', '00', '00', '00'],
+		['00', '00', '00', '00', '00', '00', '00', '00', '00', '00', '00', '00', '00', '00', '00', '00'],
+		['00', '00', '00', '00', '00', '00', '00', '00', '00', '00', '00', '00', '00', '00', '00', '00']
+	])
 	const [wasmModule, setWasmModule] = useState(null) //To set warm module
 	const [startAddress, setStartAddress] = useState('00000') //Start address of memory
 	const [compiled, setCompiled] = useState(false) // To enable/disable Run, next and stop button
@@ -103,7 +113,6 @@ function Compiler(props) {
 	const [errorAnnotations, setErrorAnnotations] = useState([]) //For Error Annotations
 	const [register, setRegister] = useState({ ah: '00', al: '00', bh: '00', bl: '00', ch: '00', cl: '00', dh: '00', dl: '00', si: '0000', di: '0000', bp: '0000', sp: '0000', ss: '0000', ds: '0000', es: '0000' })
 	const [flags, setFlags] = useState({ of: 0, df: 0, if: 0, tf: 0, sf: 0, zf: 0, af: 0, pf: 0, cf: 0 })
-
 	const [code, setCode] = useState(localStorage.getItem('x86code') || `; Compiled using 8086 Online Compiler
 data segment
     ; add your data segment code here!
@@ -193,6 +202,19 @@ end start ; set entry point and stop the assembler.`) //State to maintain the co
 	//runs when you press STOP button
 	const stopCode = () => {
 		console.log('Execution Stopped')
+	}
+
+	const convertArray = arr => {
+		let temp = [];
+		let temp2d = []
+		arr.forEach((item, index) => {
+			temp.push(item)
+			if(index % 16 === 15) {
+				temp2d.push(temp)
+				temp = []
+			}
+		})
+		return temp2d
 	}
 
 	//Runs once on mount
@@ -458,150 +480,13 @@ end start ; set entry point and stop the assembler.`) //State to maintain the co
 					<TableContainer className={classes.ramTable} component={Paper}>
 				      <Table padding="none"size="small" aria-label="simple table">
 				        <TableBody>
-				            <TableRow>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">07</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">0f</TableCell>
-				            </TableRow>
-				            <TableRow>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">07</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">0f</TableCell>
-				            </TableRow>
-				            <TableRow>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">07</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">0f</TableCell>
-				            </TableRow>
-				            <TableRow>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">07</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">0f</TableCell>
-				            </TableRow>
-				            <TableRow>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">07</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">0f</TableCell>
-				            </TableRow>
-				            <TableRow>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">07</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">0f</TableCell>
-				            </TableRow>
-				            <TableRow>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">07</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">0f</TableCell>
-				            </TableRow>
-				            <TableRow>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">07</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">00</TableCell>
-				              <TableCell align="center">0f</TableCell>
-				            </TableRow>
+				        {memory.map((row,index)=>
+				        	<TableRow key={index}>
+				        	{row.map((item,index)=>
+				              <TableCell align="center">{item}</TableCell>
+				        	)}
+				        	</TableRow>
+				        )}
 				        </TableBody>
 				      </Table>
 				    </TableContainer>
