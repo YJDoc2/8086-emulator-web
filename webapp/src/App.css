@@ -1,0 +1,46 @@
+.App {
+	font-family: 'JetBrains Mono', monospace;
+	padding-top: 5vh;
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-bottom: 3vh;
+}
+
+@media screen and (min-width: 768px) {
+	.App {
+		padding-left: 10%;
+		padding-right: 10%;
+	}
+}
+
+body {
+	margin: 0px;
+	padding: 0px;
+	background-color: #FCFCFC;
+	overflow-x: hidden;
+}
+
+.error-marker {
+	position: absolute;
+	background-color: red;
+	opacity: 0.3;
+	color: red;
+}
+
+#themeBtn {
+	animation: rotate 5s linear infinite;
+}
+
+@keyframes rotate {
+	0% {
+		transform: rotate(0deg);
+	}
+
+	20% {
+		transform: rotate(360deg);
+	}
+
+	100% {
+		transform: rotate(360deg);
+	}
+}
