@@ -101,134 +101,150 @@ function Compiler(props) {
   const classes = useStyles();
   const [halted, setHalted] = useState(false); // To check if compilation is halted, if this is true all buttons except compile are disabled
   const [memory, setMemory] = useState([
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
+    [
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+    ],
+    [
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+    ],
+    [
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+    ],
+    [
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+    ],
+    [
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+    ],
+    [
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+    ],
+    [
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+    ],
+    [
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+      '00',
+    ],
   ]);
   const [wasmModule, setWasmModule] = useState(null); //To set warm module
   const [startAddress, setStartAddress] = useState('00000'); //Start address of memory
@@ -265,7 +281,6 @@ function Compiler(props) {
     pf: 0,
     cf: 0,
   });
-
   const [code, setCode] = useState(
     localStorage.getItem('x86code') ||
       `; Compiled using 8086 Online Compiler
@@ -364,6 +379,19 @@ end start ; set entry point and stop the assembler.`
   //runs when you press STOP button
   const stopCode = () => {
     console.log('Execution Stopped');
+  };
+
+  const convertArray = (arr) => {
+    let temp = [];
+    let temp2d = [];
+    arr.forEach((item, index) => {
+      temp.push(item);
+      if (index % 16 === 15) {
+        temp2d.push(temp);
+        temp = [];
+      }
+    });
+    return temp2d;
   };
 
   //Runs once on mount
@@ -692,21 +720,17 @@ end start ; set entry point and stop the assembler.`
             </Grid>
           </Grid>
           <TableContainer className={classes.ramTable} component={Paper}>
-            <div style={{ display: 'flex' }}>
-              {memory.map((item, index) => (
-                <Fragment>
-                  <TableCell
-                    style={{ flexBasis: '6.25 %' }}
-                    padding='none'
-                    size='small'
-                    align='center'
-                  >
-                    {item}
-                  </TableCell>
-                  {index % 16 === 15 && <br />}
-                </Fragment>
-              ))}
-            </div>
+            <Table padding='none' size='small' aria-label='simple table'>
+              <TableBody>
+                {memory.map((row, index) => (
+                  <TableRow key={index}>
+                    {row.map((item, index) => (
+                      <TableCell align='center'>{item}</TableCell>
+                    ))}
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
           </TableContainer>
         </Grid>
       </Grid>
