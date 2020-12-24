@@ -12,28 +12,45 @@ import {
 } from 'react-router-dom';
 
 function RootRouter() {
-  const [wasm, setWasm] = useState(null)
+  const [wasm, setWasm] = useState(null);
   useEffect(() => {
-    setWasm(true) //replace true with wasm
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-  const invalidRoute = () => <Redirect to="/" />; //This will send user back to homepage
+    async function load() {
+      try {
+        const wasm = await import('emulator_8086');
+        setWasm(wasm);
+      } catch (err) {
+        console.error(
+          `Unexpected error in loadWasm. [Message: ${err.message}]`
+        );
+        setWasm(false);
+      }
+    }
+    load();
+  }, []);
+  const invalidRoute = () => <Redirect to='/' />; //This will send user back to homepage
+  if (wasm) {
+    wasm.greet();
+  }
   return (
     <Router>
-    <div id="page-container">
-      <Navbar/>
-       <div className="App">
-        <Switch>
-          <Route exact path="/" component={Home} />
-          <Route exact path="/compile" component={()=><Compiler wasm={wasm}/>} />
-          <Route exact path="/help" component={InstructionSet} />
-          <Route component={invalidRoute} />
-        </Switch>
+      <div id='page-container'>
+        <Navbar />
+        <div className='App'>
+          <Switch>
+            <Route exact path='/' component={Home} />
+            <Route
+              exact
+              path='/compile'
+              component={() => <Compiler wasm={wasm} />}
+            />
+            <Route exact path='/help' component={InstructionSet} />
+            <Route component={invalidRoute} />
+          </Switch>
+        </div>
       </div>
-    </div>
-    <footer id="footer">
-      <Footer/>
-    </footer>
+      <footer id='footer'>
+        <Footer />
+      </footer>
     </Router>
   );
 }
