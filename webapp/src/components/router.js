@@ -29,7 +29,7 @@ function RootRouter() {
   }, []);
   const invalidRoute = () => <Redirect to='/' />; //This will send user back to homepage
   if (wasm) {
-    wasm.greet();
+    console.log(wasm);
   }
   return (
     <Router>

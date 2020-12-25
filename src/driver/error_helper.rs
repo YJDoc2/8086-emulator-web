@@ -1,5 +1,4 @@
-use emulator_8086_lib as lib;
-use lib::LexerHelper;
+use crate::LexerHelper;
 
 /// Helper for displaying errors
 /// Returns line number, start of the line, and end of the line
