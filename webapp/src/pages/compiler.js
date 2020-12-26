@@ -27,6 +27,8 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Backdrop from '@material-ui/core/Backdrop';
 import Paper from '@material-ui/core/Paper';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import IconButton from '@material-ui/core/IconButton';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -246,6 +248,7 @@ function Compiler(props) {
       '00',
     ],
   ]);
+  const [input, setInput] = useState('');
   const [wasmModule, setWasmModule] = useState(null); //To set warm module
   const [startAddress, setStartAddress] = useState('00000'); //Start address of memory
   const [compiled, setCompiled] = useState(false); // To enable/disable Run, next and stop button
@@ -381,6 +384,11 @@ end start ; set entry point and stop the assembler.`
     console.log('Execution Stopped');
   };
 
+  //To set an input
+  const handleInput = () => {
+    console.log(input);
+  };
+
   const convertArray = (arr) => {
     let temp = [];
     let temp2d = [];
@@ -491,7 +499,18 @@ end start ; set entry point and stop the assembler.`
             </Paper>
           ) : (
             <div>
-              <Textfield label='Input' fullWidth />
+              <Textfield
+                label='Input'
+                fullWidth
+                onChange={(e) => setInput(e.target.value)}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position='end'>
+                      <IconButton onClick={handleInput}>&#10003;</IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
               <Textfield label='Output' fullWidth disabled />
             </div>
           )}
