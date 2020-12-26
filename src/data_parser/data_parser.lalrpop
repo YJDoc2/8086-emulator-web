@@ -34,7 +34,7 @@ db:() = {
         *counter += n as usize;
     },
     
-    "db" "["<v:s_byte_num> ";" <n:u_word_num>"]" =>{
+    "db" "["<v:s_byte_num> "," <n:u_word_num>"]" =>{
         let mut addr = Address::calculate_from_offset(vm.arch.ds,*counter);
         for _ in 0..n{
             vm.mem[addr] = v as u8;
@@ -73,7 +73,7 @@ dw:() = {
         *counter += 2*n as usize;
     },
 
-    "dw" "["<v:s_word_num> ";" <n:u_word_num>"]" =>{
+    "dw" "["<v:s_word_num> "," <n:u_word_num>"]" =>{
         let mut addr = Address::calculate_from_offset(vm.arch.ds,*counter);
         let (hb,lb) = separate_bytes(v); 
         for _ in 0..n{
