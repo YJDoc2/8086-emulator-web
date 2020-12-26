@@ -1,58 +1,81 @@
 export const instruction_set = [
 	{
-    name:"Common Terms",
-    instructions:[
+    "name":"Common Terms",
+    "instructions":[
+
         {
-            "opcode":"u_word_num",
+            "opcode":"label",
             "name":"",
-            "example":"",
-            "description":"16-bit number. Can be binary, decimal or hexadecimal.",
+            "example":"Label1:",
+            "description":"A single, no space containing word, immediately followed by a colon (:) when defining the label. Can contain _, 0-9, a-z, A-Z, but must not start with a number.",
             "usage":[]
         },
         {
-            "opcode":"u_byte_num",
+            "opcode":"unsigned_word_number",
             "name":"",
             "example":"",
-            "description":"8-bit number. Can be binary, decimal or hexadecimal.",
+            "description":"16-bit number. Can be binary, decimal or hexadecimal. Numbers in range 0 -> 65535.",
             "usage":[]
         },
         {
-            "opcode":"s_word_num",
+            "opcode":"unsigned_byte_number",
             "name":"",
             "example":"",
-            "description":"16-bit number. Can be binary, decimal or hexadecimal.",
+            "description":"8-bit number. Can be binary, decimal or hexadecimal. Number in range 0 -> 255.",
             "usage":[]
         },
         {
-            "opcode":"s_byte_num",
+            "opcode":"signed_word_number",
             "name":"",
             "example":"",
-            "description":"8-bit number. Can be binary, decimal or hexadecimal.",
+            "description":"16-bit number. Can be binary, decimal or hexadecimal. Numbers in range -32768 -> 32767, only decimal numbers with '-' can be used, for other format use 2's complement for negating.",
             "usage":[]
         },
         {
-            "opcode":"gen_reg",
+            "opcode":"signed_byte_number",
+            "name":"",
+            "example":"",
+            "description":"8-bit number. Can be binary, decimal or hexadecimal. Number in range -128 -> 127, only decimal numbers with '-' can be used, for other format use 2's complement for negating.",
+            "usage":[]
+        },
+        {
+            "opcode":"general_register",
             "name":"Genaral Registers",
             "example":"",
             "description":"Consists of Byte resgiters and Word registers",
-            "usage":["AH","AL","BH","BL","CH","CL","DH","DL","AX","BX","CX","DX","SP","BP","SI","DI"]
+            "usage":["Byte Register:","AH","AL","BH","BL","CH","CL","DH","DL","Word Register:","AX","BX","CX","DX","SP","BP","SI","DI"]
+        },
+        {
+            "opcode":"segment_register",
+            "name":"Segment Registers",
+            "example":"",
+            "description":"Consists ofsegment registers",
+            "usage":["ES","DS","SS","CS"]
         },
         {
             "opcode":"byte_label",
             "name":"",
             "example":"BYTE label_1",
-            "description":"Used to define label of type byte.",
+            "description":"Used to define label of type byte. Actual word 'byte'",
             "usage":[]
         },
         {
             "opcode":"word_label",
             "name":"",
             "example":"WORD label_1",
-            "description":"Used to define label of type word.",
+            "description":"Used to define label of type word. Actual  word 'word'",
+            "usage":[]
+        },
+        {
+            "opcode":"Number format",
+            "name":"",
+            "example":"",
+            "description":"Three formats of numbers: 1) Decimal : using 0-9. 2) Binary : using 0 and 1, must start with 0b, eg : 5 = 0b0101 3) Hexadecimal : using 0-9,a-f, must start with 0x, eg : 5 = 0x5",
             "usage":[]
         }
     ]
-	},{
+    },
+	{
 	name: 'Arithmetic',
 	instructions: [{
 			opcode: 'ADD',
@@ -268,7 +291,102 @@ export const instruction_set = [
 'shift_rotate word mem_add , u_byte_num',
 'shift_rotate word mem_add , CL']
 		
-		}]
+		},
+		      {
+    "name":"Control Transfer",
+    "instructions":[
+        {
+            "opcode":"CALL",
+            "name":"CALL",
+            "example":"CALL Label1",
+            "description":"Used whenever we need to make a call to some procedure.",
+            "usage":["CALL procedure_name"]
+        },
+        {
+            "opcode":"RET",
+            "name":"RET",
+            "example":"RET",
+            "description":"Used at the end of the procedures.",
+            "usage":["RET"]
+        },
+        {
+            "opcode":"JUMP",
+            "name":"JUMP",
+            "example":"JMP label1",
+            "description":"Used for changing the flow of execution of instructions in the processor. Types: jmp, ja, jnbe, jae, jnb, jb, jnae, jbe, jna, jc, je, jz, jg, jnle, jge, jnl, jl, jnge, jle, jng, jnc, jne, jnz, jno, jnp, jpo, jns, jo, jp, jpe, js, jcxz",
+            "usage":["any_Type_of_jump label_name"]
+        },
+        {
+            "opcode":"INT",
+            "name":"Interrupt",
+            "example":"INT 3",
+            "description":"Generates software interrupts. Types: 1) int 3: Can be used for debugging, displays user prompt. 2) int 0x10 : value of AH allowed are : 0AH,13H . 0AH ignores BH & BL (page number and page attribute) . 13H ignores AL (write mode), BH & BL (page number and attributes), DH (row to print the string on), supports DL (column to print string on). 3) int 0x21 : value of AH allowed are : 1H,2H,0AH. * INTO and IRET aren't supported.",
+            "usage":["INT type_Of_Interrupt"]
+        }
+    ]
+    },
+    {
+    "name":"Control",
+    "instructions":[
+        {
+            "opcode":"STC",
+            "name":"STC",
+            "example":"STC",
+            "description":"Set carry flag CF to 1.",
+            "usage":["STC"]
+        },
+        {
+            "opcode":"CLC",
+            "name":"CLC",
+            "example":"CLC",
+            "description":"Clear Carry Flag: This instruction resets the carry flag CF to 0.",
+            "usage":["CLC"]
+        },
+        {
+            "opcode":"CMC",
+            "name":"CMC",
+            "example":"CMC",
+            "description":"This instruction take complement of carry flag CF.",
+            "usage":["CMC"]
+        },
+        {
+            "opcode":"STD",
+            "name":"STD",
+            "example":"STD",
+            "description":"Set direction flag to 1.",
+            "usage":["STD"]
+        },
+        {
+            "opcode":"CLD",
+            "name":"CLD",
+            "example":"CLD",
+            "description":"Clear Direction Flag: This instruction resets the direction flag DF to 0.",
+            "usage":["CLD"]
+        },
+        {
+            "opcode":"STI",
+            "name":"STI",
+            "example":"STI",
+            "description":"Set interrupt flag IF to 1.",
+            "usage":["STI"]
+        },
+        {
+            "opcode":"CLI",
+            "name":"CLI",
+            "example":"CLI",
+            "description":"Clear Interrupt Flag: This instruction resets the interrupt flag IF to 0.",
+            "usage":["CLI"]
+        },
+        {
+            "opcode":"HLT",
+            "name":"HLT",
+            "example":"HLT",
+            "description":"Halt processing. It stops program execution.",
+            "usage":["HLT"]
+        }
+    ]
+    }
+]
 
 	
 
