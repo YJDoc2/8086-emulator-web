@@ -43,7 +43,6 @@ function Instruction(props) {
 	const classes = useStyles();
 	const matches = useMediaQuery('(max-width:500px)');
 	const { currentTheme } = useContext(CustomThemeContext)
-
 	return (
 		<Accordion className={classes.main}>
 			<AccordionSummary
