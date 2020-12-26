@@ -28,9 +28,7 @@ function RootRouter() {
     load();
   }, []);
   const invalidRoute = () => <Redirect to='/' />; //This will send user back to homepage
-  if (wasm) {
-    console.log(wasm);
-  }
+
   return (
     <Router>
       <div id='page-container'>

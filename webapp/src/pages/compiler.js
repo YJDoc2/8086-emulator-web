@@ -1,6 +1,3 @@
-//To DO:
-// Add a global const for max value of input for Start Address
-
 import React, {
   useState,
   useContext,
@@ -31,6 +28,9 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import IconButton from '@material-ui/core/IconButton';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { makeStyles } from '@material-ui/core/styles';
+const MEM_MAX = 16 * 8;
+const MB = 1024 * 1024;
+const ALLOWED_ADDRESS_MAX = MB - MEM_MAX;
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -249,7 +249,7 @@ function Compiler(props) {
     ],
   ]);
   const [input, setInput] = useState('');
-  const [wasmModule, setWasmModule] = useState(null); //To set warm module
+  const [driver, setDriver] = useState(null); //To set driver
   const [startAddress, setStartAddress] = useState('00000'); //Start address of memory
   const [compiled, setCompiled] = useState(false); // To enable/disable Run, next and stop button
   const [loading, setLoading] = useState(false); //Backdrop
@@ -286,26 +286,19 @@ function Compiler(props) {
   });
   const [code, setCode] = useState(
     localStorage.getItem('x86code') ||
-      `; Compiled using 8086 Online Compiler
-data segment
-    ; add your data segment code here!
-ends
+      `; Program to show use of interrupts
+; Also, Hello World program !
+hello: DB "Hello World" ; store string
 
-stack segment
-   ; add your stack segment code here!
-ends
-
-code segment
+; actual entry point of the program, must be present
 start:
-; set segment registers:
-    mov ax, data
-    mov ds, ax
-    mov es, ax
-    ; add your code here 
-
-ends
-
-end start ; set entry point and stop the assembler.`
+MOV AH, 0x13            ; move BIOS interrupt number in AH
+MOV CX, 12              ; move length of string in cx
+MOV BX, 0               ; mov 0 to bx, so we can move it to es
+MOV ES, BX              ; move segment start of string to es, 0
+MOV BP, OFFSET hello    ; move start offset of string in bp
+MOV DL, 0               ; start writing from col 0
+int 0x10                ; BIOS interrupt`
   ); //State to maintain the code string
   //To add an error annotation, call this function and pas row number (starts with 0), column number (starts with 0) and error text
   const addAnnotation = (rowNumber, columnNumber, errorText) => {
@@ -324,12 +317,62 @@ end start ; set entry point and stop the assembler.`
   // 	setMarkers(markers => [...markers, { startRow: startRowNumber, startCol: startColumnNumber, endRow: endRowNumber, endCol: endColumnNumber, className: 'error-marker', type: 'background' }])
   // }
 
+  const set8086State = (driver) => {
+    let reg = driver.get_reg();
+    let flags = driver.get_flags();
+    let start = parseInt('0x' + startAddress);
+    let mem = driver.get_mem(start, start + MEM_MAX - 1);
+    setFlags({
+      of: flags.of,
+      df: flags.df,
+      if: flags.iflag,
+      tf: flags.tf,
+      sf: flags.sf,
+      zf: flags.zf,
+      af: flags.af,
+      pf: flags.pf,
+      cf: flags.cf,
+    });
+    setMemory(convertArray(mem));
+    setRegister({
+      ah: reg.ah.toString(16).padStart(2, 0),
+      al: reg.al.toString(16).padStart(2, 0),
+      bh: reg.bh.toString(16).padStart(2, 0),
+      bl: reg.bl.toString(16).padStart(2, 0),
+      ch: reg.ch.toString(16).padStart(2, 0),
+      cl: reg.cl.toString(16).padStart(2, 0),
+      dh: reg.dh.toString(16).padStart(2, 0),
+      dl: reg.dl.toString(16).padStart(2, 0),
+      si: reg.si.toString(16).padStart(4, 0),
+      di: reg.di.toString(16).padStart(4, 0),
+      bp: reg.bp.toString(16).padStart(4, 0),
+      sp: reg.sp.toString(16).padStart(4, 0),
+      ss: reg.ss.toString(16).padStart(4, 0),
+      ds: reg.ds.toString(16).padStart(4, 0),
+      es: reg.es.toString(16).padStart(4, 0),
+    });
+  };
   // Call when compiling the code
   const compile = () => {
     if (props.wasm) {
-      //	Compile code here
-      setCompiled(true);
-      setHalted(false);
+      try {
+        let driver = props.wasm.preprocess(code);
+        setDriver(driver);
+        //	Compile code here
+        setCompiled(true);
+        setHalted(false);
+        set8086State(driver);
+        setErrors('');
+      } catch (e) {
+        // e is going to be of string type, if it is one returned from rust
+        // if it is an object, or unknown type error,
+        // it may be stack size issue, read README for more info
+        console.log(e);
+        setCompiled(false);
+        setHalted(true);
+        setErrors(e);
+      }
+
       localStorage.setItem('x86code', code);
     } else {
       setLoading(true);
@@ -342,17 +385,24 @@ end start ; set entry point and stop the assembler.`
   };
 
   // Validate start address
-  const validateAddress = (address) => {
-    if (/^[0-9A-F]{5}$/.test(address)) {
-      if (
-        address.slice(0, 3) === 'FFF' &&
-        (parseInt(address[3]) > 7 || address[3].match(/[A-F]/i))
-      ) {
-        setAddressError('Must be between 00000 to FFF7F');
-      } else {
-        setAddressError('');
+  const validateAndSetAddress = (address) => {
+    if (address == '') {
+      setStartAddress('');
+      return;
+    }
+    if (/^[0-9A-F]{0,5}$/.test(address)) {
+      let start = parseInt('0x' + address);
+
+      if (start >= ALLOWED_ADDRESS_MAX) {
+        setAddressError(
+          'Must be between 00000 to ' + ALLOWED_ADDRESS_MAX.toString(16)
+        );
+        return;
       }
+      setAddressError('');
+      setStartAddress(address);
     } else {
+      setStartAddress(startAddress);
       setAddressError('Must be between 00000 to FFF7F');
     }
   };
@@ -365,18 +415,48 @@ end start ; set entry point and stop the assembler.`
   //called when you enter a start address and press set
   const saveAddress = () => {
     if (!addressError) {
-      console.log(startAddress);
+      let start = parseInt('0x' + startAddress);
+      let mem = driver.get_mem(start, start + MEM_MAX - 1);
+      setMemory(convertArray(mem));
     }
   };
 
   //runs when you press RUN button
   const runCode = () => {
     console.log('Running Code');
+    try {
+      //let res = driver.next();
+    } catch (e) {
+      console.log(e);
+      setCompiled(false);
+      setHalted(true);
+      setErrors(e);
+    }
   };
 
   //runs when you press NEXT button
   const executeNext = () => {
     console.log('Executing Next Line');
+    try {
+      let res = driver.next();
+      setLine(driver.line);
+      if (res.halt) {
+        setHalted(true);
+      }
+      if (res.int) {
+        setHalted(true);
+        console.log('int ' + res.int);
+      }
+      if (res.ah) {
+        console.log('ah ' + res.ah);
+      }
+      set8086State(driver);
+    } catch (e) {
+      console.log(e);
+      setCompiled(false);
+      setHalted(true);
+      setErrors(e);
+    }
   };
 
   //runs when you press STOP button
@@ -723,8 +803,7 @@ end start ; set entry point and stop the assembler.`
                 value={startAddress}
                 label='Start Address'
                 onChange={(e) => {
-                  setStartAddress(e.target.value.toUpperCase());
-                  validateAddress(e.target.value.toUpperCase());
+                  validateAndSetAddress(e.target.value.toUpperCase());
                 }}
                 helperText={addressError}
                 className={classes.textF}
@@ -744,7 +823,10 @@ end start ; set entry point and stop the assembler.`
                 {memory.map((row, index) => (
                   <TableRow key={index}>
                     {row.map((item, index) => (
-                      <TableCell align='center'>{item}</TableCell>
+                      <TableCell align='center'>
+                        {item.toString(16).length === 1 ? '0' : ''}
+                        {item.toString(16)}
+                      </TableCell>
                     ))}
                   </TableRow>
                 ))}
