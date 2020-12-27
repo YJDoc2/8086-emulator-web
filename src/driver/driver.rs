@@ -1,258 +1,280 @@
 use super::error_helper::get_err_pos;
-use super::interrupts::{int_13, int_21};
-use super::preprocess::preprocess;
-use emulator_8086_lib as lib;
-use lib::util::data_util::{get_byte_reg, ByteReg};
-use lib::InterpreterContext;
-use lib::LabelType;
-use lib::PreprocessorContext;
-use lib::VM;
-use lib::{get_flag_state, Flags};
-use lib::{DataParser, Interpreter, State};
-use regex::Regex;
+use super::util::{get_flags, get_reg, JSFlags, JSReg};
+use crate::util::data_util::{get_byte_reg, set_byte_reg, ByteReg};
+use crate::InterpreterContext;
+use crate::LexerHelper;
+use crate::PreprocessorOutput;
+use crate::VM;
+use crate::{Interpreter, State};
+use std::collections::HashMap;
+use std::fmt::Write;
+use wasm_bindgen::prelude::*;
 
-/// Structure used to prepare and run the program
-/// The run method on this will run the preparser, initialize data and then run the code
-pub struct CMDDriver {
+#[wasm_bindgen]
+pub struct WebDriver {
+    pub line: usize,
+    idx: usize,
+    source_map: HashMap<usize, usize>,
     input: String,
-    interpreted: bool,
+    lh: LexerHelper,
+    interpreter: Interpreter,
+    processed_code: PreprocessorOutput,
+    context: InterpreterContext,
+    vm: VM,
 }
 
-impl CMDDriver {
-    /// create new CMDDriver
-    /// ip is the program string
-    /// interpreted is flag check to display user prompt after every instruction
-    pub fn new(ip: String, interpreted: bool) -> Self {
-        return CMDDriver {
-            input: ip,
-            interpreted: interpreted,
+#[wasm_bindgen]
+pub struct InterpreterResult {
+    pub halt: Option<bool>,
+    pub int: Option<u8>,
+    pub ah: Option<u8>,
+}
+
+impl InterpreterResult {
+    pub fn new() -> Self {
+        return InterpreterResult {
+            halt: None,
+            int: None,
+            ah: None,
         };
     }
+}
 
-    /// This method will compile the program then create vm, initialize it and run the interpreter
-    pub fn run(&self) {
-        // remove comments
-        let r = Regex::new(r";.*\n?").unwrap();
-        let uncommented = r.replace_all(&self.input, "\n").to_string();
-        // run the preprocessor
-        let (lh, pctx, mut out) = match preprocess(&uncommented) {
-            Ok(a) => a,
+pub fn new_webdriver(
+    idx: usize,
+    line: usize,
+    vm: VM,
+    input: String,
+    sm: HashMap<usize, usize>,
+    lh: LexerHelper,
+    out: PreprocessorOutput,
+    ctx: InterpreterContext,
+) -> WebDriver {
+    return WebDriver {
+        line: line,
+        idx: idx,
+        input: input,
+        lh: lh,
+        processed_code: out,
+        context: ctx,
+        vm: vm,
+        source_map: sm,
+        interpreter: Interpreter::new(),
+    };
+}
+
+#[wasm_bindgen]
+impl WebDriver {
+    pub fn next(&mut self) -> Result<InterpreterResult, JsValue> {
+        match self.interpreter.parse(
+            self.idx,
+            &mut self.vm,
+            &mut self.context,
+            &self.processed_code.code[self.idx],
+        ) {
             Err(e) => {
-                // if any error , print and return
-                println!("{}", e);
-                return;
+                // should not reach here, as all error of syntax should have checked in preprocessor
+                return Err(JsValue::from(
+                    format!("Internal Error : Should not have reached here in interpreter parser\nError : {}",
+                    e)
+                ));
             }
-        };
-
-        // destructure the context
-        let PreprocessorContext {
-            macro_nesting_counter: _,
-            data_counter: _,
-            label_map: lmap,
-            macro_map: _,
-            mapper,
-            fn_map,
-            undefined_labels,
-        } = pctx;
-
-        // check if all jump labels are defined are not
-        for (pos, l) in undefined_labels.iter() {
-            match lmap.get(l) {
-                Some(_) => {}
-                None => {
-                    let (line, start, end) = get_err_pos(&lh, *pos);
-                    println!(
-                        "Label {} used but not defined at {} :{} : {}",
-                        l,
-                        line,
-                        start - pos,
-                        &uncommented[start..end]
-                    );
+            Ok(s) => match s {
+                State::HALT => {
+                    // stop and return
+                    let res = InterpreterResult {
+                        halt: Some(true),
+                        int: None,
+                        ah: None,
+                    };
+                    return Ok(res);
                 }
-            }
-        }
-
-        let mut idx; // for iterating through code
-
-        // check if the start is defined or not
-        match lmap.get("start") {
-            Some(l) => match l.get_type() {
-                LabelType::DATA => {
-                    println!("Error : necessary label 'start' is not found in code");
-                    return;
+                State::PRINT => {
+                    self.idx += 1;
+                    self.set_line();
+                    return Ok(InterpreterResult::new());
                 }
-                LabelType::CODE => idx = l.map,
-            },
-            None => {
-                println!("Error : necessary label 'start' is not found in code");
-                return;
-            }
-        }
-
-        // now we have checked out and sorted out all issues with syntax and all
-        // now we can set the data and run the code
-        let source_map = mapper.get_source_map();
-        let mut ictx = InterpreterContext {
-            fn_map: fn_map,
-            label_map: lmap,
-            call_stack: Vec::new(),
-        };
-
-        // create data parser and vm
-        // vm is left to initialize as long as possible , as it allocates 1 MB on heap
-        let data_parser = DataParser::new();
-        let mut vm = VM::new();
-
-        // this is for the data counter required by data parser
-        let mut ctr = 0;
-
-        for i in out.data.iter() {
-            match data_parser.parse(&mut vm, &mut ctr, i) {
-                Ok(_) => {}
-                Err(e) => {
-                    // should not reach here, as all error of syntax should have checked in preprocessor
-                    println!(
-                        "Internal Error : Should not have reached here in data parser\nError : {}",
-                        e
-                    );
-                    return;
+                State::JMP(next) => {
+                    // jump to next commnand
+                    self.idx = next;
+                    self.set_line();
+                    return Ok(InterpreterResult::new());
                 }
-            }
-        }
-
-        // contingency, so we do not go over the end
-        // and as the user will probably not add hlt at end, this is a good thing
-        // even the examples do not contain hlt at end
-        out.code.push("hlt".to_owned());
-
-        // create interpreter and print commands parser
-        let interpreter = Interpreter::new();
-        let printer = PrintParser::new();
-
-        loop {
-            let tf = get_flag_state(vm.arch.flag, Flags::TRAP);
-            // if trap flag is set, or interpreted is enabled, display user prompt
-            if self.interpreted || tf {
-                // idx is 0 based, but line numbers are 1 based
-                let pos = source_map.get(&(idx + 1)).unwrap();
-                let (line, start, end) = get_err_pos(&lh, *pos);
-                // show which line is to be executed
-                println!(
-                    "About to execute line {} : {}",
-                    line,
-                    &uncommented[start..end]
-                );
-                if tf {
-                    println!("Trap flag is set");
+                State::NEXT => {
+                    // we can do this without check, as we have inserted a 'hlt' in the code at end
+                    self.idx += 1;
+                    self.set_line();
+                    return Ok(InterpreterResult::new());
                 }
-                // go to user interface
-                user_interface(&vm, &printer);
-            }
-            match interpreter.parse(idx, &mut vm, &mut ictx, &out.code[idx]) {
-                Err(e) => {
-                    // should not reach here, as all error of syntax should have checked in preprocessor
-                    println!(
-                        "Internal Error : Should not have reached here in interpreter parser\nError : {}",
-                        e
-                    );
-                    return;
-                }
-                Ok(s) => match s {
-                    State::HALT => {
-                        // stop and return
-                        return;
-                    }
-                    State::PRINT => {
-                        let pos = source_map.get(&idx).unwrap();
-                        let (line, start, end) = get_err_pos(&lh, *pos);
-                        // show which print line is running
-                        println!("Output of line {} : {} :", line, &uncommented[start..end]);
-                        match printer.parse(&vm, &out.code[idx]) {
-                            Ok(_) => {}
-                            Err(e) => {
-                                // should not reach here, as all error of syntax should have checked in preprocessor
-                                println!("Internal Error : Should not have reached here in print parser\nError : {}",e);
-                                return;
-                            }
+                State::INT(int) => {
+                    match int {
+                        0 => {
+                            // divide by 0 error
+                            let pos = self.source_map.get(&self.idx).unwrap();
+                            let (line, start, end) = get_err_pos(&self.lh, *pos);
+                            self.idx += 1;
+                            self.set_line();
+                            return Err(JsValue::from(format!(
+                                "Attempt to divide by 0 : int 0 at {} : {}",
+                                line,
+                                &self.input[start..end]
+                            )));
                         }
-                        // go to next command
-                        idx += 1;
-                    }
-                    State::JMP(next) => {
-                        // jump to next commnand
-                        idx = next;
-                    }
-                    State::NEXT => {
-                        // we can do this without check, as we have inserted a 'hlt' in the code at end
-                        idx += 1;
-                    }
-                    State::INT(int) => {
-                        match int {
-                            0 => {
-                                // divide by 0 error
-                                let pos = source_map.get(&idx).unwrap();
-                                let (line, start, end) = get_err_pos(&lh, *pos);
-                                println!(
-                                    "Attempt to divide by 0 : int 0 at {} : {}",
+                        0x3 => {
+                            self.idx += 1;
+                            self.set_line();
+                            return Ok(InterpreterResult {
+                                halt: None,
+                                int: Some(3),
+                                ah: None,
+                            });
+                        }
+                        0x10 => {
+                            // BIOS interrupt
+                            let ah = get_byte_reg(&self.vm, ByteReg::AH);
+                            if ah != 0xA && ah != 0x13 {
+                                let pos = self.source_map.get(&self.idx).unwrap();
+                                let (line, start, end) = get_err_pos(&self.lh, *pos);
+                                return Err(JsValue::from(format!(
+                                    "Error at line {} : {}, value of AH = {} is not supported for int 0x10",
                                     line,
-                                    &uncommented[start..end]
-                                );
-                                println!("Exiting");
-                                return;
+                                    &self.input[start..end],
+                                    ah
+                                )));
                             }
-                            0x3 => {
-                                // debugging interrupt
-                                let pos = source_map.get(&idx).unwrap();
-                                let (line, _, _) = get_err_pos(&lh, *pos);
-                                println!("Int 3 at line {}", line);
-                                user_interface(&vm, &printer);
-                            }
-                            0x10 => {
-                                // BIOS interrupt
-                                let ah = get_byte_reg(&vm, ByteReg::AH);
-                                if ah != 0xA && ah != 0x13 {
-                                    let pos = source_map.get(&idx).unwrap();
-                                    let (line, start, end) = get_err_pos(&lh, *pos);
-                                    println!(
-                                        "Error at line {} : {}, value of AH = {} is not supported for int 0x10",
-                                        line,
-                                        &uncommented[start..end],
-                                        ah
-                                    );
-                                    println!("Exiting");
-                                    return;
-                                }
-                                int_13(&vm, ah);
-                            }
-                            0x21 => {
-                                // DOS interrupts
-                                let ah = get_byte_reg(&vm, ByteReg::AH);
-                                if ah != 0x1 && ah != 0x2 && ah != 0xA {
-                                    let pos = source_map.get(&idx).unwrap();
-                                    let (line, start, end) = get_err_pos(&lh, *pos);
-                                    println!(
-                                        "Error at line {} : {}, value of AH = {} is not supported for int 0x10",
-                                        line,
-                                        &uncommented[start..end],
-                                        ah
-                                    );
-                                    println!("Exiting");
-                                    return;
-                                }
-                                int_21(&mut vm, ah);
-                            }
-                            _ => {
-                                println!("Internal Error : Should not have reached here in interrupt parser\nError : int {} not supported",int);
-                                return;
-                            }
+                            self.idx += 1;
+                            self.set_line();
+                            return Ok(InterpreterResult {
+                                halt: None,
+                                int: Some(10),
+                                ah: Some(ah),
+                            });
                         }
-
-                        // go to next command
-                        idx += 1;
+                        0x21 => {
+                            // DOS interrupts
+                            let ah = get_byte_reg(&self.vm, ByteReg::AH);
+                            if ah != 0x1 && ah != 0x2 && ah != 0xA {
+                                let pos = self.source_map.get(&self.idx).unwrap();
+                                let (line, start, end) = get_err_pos(&self.lh, *pos);
+                                return Err(JsValue::from(format!(
+                                    "Error at line {} : {}, value of AH = {} is not supported for int 0x10",
+                                    line,
+                                    &self.input[start..end],
+                                    ah
+                                )));
+                            }
+                            self.idx += 1;
+                            self.set_line();
+                            return Ok(InterpreterResult {
+                                halt: None,
+                                int: Some(21),
+                                ah: Some(ah),
+                            });
+                        }
+                        _ => {
+                            return Err(JsValue::from(format!("Internal Error : Should not have reached here in interrupt parser\nError : int {} not supported",int)));
+                        }
                     }
-                    State::REPEAT => { /* Do nothing, as we have to repeat the same instruction*/ }
-                },
+                }
+                State::REPEAT => {
+                    return Ok(InterpreterResult::new());
+                }
+            },
+        }
+    }
+
+    pub fn get_flags(&self) -> JSFlags {
+        return get_flags(&self.vm);
+    }
+
+    pub fn get_reg(&self) -> JSReg {
+        return get_reg(&self.vm);
+    }
+
+    pub fn get_mem(&self, start: usize, end: usize) -> Vec<u8> {
+        return self.vm.mem[start..=end].iter().map(|v| *v).collect();
+    }
+
+    pub fn int_10(&self) -> JsValue {
+        let ah = get_byte_reg(&self.vm, ByteReg::AH);
+        let mut ret = String::new();
+        if ah == 0xA {
+            let al = get_byte_reg(&self.vm, ByteReg::AL);
+            for _ in 0..self.vm.arch.cx {
+                let _ = write!(&mut ret, "{}", al as char);
             }
+        }
+        if ah == 0x13 {
+            // print a string
+            let l = self.vm.arch.cx as usize; // length
+            let dl = get_byte_reg(&self.vm, ByteReg::DL); // start col
+            let start = self.vm.arch.es as usize * 0x10 + self.vm.arch.bp as usize;
+            // pad till start col
+            for _ in 0..dl {
+                let _ = write!(&mut ret, " ");
+            }
+            // print actual string
+            for i in 0..l {
+                let _ = write!(&mut ret, "{}", self.vm.mem[start + i] as char);
+            }
+        }
+        return JsValue::from(ret);
+    }
+    pub fn get_int_21(&mut self) -> JsValue {
+        let ah = get_byte_reg(&self.vm, ByteReg::AH);
+        // to print a single char
+        let mut ret = String::new();
+        if ah == 0x2 {
+            let dl = get_byte_reg(&self.vm, ByteReg::DL);
+            let _ = write!(&mut ret, "{}", dl as char);
+            set_byte_reg(&mut self.vm, ByteReg::AL, dl);
+        }
+        return JsValue::from(ret);
+    }
+
+    pub fn set_int_21(&mut self, ip: String) {
+        let ah = get_byte_reg(&self.vm, ByteReg::AH);
+        if ah == 0x1 {
+            // read the whole line
+            // take the first byte, if nothing read, default to 0
+            let byte = match ip.bytes().nth(0) {
+                Some(a) => a,
+                None => 0,
+            };
+            set_byte_reg(&mut self.vm, ByteReg::AL, byte);
+        }
+
+        if ah == 0xA {
+            // read line
+            // storage address
+            let start = self.vm.arch.ds as usize * 0x10 + self.vm.arch.dx as usize;
+            // how many are actually supposed to read
+            let required = self.vm.mem[start] as usize;
+            let max: u8;
+            if ip.len() < required {
+                max = ip.len() as u8;
+                // store how many are read, skipping newline char
+                self.vm.mem[start + 1] = max - 1;
+            } else {
+                max = required as u8;
+                self.vm.mem[start + 1] = max;
+            }
+            // store the characters
+            let mut ctr = 0;
+            for i in ip.bytes() {
+                self.vm.mem[start + 2 + ctr] = i;
+                ctr += 1;
+            }
+        }
+    }
+
+    fn set_line(&mut self) {
+        match self.source_map.get(&(self.idx -1)) {
+            Some(pos) => {
+                let (line, _, _) = get_err_pos(&self.lh, *pos);
+                self.line = line;
+            }
+            None => {}
         }
     }
 }
