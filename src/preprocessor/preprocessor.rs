@@ -1,5 +1,5 @@
 // auto-generated: "lalrpop 0.19.1"
-// sha256: 463fd048b395cb1cc7a64771178833db3c114e1fab7f75b7ec935bb14f4
+// sha256: f81d2fb98951344886f0264ec924f8315a9a54086dbc46608736d6bd30ea31
 use crate::util::preprocessor_util as util;
 use util::{Label,LabelType};
 use crate::vm::MB;
@@ -18058,7 +18058,7 @@ fn __action23<
         if let Some(l) = l{
             context.label_map.insert(l,Label::new(LabelType::DATA,start,context.data_counter as usize));
         }
-        out.data.push(format!("db [{} ; {}]",v,n));
+        out.data.push(format!("db [{} , {}]",v,n));
         // Increment the data counter
         context.data_counter += n;
     }
@@ -18193,7 +18193,7 @@ fn __action29<
         if let Some(l) = l{
             context.label_map.insert(l,Label::new(LabelType::DATA,start,context.data_counter as usize));
         }
-        out.data.push(format!("dw [{} ; {}]",v,n));
+        out.data.push(format!("dw [{} , {}]",v,n));
         // Increment the data counter
         context.data_counter += 2*n;
     }

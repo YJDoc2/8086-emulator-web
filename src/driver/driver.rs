@@ -10,11 +10,9 @@ use std::collections::HashMap;
 use std::fmt::Write;
 use wasm_bindgen::prelude::*;
 
-//! TODO manage end of file halt execution mapping to line
-
 #[wasm_bindgen]
 pub struct WebDriver {
-    pub line:usize,
+    pub line: usize,
     idx: usize,
     source_map: HashMap<usize, usize>,
     input: String,
@@ -44,7 +42,7 @@ impl InterpreterResult {
 
 pub fn new_webdriver(
     idx: usize,
-    line:usize,
+    line: usize,
     vm: VM,
     input: String,
     sm: HashMap<usize, usize>,
@@ -53,7 +51,7 @@ pub fn new_webdriver(
     ctx: InterpreterContext,
 ) -> WebDriver {
     return WebDriver {
-        line:usize,
+        line: line,
         idx: idx,
         input: input,
         lh: lh,
@@ -93,38 +91,29 @@ impl WebDriver {
                 }
                 State::PRINT => {
                     self.idx += 1;
-                    let t = self.source_map.get(&self.idx).unwrap();
-                    let (mapped_line, _, _) = get_err_pos(&self.lh, *t);
-                    self.line = mapped_line;
+                    self.set_line();
                     return Ok(InterpreterResult::new());
                 }
                 State::JMP(next) => {
                     // jump to next commnand
                     self.idx = next;
-                    let t = self.source_map.get(&self.idx).unwrap();
-                    let (mapped_line, _, _) = get_err_pos(&self.lh, *t);
-                    self.line = mapped_line;
+                    self.set_line();
                     return Ok(InterpreterResult::new());
                 }
                 State::NEXT => {
                     // we can do this without check, as we have inserted a 'hlt' in the code at end
                     self.idx += 1;
-                    let t = self.source_map.get(&self.idx).unwrap();
-                    let (mapped_line, _, _) = get_err_pos(&self.lh, *t);
-                    self.line = mapped_line;
+                    self.set_line();
                     return Ok(InterpreterResult::new());
                 }
                 State::INT(int) => {
                     match int {
                         0 => {
                             // divide by 0 error
-
                             let pos = self.source_map.get(&self.idx).unwrap();
                             let (line, start, end) = get_err_pos(&self.lh, *pos);
                             self.idx += 1;
-                            let t = self.source_map.get(&self.idx).unwrap();
-                            let (mapped_line, _, _) = get_err_pos(&self.lh, *t);
-                            self.line = mapped_line;
+                            self.set_line();
                             return Err(JsValue::from(format!(
                                 "Attempt to divide by 0 : int 0 at {} : {}",
                                 line,
@@ -133,6 +122,7 @@ impl WebDriver {
                         }
                         0x3 => {
                             self.idx += 1;
+                            self.set_line();
                             return Ok(InterpreterResult {
                                 halt: None,
                                 int: Some(3),
@@ -153,9 +143,7 @@ impl WebDriver {
                                 )));
                             }
                             self.idx += 1;
-                            let t = self.source_map.get(&self.idx).unwrap();
-                            let (mapped_line, _, _) = get_err_pos(&self.lh, *t);
-                            self.line = mapped_line;
+                            self.set_line();
                             return Ok(InterpreterResult {
                                 halt: None,
                                 int: Some(10),
@@ -175,11 +163,8 @@ impl WebDriver {
                                     ah
                                 )));
                             }
-
-                            let t = self.source_map.get(&self.idx).unwrap();
-                            let (mapped_line, _, _) = get_err_pos(&self.lh, *t);
-                            self.line = mapped_line;
                             self.idx += 1;
+                            self.set_line();
                             return Ok(InterpreterResult {
                                 halt: None,
                                 int: Some(21),
@@ -280,6 +265,16 @@ impl WebDriver {
                 self.vm.mem[start + 2 + ctr] = i;
                 ctr += 1;
             }
+        }
+    }
+
+    fn set_line(&mut self) {
+        match self.source_map.get(&(self.idx -1)) {
+            Some(pos) => {
+                let (line, _, _) = get_err_pos(&self.lh, *pos);
+                self.line = line;
+            }
+            None => {}
         }
     }
 }

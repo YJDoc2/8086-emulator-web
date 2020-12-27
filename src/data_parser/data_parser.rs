@@ -1,5 +1,5 @@
 // auto-generated: "lalrpop 0.19.1"
-// sha256: 22fca298b0b9f946382759d7df67d2467b398a756ad21d6d2fc704f86b146fa
+// sha256: 343fe112a32cced8d01b96e3fae44fbd133a0a5afacdf923022cbf589a6e4f
 use crate::util::{address::*,data_util::separate_bytes};
 use crate::vm::VM;
 use crate::error;
@@ -1149,7 +1149,7 @@ fn __action8<
             vm.mem[addr] = i;
             addr =inc_addr(addr,1);
         }
-        *counter += q.len();
+        *counter += q.len() -2;
     }
 }
 
@@ -1243,12 +1243,12 @@ fn __action12<
         let mut addr = Address::calculate_from_offset(vm.arch.ds,*counter);
         // the slice skips the quotes
         for i in (&q[1..q.len()-1]).bytes(){
-            vm.mem[addr] = 0;
-            addr = inc_addr(addr,1);
             vm.mem[addr] = i;
             addr = inc_addr(addr,1);
+            vm.mem[addr] = 0;
+            addr = inc_addr(addr,1);
         }
-        *counter += q.len();
+        *counter += 2*(q.len()-2);
     }
 }
 

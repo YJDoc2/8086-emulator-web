@@ -86,7 +86,7 @@ db_directive:() = {
         if let Some(l) = l{
             context.label_map.insert(l,Label::new(LabelType::DATA,start,context.data_counter as usize));
         }
-        out.data.push(format!("db [{} ; {}]",v,n));
+        out.data.push(format!("db [{} , {}]",v,n));
         // Increment the data counter
         context.data_counter += n;
     },
@@ -135,7 +135,7 @@ dw_directive:() = {
         if let Some(l) = l{
             context.label_map.insert(l,Label::new(LabelType::DATA,start,context.data_counter as usize));
         }
-        out.data.push(format!("dw [{} ; {}]",v,n));
+        out.data.push(format!("dw [{} , {}]",v,n));
         // Increment the data counter
         context.data_counter += 2*n;
     },

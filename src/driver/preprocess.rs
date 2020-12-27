@@ -1,7 +1,6 @@
 use super::driver::new_webdriver;
 use super::driver::WebDriver;
 use super::error_helper::get_err_pos;
-use std::mem::drop;
 use crate::vm::MB;
 use crate::DataParser;
 use crate::Interpreter;
@@ -11,17 +10,10 @@ use crate::LexerHelper;
 use crate::VM;
 use crate::{Preprocessor, PreprocessorContext, PreprocessorOutput};
 use lalrpop_util::ParseError;
+use std::mem::drop;
 
 use regex::Regex;
 use wasm_bindgen::prelude::*;
-
-#[wasm_bindgen]
-extern "C" {
-    // Use `js_namespace` here to bind `console.log(..)` instead of just
-    // `log(..)`
-    #[wasm_bindgen(js_namespace = console)]
-    fn log(s: usize);
-}
 
 pub fn set_panic_hook() {
     // When the `console_error_panic_hook` feature is enabled, we can call the
@@ -62,7 +54,12 @@ pub fn preprocess(input: &str) -> Result<WebDriver, JsValue> {
                 {
                     // get error position
                     let (line, lstart, lend) = get_err_pos(&helper, *start);
-                    let pos_str = format!("{}:{} : {}", line, start-lstart, &uncommented[lstart..lend]);
+                    let pos_str = format!(
+                        "{}:{} : {}",
+                        line,
+                        start - lstart,
+                        &uncommented[lstart..lend]
+                    );
 
                     if token.1 == "" {
                         // error is custom, piggybacked on UnrecognizedToken type
@@ -105,7 +102,7 @@ pub fn preprocess(input: &str) -> Result<WebDriver, JsValue> {
                     "Label {} used but not defined at {} :{} : {}",
                     l,
                     line,
-                    *pos-start,
+                    end - pos,
                     &uncommented[start..end]
                 )));
             }
@@ -147,16 +144,25 @@ pub fn preprocess(input: &str) -> Result<WebDriver, JsValue> {
                 Err(e) => {
                     // should not reach here, as all error of syntax should have checked in preprocessor
                     return Err(JsValue::from(format!(
-                    "Internal Error : Should not have reached here in data parser\nError : {}",
-                    e
-                )));
+                        "Internal Error : Should not have reached here in data parser\nError : {}",
+                        e
+                    )));
                 }
             }
         }
         drop(data_parser);
     }
-    let t = self.source_map.get(idx).unwrap();
-    let (mapped_line, _, _) = get_err_pos(&lh, *t);
-    let wd = new_webdriver(idx,mapped_line, vm, uncommented, source_map, helper, out, ictx);
+    let t = source_map.get(&idx).unwrap();
+    let (mapped_line, _, _) = get_err_pos(&helper, *t);
+    let wd = new_webdriver(
+        idx,
+        mapped_line,
+        vm,
+        uncommented,
+        source_map,
+        helper,
+        out,
+        ictx,
+    );
     return Ok(wd);
 }

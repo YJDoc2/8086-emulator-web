@@ -1,10 +1,4 @@
-import React, {
-  useState,
-  useContext,
-  useEffect,
-  useRef,
-  Fragment,
-} from 'react';
+import React, { useState, useContext, useEffect, useRef } from 'react';
 import { CustomThemeContext } from '../themes/CustomThemeProvider';
 // Ace Editor
 import AceEditor from 'react-ace';
@@ -28,6 +22,7 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import IconButton from '@material-ui/core/IconButton';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { makeStyles } from '@material-ui/core/styles';
+
 const MEM_MAX = 16 * 8;
 const MB = 1024 * 1024;
 const ALLOWED_ADDRESS_MAX = MB - MEM_MAX;
@@ -96,8 +91,59 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+// These are used as global state holders for interval value and output values, as when running
+// in interval Task, the interval Handler value is set to null when re rendering is done,
+// and it does not get latest value of output either.
+let intervalHandler;
+let outputHolder = '';
 //Compiler Page
 function Compiler(props) {
+  const startIntervalTask = () => {
+    intervalHandler = setInterval(async () => {
+      try {
+        let res = driver.next();
+        setLine(driver.line);
+        if (res.halt) {
+          setCompiled(false);
+          setHalted(true);
+          stopIntervalTask();
+        }
+        if (res.int) {
+          if (res.int === 3) {
+            // don't do anything here
+            stopIntervalTask();
+          }
+          if (res.int === 10) {
+            let out = outputHolder + '\n' + driver.int_10();
+            outputHolder = out;
+            setOutput(out);
+          }
+          if (res.int === 21) {
+            if (res.ah === 2) {
+              let out = outputHolder + '\n' + driver.get_int_21();
+              outputHolder = out;
+              setOutput(out);
+            } else {
+              setHalted(true);
+              stopIntervalTask();
+            }
+          }
+        }
+        set8086State(driver);
+      } catch (e) {
+        console.log(e);
+        setCompiled(false);
+        setHalted(true);
+        setErrors(e);
+        stopIntervalTask();
+      }
+    }, 500);
+  };
+
+  const stopIntervalTask = () => {
+    clearInterval(intervalHandler);
+  };
+
   let codeEditor = useRef(null);
   const { currentTheme } = useContext(CustomThemeContext);
   const classes = useStyles();
@@ -249,6 +295,7 @@ function Compiler(props) {
     ],
   ]);
   const [input, setInput] = useState('');
+  const [output, setOutput] = useState('');
   const [driver, setDriver] = useState(null); //To set driver
   const [startAddress, setStartAddress] = useState('00000'); //Start address of memory
   const [compiled, setCompiled] = useState(false); // To enable/disable Run, next and stop button
@@ -354,6 +401,9 @@ int 0x10                ; BIOS interrupt`
   };
   // Call when compiling the code
   const compile = () => {
+    setInput('');
+    setOutput('');
+    outputHolder = '';
     if (props.wasm) {
       try {
         let driver = props.wasm.preprocess(code);
@@ -386,7 +436,7 @@ int 0x10                ; BIOS interrupt`
 
   // Validate start address
   const validateAndSetAddress = (address) => {
-    if (address == '') {
+    if (address === '') {
       setStartAddress('');
       return;
     }
@@ -423,32 +473,36 @@ int 0x10                ; BIOS interrupt`
 
   //runs when you press RUN button
   const runCode = () => {
-    console.log('Running Code');
-    try {
-      //let res = driver.next();
-    } catch (e) {
-      console.log(e);
-      setCompiled(false);
-      setHalted(true);
-      setErrors(e);
-    }
+    startIntervalTask();
   };
 
   //runs when you press NEXT button
   const executeNext = () => {
-    console.log('Executing Next Line');
     try {
       let res = driver.next();
       setLine(driver.line);
       if (res.halt) {
+        setCompiled(false);
         setHalted(true);
       }
       if (res.int) {
-        setHalted(true);
-        console.log('int ' + res.int);
-      }
-      if (res.ah) {
-        console.log('ah ' + res.ah);
+        if (res.int === 3) {
+          // don't do anything here
+        }
+        if (res.int === 10) {
+          let out = outputHolder + '\n' + driver.int_10();
+          outputHolder = out;
+          setOutput(out);
+        }
+        if (res.int === 21) {
+          if (res.ah === 2) {
+            let out = outputHolder + '\n' + driver.get_int_21();
+            outputHolder = out;
+            setOutput(out);
+          } else {
+            setHalted(true);
+          }
+        }
       }
       set8086State(driver);
     } catch (e) {
@@ -461,12 +515,15 @@ int 0x10                ; BIOS interrupt`
 
   //runs when you press STOP button
   const stopCode = () => {
-    console.log('Execution Stopped');
+    stopIntervalTask();
   };
 
   //To set an input
   const handleInput = () => {
-    console.log(input);
+    if (halted && driver) {
+      driver.set_int_21(input.slice(0));
+      setHalted(false);
+    }
   };
 
   const convertArray = (arr) => {
@@ -522,7 +579,9 @@ int 0x10                ; BIOS interrupt`
                 size='small'
                 onClick={runCode}
                 disabled={!compiled || halted}
-                className={compiled ? classes.runBtn : classes.topBtn}
+                className={
+                  compiled && !halted ? classes.runBtn : classes.topBtn
+                }
               >
                 {' '}
                 Run{' '}
@@ -532,7 +591,9 @@ int 0x10                ; BIOS interrupt`
                 size='small'
                 onClick={executeNext}
                 disabled={!compiled || halted}
-                className={compiled ? classes.nextBtn : classes.topBtn}
+                className={
+                  compiled && !halted ? classes.nextBtn : classes.topBtn
+                }
               >
                 {' '}
                 Next{' '}
@@ -542,7 +603,9 @@ int 0x10                ; BIOS interrupt`
                 size='small'
                 onClick={stopCode}
                 disabled={!compiled || halted}
-                className={compiled ? classes.stopBtn : classes.topBtn}
+                className={
+                  compiled && !halted ? classes.stopBtn : classes.topBtn
+                }
               >
                 {' '}
                 Stop{' '}
@@ -591,7 +654,13 @@ int 0x10                ; BIOS interrupt`
                   ),
                 }}
               />
-              <Textfield label='Output' fullWidth disabled />
+              <Textfield
+                label='Output'
+                value={output}
+                multiline
+                fullWidth
+                disabled
+              />
             </div>
           )}
         </Grid>
