@@ -8,7 +8,7 @@ export const instruction_set = [
         example: '',
         description:
           'A single, no space containing word, immediately followed by a colon (:) when defining the label. Can contain _, 0-9, a-z, A-Z, but must not start with a number.',
-        usage: ['_jmp:mov ax,0x1'],
+        usage: ['_jmp:mov ax,0x1', 'num:DB 0x5'],
       },
       {
         opcode: 'Number',
@@ -97,6 +97,85 @@ export const instruction_set = [
         example: '',
         description: 'ES,DS,SS,CS ',
         usage: [],
+      },
+    ],
+  },
+  {
+    name: 'Data Directives',
+    instructions: [
+      {
+        opcode: 'Set',
+        name: '',
+        example: 'set 0xFFFF',
+        description: 'Used to set value of DS when storing the data',
+        usage: ['set unsigned word number'],
+      },
+      {
+        opcode: 'DB',
+        name: 'Store Byte',
+        example: 'DB 5',
+        description:
+          'Used to store a byte wide number, or declare array of bytes or to store byte strings',
+        usage: [
+          'DB signed/unsigned byte number : Stores a single number',
+          'DB [unsigned word number] : Set given number of bytes to 0 (Can be used to declared arrays)',
+          'DB [signed/unsigned byte number, unsigned word number] : sets given number of bytes (second argument) to given value (first argument)',
+          'DB "string" : stores a string , characters or not escaped, eg : \\n will be stored as \\ and n.',
+        ],
+      },
+      {
+        opcode: 'DW',
+        name: 'Store Word',
+        example: 'DW 5',
+        description:
+          'Used to store a word wide number, or declare array of word or to store word strings',
+        usage: [
+          'DW signed/unsigned byte number : Stores a single number',
+          'DW [unsigned word number] : Set given number of words to 0 (Can be used to declared arrays)',
+          'DW [signed/unsigned byte number, unsigned word number] : sets given number of words (second argument) to given value (first argument)',
+          'DW "string" : stores a string , characters or not escaped, eg : \\n will be stored as \\ and n.',
+        ],
+      },
+      {
+        opcode: 'OFFSET',
+        name: 'Offset of data',
+        example: 'OFFSET num',
+        description:
+          'used to get offset of value from the data segment it was defined in. \nNote that this only gives offset from the segment was defined in, so if DS was changed using set, it will contain offset from that value. ',
+        usage: ['OFFSET data-label'],
+      },
+    ],
+  },
+  {
+    name: 'Code Directives',
+    instructions: [
+      {
+        opcode: 'Macro Definition',
+        name: '',
+        example: '',
+        description: `Used to define macros, which can be used to put code in place, where parameters are replaced by given values at compile time.
+          Note that recursive macros (direct/ indirect) are not supported. For no parameter macro use single _ as parameter in definition as well as use.`,
+        usage: [
+          'MACRO macro-name (comma separated parameter list) -> macro string <-',
+        ],
+      },
+      {
+        opcode: 'Macro Use',
+        name: '',
+        example: '',
+        description:
+          'When using macro, string defined between -> and <- will be placed at use, with parameters replaced by given',
+        usage: ['macro-name (comma separated argument list)'],
+      },
+      {
+        opcode: 'Procedure',
+        name: '',
+        example: '',
+        description:
+          'Used to define procedure, which can be used with CALL instruction',
+        usage: [
+          'def proc-name { procedure body } : Procedure Body can contains opcodes and macro use',
+        ],
       },
     ],
   },
