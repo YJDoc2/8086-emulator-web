@@ -15,20 +15,8 @@ use std::mem::drop;
 use regex::Regex;
 use wasm_bindgen::prelude::*;
 
-pub fn set_panic_hook() {
-    // When the `console_error_panic_hook` feature is enabled, we can call the
-    // `set_panic_hook` function at least once during initialization, and then
-    // we will get better error messages if our code ever panics.
-    //
-    // For more details see
-    // https://github.com/rustwasm/console_error_panic_hook#readme
-    #[cfg(feature = "console_error_panic_hook")]
-    console_error_panic_hook::set_once();
-}
-
 #[wasm_bindgen]
 pub fn preprocess(input: &str) -> Result<WebDriver, JsValue> {
-    set_panic_hook();
     let uncommented;
     {
         let r = Regex::new(r";.*\n?").unwrap();
@@ -70,7 +58,7 @@ pub fn preprocess(input: &str) -> Result<WebDriver, JsValue> {
                     } else {
                         // actual unrecognized token
                         return Err(JsValue::from(format!(
-                            "Syntax Error at {} :\nUnexpected Token : {}",
+                            "Syntax Error at line {} :\nUnexpected Token : {}",
                             pos_str, token
                         )));
                     }
@@ -99,7 +87,7 @@ pub fn preprocess(input: &str) -> Result<WebDriver, JsValue> {
             None => {
                 let (line, start, end) = get_err_pos(&helper, *pos);
                 return Err(JsValue::from(format!(
-                    "Label {} used but not defined at {} :{} : {}",
+                    "Label {} used but not defined at line {} :{} : {}",
                     l,
                     line,
                     end - pos,

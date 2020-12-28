@@ -115,7 +115,7 @@ impl WebDriver {
                             self.idx += 1;
                             self.set_line();
                             return Err(JsValue::from(format!(
-                                "Attempt to divide by 0 : int 0 at {} : {}",
+                                "Attempt to divide by 0 : int 0 at line {} : {}",
                                 line,
                                 &self.input[start..end]
                             )));
