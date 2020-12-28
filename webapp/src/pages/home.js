@@ -91,6 +91,7 @@ function Home() {
                 </a>
                 <br />
                 Made Using React , WASM and Rust.
+                <br />
               </Typography>
             </Grid>
           </Grid>
@@ -102,13 +103,11 @@ function Home() {
             <Paper className={classes.cardLeft} elevation={7}>
               <Typography variant='h5' className={classes.heading} gutterBottom>
                 {' '}
-                Feature Name{' '}
+                Multiple Themes{' '}
               </Typography>
               <Typography variant='body1' className={classes.content}>
-                Pariatur qui voluptate incididunt amet dolore quis pariatur ut
-                eu incididunt id eiusmod sit culpa laborum tempor nulla in in
-                aliquip in ad ex nulla deserunt do pariatur est laborum ut
-                dolore elit exercitation.
+                Available in Bright and Dark Theme, Click the sun button in
+                Navbar to change the themes.
               </Typography>
             </Paper>
           </Tilt>
@@ -118,13 +117,11 @@ function Home() {
             <Paper className={classes.cardCenter} elevation={7}>
               <Typography variant='h5' className={classes.heading} gutterBottom>
                 {' '}
-                Feature Name{' '}
+                Access To 1 MB Memory{' '}
               </Typography>
               <Typography variant='body1' className={classes.content}>
-                Pariatur qui voluptate incididunt amet dolore quis pariatur ut
-                eu incididunt id eiusmod sit culpa laborum tempor nulla in in
-                aliquip in ad ex nulla deserunt do pariatur est laborum ut
-                dolore elit exercitation.
+                The Emulator supports complete 1 MB Memory, which can be
+                accessed from side panel.
               </Typography>
             </Paper>
           </Tilt>
@@ -134,13 +131,11 @@ function Home() {
             <Paper className={classes.cardRight} elevation={7}>
               <Typography variant='h5' className={classes.heading} gutterBottom>
                 {' '}
-                Feature Name{' '}
+                Jump and Call uses labels{' '}
               </Typography>
               <Typography variant='body1' className={classes.content}>
-                Pariatur qui voluptate incididunt amet dolore quis pariatur ut
-                eu incididunt id eiusmod sit culpa laborum tempor nulla in in
-                aliquip in ad ex nulla deserunt do pariatur est laborum ut
-                dolore elit exercitation.
+                As Jumps and calls only allows valid labels, it does not allow
+                jumps to incorrect position.
               </Typography>
             </Paper>
           </Tilt>
@@ -150,13 +145,11 @@ function Home() {
             <Paper className={classes.cardLeft} elevation={7}>
               <Typography variant='h5' className={classes.heading} gutterBottom>
                 {' '}
-                Feature Name{' '}
+                Selected interrupts{' '}
               </Typography>
               <Typography variant='body1' className={classes.content}>
-                Pariatur qui voluptate incididunt amet dolore quis pariatur ut
-                eu incididunt id eiusmod sit culpa laborum tempor nulla in in
-                aliquip in ad ex nulla deserunt do pariatur est laborum ut
-                dolore elit exercitation.
+                As this Emulator does not have 'true' memory (See Github
+                Repository), This only allows selected interrupts.
               </Typography>
             </Paper>
           </Tilt>
@@ -166,13 +159,11 @@ function Home() {
             <Paper className={classes.cardCenter} elevation={7}>
               <Typography variant='h5' className={classes.heading} gutterBottom>
                 {' '}
-                Feature Name{' '}
+                Line by Line Execution{' '}
               </Typography>
               <Typography variant='body1' className={classes.content}>
-                Pariatur qui voluptate incididunt amet dolore quis pariatur ut
-                eu incididunt id eiusmod sit culpa laborum tempor nulla in in
-                aliquip in ad ex nulla deserunt do pariatur est laborum ut
-                dolore elit exercitation.
+                Supports running all instructions automatically, or manual line
+                by line execution.
               </Typography>
             </Paper>
           </Tilt>
@@ -182,13 +173,11 @@ function Home() {
             <Paper className={classes.cardRight} elevation={7}>
               <Typography variant='h5' className={classes.heading} gutterBottom>
                 {' '}
-                Feature Name{' '}
+                Shows Registers and Flags{' '}
               </Typography>
               <Typography variant='body1' className={classes.content}>
-                Pariatur qui voluptate incididunt amet dolore quis pariatur ut
-                eu incididunt id eiusmod sit culpa laborum tempor nulla in in
-                aliquip in ad ex nulla deserunt do pariatur est laborum ut
-                dolore elit exercitation.
+                Updates Flags and registers along with the execution, so can
+                check the state of Emulator easily.
               </Typography>
             </Paper>
           </Tilt>

@@ -2,6 +2,10 @@
 
 Web interface for 8086 emulator https://github.com/YJDoc2/8086-Emulator
 
+## Notes
+
+This does not have a 'True' memory, in sense that the instructions are not stored in memory. This allows complete 1 MB to be accessible to store the data, but does not allow jumps to memory positions, and Does not support ISRs, as ISR requires the code to be stored in memory as well.
+
 ## Building
 
 Note that there is know issue when allocating large size arrays , even on heap in rust :
