@@ -94,11 +94,14 @@ const useStyles = makeStyles((theme) => ({
 // These are used as global state holders for interval value and output values, as when running
 // in interval Task, the interval Handler value is set to null when re rendering is done,
 // and it does not get latest value of output either.
-let intervalHandler;
+let intervalHandler = null;
 let outputHolder = '';
 //Compiler Page
 function Compiler(props) {
   const startIntervalTask = () => {
+    if (intervalHandler !== null) {
+      return;
+    }
     intervalHandler = setInterval(async () => {
       try {
         let res = driver.next();
@@ -142,6 +145,7 @@ function Compiler(props) {
 
   const stopIntervalTask = () => {
     clearInterval(intervalHandler);
+    intervalHandler = null;
   };
 
   let codeEditor = useRef(null);
@@ -403,6 +407,7 @@ int 0x10                ; BIOS interrupt`
   const compile = () => {
     setInput('');
     setOutput('');
+    clearTimeout();
     outputHolder = '';
     if (props.wasm) {
       try {
