@@ -269,7 +269,7 @@ impl WebDriver {
     }
 
     fn set_line(&mut self) {
-        match self.source_map.get(&(self.idx -1)) {
+        match self.source_map.get(&(self.idx)) {
             Some(pos) => {
                 let (line, _, _) = get_err_pos(&self.lh, *pos);
                 self.line = line;
