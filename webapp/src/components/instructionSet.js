@@ -69,12 +69,12 @@ export const instruction_set = [
         name: '',
         example: '',
         description:
-          '8086 allows four types of memory addressing. Note that when BP is used, Stack Segment is used, for others, Data Segment is used',
+          '8086 allows four types of memory addressing. Note that when BP is used, Stack Segment is used, for others, Data Segment is used, unless segment override is specified',
         usage: [
-          '[offset] : offset of the data from current DS',
-          '[bx] / [bp] / [si] / [di] : The offset of value is taken from the specified register',
-          '[bs/bp/si/di , signed word number] : The offset is taken from the registers, and the number is added to it',
-          '[bs/bp , si/di , (signed word number) ] : The offset is taken from the base registers, and offset in index registers as well as the number is added to it. The number offset is optional',
+          '(segment-register) [offset] : offset of the data from current DS, or specified segment override',
+          '(segment-register) [bx/bp/si/di] : The offset of value is taken from the specified register',
+          '(segment-register) [bs/bp/si/di , signed word number] : The offset is taken from the registers, and the number is added to it',
+          '(segment-register) [bs/bp , si/di , (signed word number) ] : The offset is taken from the base registers, and offset in index registers as well as the number is added to it. The number offset is optional',
         ],
       },
       {
