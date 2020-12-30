@@ -22,6 +22,9 @@ const useStyles = makeStyles((theme) => ({
 	},
 	navbar: {
 		padding: 5
+	},
+	info: {
+		marginTop: 2,
 	}
 }));
 
@@ -48,7 +51,10 @@ function Navbar() {
 							8086 Compiler
 						</Typography>
 					</div>
-					<IconButton onClick={handleThemeChange} id="themeBtn">
+					<IconButton onClick={()=>history.push('/help')}>
+						<span style={currentTheme==="normal"?{fontWeight: 'bold'}:{color: '#ccc'}} className={classes.info}>&#9432;</span>
+					</IconButton>
+					<IconButton onClick={handleThemeChange} id="themeBtn" style={{marginRight: -20}}>
 						<img style={currentTheme==="dark"?{filter: 'invert(1)'}:null} src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAABmJLR0QA/wD/AP+gvaeTAAABkklEQVRIie3WvUodQRQH8J969YIiBlIJPoEPoA8gWAliYgLiLbXyo/Gjip0vYGGRh0hhSBVI0kUuhiRdqkQtRFBQxMpbpdgRr+Dunf0AQfzDYWd35/z/M2fOmRmeEY+JYIVQKyH8Njy/FHHuLiFcClnCPRXwp3KkCddwjkYGaStYGho4U2A5G7jJEB8KVsQ3Wnw2h8+bsqLtRPOhXcMivknCeIavWHAX0vmYgXblGMAwPuIldnEQvo9hSZIT0zjNwdkRdfzEHvof+N8fBvUDfVUKr+Bfimi7+JFk9pWhibWIfhvYjyFsr7FJvG57b+EdrjDqbk2zcICt0B7Ctvuh/4DP5Nsy8yRiZWhiPaLfpshQx2IVh7KTawDHWK5SuI7fkpJ5SHwAn/BLZDnlWbeRQP5CsoE0g/+4pIQuMIWTHJyZeIW50K5Lanof18G+S8J7O9M5zJQVLXJIzKroZEojGAxWxDcVvbjs4LgTLA2NwNGbV7xTdr4PVogja+fKutbEIpXj0W6ZZW6SLfzB34rG8sTxHxQCSoItZf48AAAAAElFTkSuQmCC" alt="change theme icon"/>
 					</IconButton>
 				</Toolbar>
