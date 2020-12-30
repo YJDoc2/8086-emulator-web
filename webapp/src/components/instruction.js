@@ -58,7 +58,7 @@ function Instruction(props) {
 				</Typography>
 			</AccordionSummary>
 			<AccordionDetails>
-				<Typography className={classes.description} style={{whiteSpace: "pre-line"}}>
+				<Typography className={classes.description} style={{whiteSpace: "pre-line"}} component="div">
 					{props.description}<br/><br/>
 					{props.usage&&
 						<div>
