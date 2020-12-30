@@ -16,8 +16,8 @@ function RootRouter() {
   useEffect(() => {
     async function load() {
       try {
-        // const wasm = await import('emulator_8086');
-        // setWasm(wasm);
+        const wasm = await import('emulator_8086');
+        setWasm(wasm);
       } catch (err) {
         console.error(
           `Unexpected error in loadWasm. [Message: ${err.message}]`
