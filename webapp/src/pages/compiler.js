@@ -22,6 +22,7 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import IconButton from '@material-ui/core/IconButton';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { makeStyles } from '@material-ui/core/styles';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 const MEM_MAX = 16 * 8;
 const MB = 1024 * 1024;
@@ -41,11 +42,6 @@ const useStyles = makeStyles((theme) => ({
   flex: {
     display: 'flex',
   },
-  compileBtnDiv: {
-    paddingRight: '1vw',
-    display: 'inline',
-    flexGrow: 1,
-  },
   registerTable: {
     maxWidth: 175,
   },
@@ -54,7 +50,6 @@ const useStyles = makeStyles((theme) => ({
   },
   flagTable: {
     marginTop: 20,
-    minWidth: 505,
   },
   ramTable: {
     marginTop: 30,
@@ -89,6 +84,9 @@ const useStyles = makeStyles((theme) => ({
   topBtn: {
     marginRight: 10,
   },
+  spaceBelow: {
+    marginBottom: 5,
+  },
 }));
 
 // These are used as global state holders for interval value and output values, as when running
@@ -98,6 +96,7 @@ let intervalHandler = null;
 let outputHolder = '';
 //Compiler Page
 function Compiler(props) {
+  const matches = useMediaQuery('(max-width:1024px)');
   const startIntervalTask = () => {
     if (intervalHandler !== null) {
       return;
@@ -352,13 +351,16 @@ MOV DL, 0               ; start writing from col 0
 int 0x10                ; BIOS interrupt`
   ); //State to maintain the code string
   //To add an error annotation, call this function and pas row number (starts with 0), column number (starts with 0) and error text
-  const addAnnotation = (rowNumber, columnNumber, errorText) => {
+  const addAnnotation = (errorText) => {
     if (errorText.length > 30) {
       errorText = errorText.slice(0, errorText.indexOf(' ', 30)) + '...';
     }
+    var re = /(?=(\d+))/; //to find digit
+    let rowNumber =
+      re.exec(errorText.slice(errorText.indexOf('at line ')))[1] - 1; //subtract 1 as index starts from 0
     setErrorAnnotations((errorAnnotations) => [
       ...errorAnnotations,
-      { row: rowNumber, column: columnNumber, type: 'error', text: errorText },
+      { row: rowNumber, column: 0, type: 'error', text: errorText },
     ]);
   };
 
@@ -547,13 +549,9 @@ int 0x10                ; BIOS interrupt`
 
   //Runs once on mount
   useEffect(() => {
-    addAnnotation(
-      3,
-      1,
-      'Syntax Error Long random text is here ok yes test 123'
-    ); //Annotation goes away when u press enter
+    addAnnotation('Error at line 12'); //Annotation goes away when u press enter
     //setErrors("Syntax Error Long random text is here ok yes test 123")
-    setLine(4);
+    setLine(3);
     //addMarker(1, 1, 1, 5)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -565,10 +563,12 @@ int 0x10                ; BIOS interrupt`
         <h3 className={classes.loadingText}>Compiling</h3>
       </Backdrop>
       <Grid container spacing={2}>
-        <Grid item md={7}>
-          <Typography variant='h5' gutterBottom className={classes.flex}>
-            Code Editor
-            <div align='right' className={classes.compileBtnDiv}>
+        <Grid item lg={7}>
+          <Grid container spacing={2} className={classes.spaceBelow}>
+            <Grid item lg={4}>
+              <Typography variant='h5'>Code Editor</Typography>
+            </Grid>
+            <Grid item lg={8} align='right'>
               <Button
                 variant='contained'
                 color='primary'
@@ -616,15 +616,8 @@ int 0x10                ; BIOS interrupt`
                 {' '}
                 Stop{' '}
               </Button>
-            </div>
-          </Typography>
-          {
-            // To Do:
-            // Add media query here to check for width < 500 if so, keep width= window.innerwidth-20
-            // add table for flags, registers and memory values
-            // correct function of error add
-            // add space for basic site info on homepg
-          }
+            </Grid>
+          </Grid>
           <Paper>
             <AceEditor
               ref={codeEditor}
@@ -670,9 +663,9 @@ int 0x10                ; BIOS interrupt`
             </div>
           )}
         </Grid>
-        <Grid item md={5}>
-          <Grid container>
-            <Grid item md={5}>
+        <Grid item lg={5} style={matches ? { maxWidth: '100vw' } : null}>
+          <Grid container spacing={3}>
+            <Grid item lg={5}>
               <TableContainer
                 className={classes.registerTable}
                 component={Paper}
@@ -718,7 +711,7 @@ int 0x10                ; BIOS interrupt`
                 </Table>
               </TableContainer>
             </Grid>
-            <Grid item md={3}>
+            <Grid item>
               <TableContainer
                 className={classes.segmentTable}
                 component={Paper}
@@ -752,8 +745,7 @@ int 0x10                ; BIOS interrupt`
                 </Table>
               </TableContainer>
             </Grid>
-            <Grid item md={1}></Grid>
-            <Grid item md={3}>
+            <Grid item>
               <TableContainer
                 className={classes.segmentTable}
                 component={Paper}
@@ -794,7 +786,11 @@ int 0x10                ; BIOS interrupt`
               </TableContainer>
             </Grid>
           </Grid>
-          <TableContainer className={classes.flagTable} component={Paper}>
+          <TableContainer
+            className={classes.flagTable}
+            component={Paper}
+            style={matches ? null : { minWidth: 505 }}
+          >
             <Table size='small' aria-label='simple table'>
               <TableHead>
                 <TableRow>
@@ -867,12 +863,12 @@ int 0x10                ; BIOS interrupt`
           </TableContainer>
           <br />
           <Grid container>
-            <Grid item xs={5}>
+            <Grid item lg={5} md={12} sm={12} xs={12}>
               <Typography variant='h5'> Memory </Typography>
             </Grid>
-            <Grid item xs={5}>
+            <Grid item lg={5} md={8}>
               <Textfield
-                style={{ top: -4 }}
+                style={matches ? { marginTop: 20 } : { top: -4 }}
                 error={!!addressError}
                 size='small'
                 value={startAddress}
@@ -885,7 +881,7 @@ int 0x10                ; BIOS interrupt`
                 placeholder='Start Address'
               />
             </Grid>
-            <Grid item xs={2}>
+            <Grid item lg={2} md={4} style={matches ? { marginTop: 20 } : null}>
               <Button variant='outlined' size='large' onClick={saveAddress}>
                 {' '}
                 Set{' '}
@@ -895,10 +891,10 @@ int 0x10                ; BIOS interrupt`
           <TableContainer className={classes.ramTable} component={Paper}>
             <Table padding='none' size='small' aria-label='simple table'>
               <TableBody>
-                {memory.map((row, index) => (
-                  <TableRow key={index}>
-                    {row.map((item, index) => (
-                      <TableCell align='center'>
+                {memory.map((row, index1) => (
+                  <TableRow key={index1}>
+                    {row.map((item, index2) => (
+                      <TableCell align='center' key={index2}>
                         {item.toString(16).length === 1 ? '0' : ''}
                         {item.toString(16)}
                       </TableCell>

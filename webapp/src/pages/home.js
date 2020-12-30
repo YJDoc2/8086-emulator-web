@@ -46,6 +46,10 @@ const useStyles = makeStyles((theme) => ({
     minWidth: 200,
     margin: 5,
   },
+  link: {
+    textDecoration: 'underline',
+    color: theme.palette.secondary.contrastText,
+  }
 }));
 
 function Home() {
@@ -77,6 +81,7 @@ function Home() {
                   href='https://github.com/YJDoc2/8086-Emulator-Web/'
                   target='_blank'
                   rel='noreferrer'
+                  className={classes.link}
                 >
                   Github Repository
                 </a>
@@ -86,6 +91,7 @@ function Home() {
                   href='https://github.com/YJDoc2/8086-Emulator/'
                   target='_blank'
                   rel='noreferrer'
+                  className={classes.link}
                 >
                   Command line version
                 </a>

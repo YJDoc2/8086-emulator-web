@@ -58,6 +58,7 @@ function InstructionSet() {
 							example={instruction.example} 
 							description={instruction.description}
 							key={instruction.name}
+							usage={instruction.usage}
 						/>)}
 						<br/><br/>
 						</div>
