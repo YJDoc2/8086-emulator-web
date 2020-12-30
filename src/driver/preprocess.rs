@@ -1,9 +1,7 @@
 use super::driver::new_webdriver;
 use super::driver::WebDriver;
 use super::error_helper::get_err_pos;
-use crate::vm::MB;
 use crate::DataParser;
-use crate::Interpreter;
 use crate::InterpreterContext;
 use crate::LabelType;
 use crate::LexerHelper;
@@ -36,7 +34,7 @@ pub fn preprocess(input: &str) -> Result<WebDriver, JsValue> {
                 // if error type is UnrecognizedToken,
                 // it can be actual unknown token, or the piggybacked custom error
                 if let ParseError::UnrecognizedToken {
-                    token: (ref start, ref token, ref end),
+                    token: (ref start, ref token, _),
                     ref expected,
                 } = e
                 {
@@ -115,7 +113,7 @@ pub fn preprocess(input: &str) -> Result<WebDriver, JsValue> {
         }
     }
     let source_map = mapper.get_source_map();
-    let mut ictx = InterpreterContext {
+    let ictx = InterpreterContext {
         fn_map: fn_map,
         label_map: lmap,
         call_stack: Vec::new(),

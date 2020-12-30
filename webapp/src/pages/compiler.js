@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect, useRef } from 'react';
+import React, { useState, useContext, useRef } from 'react';
 import { CustomThemeContext } from '../themes/CustomThemeProvider';
 // Ace Editor
 import AceEditor from 'react-ace';
@@ -352,6 +352,10 @@ int 0x10                ; BIOS interrupt`
   ); //State to maintain the code string
   //To add an error annotation, call this function and pas row number (starts with 0), column number (starts with 0) and error text
   const addAnnotation = (errorText) => {
+    if (errorText === '') {
+      setErrorAnnotations([]);
+      return;
+    }
     if (errorText.length > 30) {
       errorText = errorText.slice(0, errorText.indexOf(' ', 30)) + '...';
     }
@@ -421,6 +425,7 @@ int 0x10                ; BIOS interrupt`
         setHalted(false);
         set8086State(driver);
         setErrors('');
+        addAnnotation('');
       } catch (e) {
         // e is going to be of string type, if it is one returned from rust
         // if it is an object, or unknown type error,
@@ -429,6 +434,7 @@ int 0x10                ; BIOS interrupt`
         setCompiled(false);
         setHalted(true);
         setErrors(e);
+        addAnnotation(e);
       }
 
       localStorage.setItem('x86code', code);
@@ -518,6 +524,7 @@ int 0x10                ; BIOS interrupt`
       setCompiled(false);
       setHalted(true);
       setErrors(e);
+      addAnnotation(e);
     }
   };
 
@@ -546,15 +553,6 @@ int 0x10                ; BIOS interrupt`
     });
     return temp2d;
   };
-
-  //Runs once on mount
-  useEffect(() => {
-    addAnnotation('Error at line 12'); //Annotation goes away when u press enter
-    //setErrors("Syntax Error Long random text is here ok yes test 123")
-    setLine(3);
-    //addMarker(1, 1, 1, 5)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   return (
     <div className={classes.root}>
