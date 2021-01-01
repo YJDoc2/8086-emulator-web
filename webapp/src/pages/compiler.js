@@ -26,7 +26,7 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 const MEM_MAX = 16 * 8;
 const MB = 1024 * 1024;
-const ALLOWED_ADDRESS_MAX = MB - MEM_MAX;
+const ALLOWED_ADDRESS_MAX = MB - MEM_MAX - 1; // -1 for zero based
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -450,6 +450,10 @@ int 0x10                ; BIOS interrupt`
 
   // Validate start address
   const validateAndSetAddress = (address) => {
+    if (!driver) {
+      setAddressError('Compile Program Before Setting Memory');
+      return;
+    }
     if (address === '') {
       setStartAddress('');
       return;
@@ -457,9 +461,10 @@ int 0x10                ; BIOS interrupt`
     if (/^[0-9A-F]{0,5}$/.test(address)) {
       let start = parseInt('0x' + address);
 
-      if (start >= ALLOWED_ADDRESS_MAX) {
+      if (start > ALLOWED_ADDRESS_MAX) {
         setAddressError(
-          'Must be between 00000 to ' + ALLOWED_ADDRESS_MAX.toString(16)
+          'Must be between 00000 to ' +
+            ALLOWED_ADDRESS_MAX.toString(16).toUpperCase()
         );
         return;
       }

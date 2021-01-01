@@ -2,7 +2,7 @@
 	"name": "webapp",
 	"version": "0.1.0",
 	"private": true,
-	"homepage": "https://yjdoc2.github.io/8086-Emulator-Web/",
+	"homepage": "https://yjdoc2.github.io/8086-emulator-web/",
 	"dependencies": {
 		"@material-ui/core": "^4.11.2",
 		"@testing-library/jest-dom": "^5.11.6",
@@ -20,7 +20,6 @@
 		"web-vitals": "^0.2.4"
 	},
 	"scripts": {
-		"predeploy":"npm run build",
 		"deploy":"gh-pages -d build -b deploy",
 		"start": "react-app-rewired start",
 		"build": "react-app-rewired build",

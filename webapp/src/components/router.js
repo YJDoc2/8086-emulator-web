@@ -35,13 +35,17 @@ function RootRouter() {
         <Navbar />
         <div className='App'>
           <Switch>
-            <Route exact path='/' component={Home} />
+            <Route exact path='/8086-emulator-web/' component={Home} />
             <Route
               exact
-              path='/compile'
+              path='/8086-emulator-web/compile'
               component={() => <Compiler wasm={wasm} />}
             />
-            <Route exact path='/help' component={InstructionSet} />
+            <Route
+              exact
+              path='/8086-emulator-web/help'
+              component={InstructionSet}
+            />
             <Route component={invalidRoute} />
           </Switch>
         </div>

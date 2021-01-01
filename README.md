@@ -1,6 +1,6 @@
 # Emulator 8086 Web
 
-Web interface for 8086 emulator [https://yjdoc2.github.io/8086-Emulator-Web](https://yjdoc2.github.io/8086-Emulator-Web)
+Web interface for 8086 emulator [https://yjdoc2.github.io/8086-emulator-web](https://yjdoc2.github.io/8086-emulator-web)
 
 The core library of interpreter and Emulator written in Rust is at : [https://github.com/YJDoc2/8086-Emulator](https://github.com/YJDoc2/8086-Emulator)
 
