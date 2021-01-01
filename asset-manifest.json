@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/8086-emulator-web/static/css/main.19cfbea6.chunk.css",
-    "main.js": "/8086-emulator-web/static/js/main.487ce96e.chunk.js",
-    "main.js.map": "/8086-emulator-web/static/js/main.487ce96e.chunk.js.map",
+    "main.js": "/8086-emulator-web/static/js/main.e8814ec8.chunk.js",
+    "main.js.map": "/8086-emulator-web/static/js/main.e8814ec8.chunk.js.map",
     "runtime-main.js": "/8086-emulator-web/static/js/runtime-main.79e2c970.js",
     "runtime-main.js.map": "/8086-emulator-web/static/js/runtime-main.79e2c970.js.map",
     "static/js/2.fd85d4c2.chunk.js": "/8086-emulator-web/static/js/2.fd85d4c2.chunk.js",
@@ -21,6 +21,6 @@
     "static/js/runtime-main.79e2c970.js",
     "static/js/2.fd85d4c2.chunk.js",
     "static/css/main.19cfbea6.chunk.css",
-    "static/js/main.487ce96e.chunk.js"
+    "static/js/main.e8814ec8.chunk.js"
   ]
 }
