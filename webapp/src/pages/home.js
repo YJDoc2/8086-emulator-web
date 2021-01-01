@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
   link: {
     textDecoration: 'underline',
     color: theme.palette.secondary.contrastText,
-  }
+  },
 }));
 
 function Home() {
@@ -194,7 +194,7 @@ function Home() {
           variant='outlined'
           color='primary'
           className={classes.bottomBtn}
-          onClick={() => history.push('/help')}
+          onClick={() => history.push('/8086-emulator-web/help')}
         >
           Instruction Set
         </Button>
@@ -202,7 +202,7 @@ function Home() {
           variant='contained'
           color='primary'
           className={classes.bottomBtn}
-          onClick={() => history.push('/compile')}
+          onClick={() => history.push('/8086-emulator-web/compile')}
         >
           8086 Compiler
         </Button>

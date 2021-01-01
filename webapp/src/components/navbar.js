@@ -64,14 +64,14 @@ function Navbar() {
             <Typography
               color='primary'
               component='span'
-              onClick={() => history.push('/')}
+              onClick={() => history.push('/8086-emulator-web/')}
               className={classes.title}
             >
               8086 Compiler
             </Typography>
           </div>
-          {loc.pathname === '/compile' ? (
-            <IconButton onClick={() => history.push('/help')}>
+          {loc.pathname === '/8086-emulator-web/compile' ? (
+            <IconButton onClick={() => history.push('/8086-emulator-web/help')}>
               <span
                 style={
                   currentTheme === 'normal'
@@ -84,8 +84,10 @@ function Navbar() {
               </span>
             </IconButton>
           ) : null}
-          {loc.pathname === '/help' ? (
-            <IconButton onClick={() => history.push('/compile')}>
+          {loc.pathname === '/8086-emulator-web/help' ? (
+            <IconButton
+              onClick={() => history.push('/8086-emulator-web/compile')}
+            >
               <img
                 style={
                   currentTheme === 'dark'

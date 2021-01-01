@@ -27,7 +27,7 @@ function RootRouter() {
     }
     load();
   }, []);
-  const invalidRoute = () => <Redirect to='/' />; //This will send user back to homepage
+  const invalidRoute = () => <Redirect to='/8086-emulator-web/' />; //This will send user back to homepage
 
   return (
     <Router>
