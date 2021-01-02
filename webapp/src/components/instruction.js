@@ -24,6 +24,11 @@ const useStyles = makeStyles((theme) => ({
 		flexShrink: 0,
 		fontSize: 20,
 	},
+	nameBig: {
+		flexBasis: '80%',
+		flexShrink: 0,
+		fontSize: 20,
+	},
 	example: {
 		color: theme.palette.text.secondary,
 		fontSize: 20,
@@ -52,7 +57,7 @@ function Instruction(props) {
 				className={classes.expandIcon}
 			>
 				{props.opcode&&<Typography className={classes.opcode}>{props.opcode}</Typography>}
-				<Typography className={classes.name} style={matches?{display:'none'}:null}>{props.name}</Typography>
+				<Typography className={props.example?classes.name:classes.nameBig} style={matches&&!!props.opcode?{display:'none'}:null}>{props.name}</Typography>
 				{!props.opcode&&<Typography className={classes.opcode}>{props.opcode}</Typography>}
 				<Typography className={classes.example}>
 					{props.example}
