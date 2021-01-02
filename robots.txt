@@ -1,3 +1,4 @@
 # https://www.robotstxt.org/robotstxt.html
 User-agent: *
 Disallow:
+Sitemap: https://yjdoc2.github.io/8086-emulator-web/sitemap.xml
