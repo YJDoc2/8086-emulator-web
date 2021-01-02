@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
 		marginBottom: 10,
 	},
 	opcode: {
-		flexBasis: '10%',
+		flexBasis: '20%',
 		flexShrink: 0,
 		fontSize: 20,
 	},
@@ -51,8 +51,9 @@ function Instruction(props) {
 				id={props.name}
 				className={classes.expandIcon}
 			>
-				<Typography className={classes.opcode}>{props.opcode}</Typography>
+				{props.opcode&&<Typography className={classes.opcode}>{props.opcode}</Typography>}
 				<Typography className={classes.name} style={matches?{display:'none'}:null}>{props.name}</Typography>
+				{!props.opcode&&<Typography className={classes.opcode}>{props.opcode}</Typography>}
 				<Typography className={classes.example}>
 					{props.example}
 				</Typography>

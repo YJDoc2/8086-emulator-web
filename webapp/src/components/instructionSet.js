@@ -1,75 +1,66 @@
-export const instruction_set = [
-  {
+export const instruction_set = [{
     name: 'Common Terms',
-    instructions: [
-      {
-        opcode: 'Label',
-        name: '',
+    instructions: [{
+        opcode: '',
+        name: 'Label',
         example: '',
-        description:
-          'A single, no space containing word, immediately followed by a colon (:) when defining the label. Can contain _, 0-9, a-z, A-Z, but must not start with a number.',
+        description: 'A single, no space containing word, immediately followed by a colon (:) when defining the label. Can contain _, 0-9, a-z, A-Z, but must not start with a number.',
         usage: ['_jmp:mov ax,0x1', 'num:DB 0x5'],
       },
       {
-        opcode: 'Number',
-        name: '',
+        opcode: '',
+        name: 'Number',
         example: '',
-        description:
-          'Three formats of numbers: 1) Decimal : using 0-9. 2) Binary : using 0 and 1, must start with 0b, eg : 5 = 0b0101 3) Hexadecimal : using 0-9,a-f, must start with 0x, eg : 5 = 0x5',
+        description: 'Three formats of numbers: 1) Decimal : using 0-9. 2) Binary : using 0 and 1, must start with 0b, eg : 5 = 0b0101 3) Hexadecimal : using 0-9,a-f, must start with 0x, eg : 5 = 0x5',
         usage: [],
       },
       {
-        opcode: 'Unsigned Byte Number',
-        name: '',
+        opcode: '',
+        name: 'Unsigned Byte Number',
         example: '',
-        description:
-          '8-bit number. Can be binary, decimal or hexadecimal. Number in range 0 -> 255.',
+        description: '8-bit number. Can be binary, decimal or hexadecimal. Number in range 0 -> 255.',
         usage: [],
       },
       {
-        opcode: 'Signed Byte Number',
-        name: '',
+        opcode: '',
+        name: 'Signed Byte Number',
         example: '',
-        description:
-          "8-bit number. Can be binary, decimal or hexadecimal. Number in range -128 -> 127, only decimal numbers with '-' can be used, for other format use 2's complement for negating.",
+        description: "8-bit number. Can be binary, decimal or hexadecimal. Number in range -128 -> 127, only decimal numbers with '-' can be used, for other format use 2's complement for negating.",
         usage: [],
       },
       {
-        opcode: 'Signed Word Number',
-        name: '',
+        opcode: '',
+        name: 'Signed Word Number',
         example: '',
-        description:
-          "16-bit number. Can be binary, decimal or hexadecimal. Numbers in range -32768 -> 32767, only decimal numbers with '-' can be used, for other format use 2's complement for negating.",
+        description: "16-bit number. Can be binary, decimal or hexadecimal. Numbers in range -32768 -> 32767, only decimal numbers with '-' can be used, for other format use 2's complement for negating.",
         usage: [],
       },
       {
-        opcode: 'Unsigned Word Number',
-        name: '',
+        opcode: '',
+        name: 'Unsigned Word Number',
         example: '',
-        description:
-          '16-bit number. Can be binary, decimal or hexadecimal. Numbers in range 0 -> 65535.',
+        description: '16-bit number. Can be binary, decimal or hexadecimal. Numbers in range 0 -> 65535.',
         usage: [],
       },
       {
-        opcode: 'Byte',
-        name: '',
+        opcode: '',
+        name: 'Byte',
         example: '',
         description: 'The actual word "Byte"',
         usage: [],
       },
       {
-        opcode: 'Word',
-        name: '',
+        opcode: '',
+        name: 'Word',
         example: '',
         description: 'The actual word "Word"',
         usage: [],
       },
       {
-        opcode: 'Memory',
-        name: '',
+        opcode: '',
+        name: 'Memory',
         example: '',
-        description:
-          '8086 allows four types of memory addressing. Note that when BP is used, Stack Segment is used, for others, Data Segment is used, unless segment override is specified',
+        description: '8086 allows four types of memory addressing. Note that when BP is used, Stack Segment is used, for others, Data Segment is used, unless segment override is specified',
         usage: [
           '(segment-register) [offset] : offset of the data from current DS, or specified segment override',
           '(segment-register) [bx/bp/si/di] : The offset of value is taken from the specified register',
@@ -78,22 +69,22 @@ export const instruction_set = [
         ],
       },
       {
-        opcode: 'Word Registers',
-        name: '',
+        opcode: '',
+        name: 'Word Registers',
         example: '',
         description: 'AX,BX,CX,DX,BP,SP,SI,DI',
         usage: [],
       },
       {
-        opcode: 'Byte Registers',
-        name: '',
+        opcode: '',
+        name: 'Byte Registers',
         example: '',
         description: 'AL,AH,BL,BH,CL,CH,DL,DH',
         usage: [],
       },
       {
-        opcode: 'Segment Register',
-        name: '',
+        opcode: '',
+        name: 'Segment Register',
         example: '',
         description: 'ES,DS,SS,CS ',
         usage: [],
@@ -102,8 +93,7 @@ export const instruction_set = [
   },
   {
     name: 'Data Directives',
-    instructions: [
-      {
+    instructions: [{
         opcode: 'Set',
         name: '',
         example: 'set 0xFFFF',
@@ -114,8 +104,7 @@ export const instruction_set = [
         opcode: 'DB',
         name: 'Store Byte',
         example: 'DB 5',
-        description:
-          'Used to store a byte wide number, or declare array of bytes or to store byte strings',
+        description: 'Used to store a byte wide number, or declare array of bytes or to store byte strings',
         usage: [
           'DB signed/unsigned byte number : Stores a single number',
           'DB [unsigned word number] : Set given number of bytes to 0 (Can be used to declared arrays)',
@@ -127,8 +116,7 @@ export const instruction_set = [
         opcode: 'DW',
         name: 'Store Word',
         example: 'DW 5',
-        description:
-          'Used to store a word wide number, or declare array of word or to store word strings',
+        description: 'Used to store a word wide number, or declare array of word or to store word strings',
         usage: [
           'DW signed/unsigned byte number : Stores a single number',
           'DW [unsigned word number] : Set given number of words to 0 (Can be used to declared arrays)',
@@ -140,18 +128,16 @@ export const instruction_set = [
         opcode: 'OFFSET',
         name: 'Offset of data',
         example: 'OFFSET num',
-        description:
-          'used to get offset of value from the data segment it was defined in. \nNote that this only gives offset from the segment was defined in, so if DS was changed using set, it will contain offset from that value. ',
+        description: 'used to get offset of value from the data segment it was defined in. \nNote that this only gives offset from the segment was defined in, so if DS was changed using set, it will contain offset from that value. ',
         usage: ['OFFSET data-label'],
       },
     ],
   },
   {
     name: 'Code Directives',
-    instructions: [
-      {
-        opcode: 'Macro Definition',
-        name: '',
+    instructions: [{
+        opcode: '',
+        name: 'Macro Definition',
         example: '',
         description: `Used to define macros, which can be used to put code in place, where parameters are replaced by given values at compile time.
           Note that recursive macros (direct/ indirect) are not supported. For no parameter macro use single _ as parameter in definition as well as use.`,
@@ -160,19 +146,17 @@ export const instruction_set = [
         ],
       },
       {
-        opcode: 'Macro Use',
-        name: '',
+        opcode: '',
+        name: 'Macro Use',
         example: '',
-        description:
-          'When using macro, string defined between -> and <- will be placed at use, with parameters replaced by given',
+        description: 'When using macro, string defined between -> and <- will be placed at use, with parameters replaced by given',
         usage: ['macro-name (comma separated argument list)'],
       },
       {
-        opcode: 'Procedure',
-        name: '',
+        opcode: '',
+        name: 'Procedure',
         example: '',
-        description:
-          'Used to define procedure, which can be used with CALL instruction',
+        description: 'Used to define procedure, which can be used with CALL instruction',
         usage: [
           'def proc-name { procedure body } : Procedure Body can contains opcodes and macro use',
         ],
@@ -181,8 +165,7 @@ export const instruction_set = [
   },
   {
     name: 'Arithmetic',
-    instructions: [
-      {
+    instructions: [{
         opcode: 'ADD',
         name: 'Add',
         example: 'ADD AX, BX',
@@ -210,8 +193,7 @@ export const instruction_set = [
         opcode: 'ADC',
         name: 'Add with carry',
         example: 'ADC AX ,BX',
-        description:
-          'This instruction performs the same operation as ADD instruction , but adds the carry flag bit to the result.',
+        description: 'This instruction performs the same operation as ADD instruction , but adds the carry flag bit to the result.',
         usage: [
           'ADC byte-register , byte-register',
           'ADC word-register , word-register',
@@ -286,8 +268,7 @@ operand`,
         opcode: 'NEG',
         name: 'Negate a value',
         example: 'NEG AL',
-        description:
-          "Replace the value of the byte or word with its two's complement",
+        description: "Replace the value of the byte or word with its two's complement",
         usage: [
           'NEG byte-register',
           'NEG word-register',
@@ -301,8 +282,7 @@ operand`,
         opcode: 'MUL',
         name: 'Unsigned Multiplication',
         example: 'MUL CX',
-        description:
-          'This instruction multiplies an unsigned byte or word by the contents of AL',
+        description: 'This instruction multiplies an unsigned byte or word by the contents of AL',
         usage: [
           'MUL byte-register',
           'MUL word-register',
@@ -330,8 +310,7 @@ operand`,
         opcode: 'DIV',
         name: 'Unsigned Division',
         example: 'DIV CX',
-        description:
-          'This instruction is used to divide an unsigned word by a byte or to divide an unsigned double word by a word.',
+        description: 'This instruction is used to divide an unsigned word by a byte or to divide an unsigned double word by a word.',
         usage: [
           'DIV byte-register',
           'DIV word-register',
@@ -345,8 +324,7 @@ operand`,
         opcode: 'IDIV',
         name: 'Signed Division',
         example: 'IDIV CX',
-        description:
-          'This instruction is used to divide an signed word by a byte or to divide an signed double word by a word.',
+        description: 'This instruction is used to divide an signed word by a byte or to divide an signed double word by a word.',
         usage: [
           'IDIV byte-register',
           'IDIV word-register',
@@ -360,8 +338,7 @@ operand`,
         opcode: 'INC',
         name: 'Increment',
         example: 'INC AX',
-        description:
-          'This instruction increases the contents of  the specified register or memory location by 1.',
+        description: 'This instruction increases the contents of  the specified register or memory location by 1.',
         usage: [
           'INC byte-register',
           'INC word-register',
@@ -375,8 +352,7 @@ operand`,
         opcode: 'DEC',
         name: 'Decrement',
         example: 'DEC AX',
-        description:
-          'The decrement instruction subtracts 1 from the contents of the specified register or memory location',
+        description: 'The decrement instruction subtracts 1 from the contents of the specified register or memory location',
         usage: [
           'DEC byte-register',
           'DEC word-register',
@@ -390,48 +366,42 @@ operand`,
         opcode: 'AAA',
         name: 'Adjust ASCII for Addition',
         example: 'AAA',
-        description:
-          'Changes contents of AL to contain valid unpacked decimal number',
+        description: 'Changes contents of AL to contain valid unpacked decimal number',
         usage: ['AAA'],
       },
       {
         opcode: 'AAD',
         name: 'Adjust ASCII for division',
         example: 'AAD',
-        description:
-          'Modifies numerator in AL before dividing two valid unpacked decimal operands, so that quotient produced by division will be valid unpacked decimal number',
+        description: 'Modifies numerator in AL before dividing two valid unpacked decimal operands, so that quotient produced by division will be valid unpacked decimal number',
         usage: ['AAD'],
       },
       {
         opcode: 'AAM',
         name: 'Adjust ASCII for multiplication',
         example: 'AAM',
-        description:
-          'Corrects result of previous multiplication of two valid unpacked decimal operands',
+        description: 'Corrects result of previous multiplication of two valid unpacked decimal operands',
         usage: ['AAM'],
       },
       {
         opcode: 'AAS',
         name: 'Adjust ASCII for subtraction',
         example: 'AAS',
-        description:
-          'Corrects result of previous subtraction of two valid unpacked decimal operands',
+        description: 'Corrects result of previous subtraction of two valid unpacked decimal operands',
         usage: ['AAS'],
       },
       {
         opcode: 'DAA',
         name: 'Adjust decimal for Addition',
         example: 'DAA',
-        description:
-          'Corrects the result of previously adding two valid packed decimal operands',
+        description: 'Corrects the result of previously adding two valid packed decimal operands',
         usage: ['DAA'],
       },
       {
         opcode: 'DAS',
         name: 'Adjust decimal for subtraction',
         example: 'DAS',
-        description:
-          'Corrects the result of previous subtraction two valid packed decimal operands',
+        description: 'Corrects the result of previous subtraction two valid packed decimal operands',
         usage: ['DAS'],
       },
       {
@@ -452,12 +422,11 @@ operand`,
   },
   {
     name: 'Data Transfer',
-    instructions: [
-      {
+    instructions: [{
         opcode: 'MOV',
         name: 'Move',
-        example:
-          'Used to copy the byte or word from the provided source to the provided destination',
+        description: 'Used to copy the byte or word from the provided source to the provided destination',
+        example: 'MOV AX,BX',
         usage: [
           'MOV register , register',
           'MOV word_reg , word_reg',
@@ -502,27 +471,24 @@ operand`,
         ],
       },
       {
-        opcode: 'IN',
-        name: '',
+        opcode: '',
+        name: 'IN',
         example: '--Not Supported--',
-        description:
-          'Used to read a byte or word from the provided port to the accumulator',
+        description: 'Used to read a byte or word from the provided port to the accumulator',
         usage: ['Not Supported'],
       },
       {
-        opcode: 'OUT',
-        name: '',
+        opcode: '',
+        name: 'OUT',
         example: '--Not Supported--',
-        description:
-          'Used to send out a byte or word from the accumulator to the provided port',
+        description: 'Used to send out a byte or word from the accumulator to the provided port',
         usage: ['Not Supported'],
       },
       {
         opcode: 'POP',
         name: 'POP from stack',
         example: 'POP AX',
-        description:
-          'Used to get a word from the top of the stack to the provided location',
+        description: 'Used to get a word from the top of the stack to the provided location',
         usage: [
           'POP word-register',
           'POP segment-register (CS not allowed)',
@@ -546,16 +512,14 @@ operand`,
         opcode: 'LDS/LES',
         name: 'Load DS/ES register',
         example: '--Not Supported--',
-        description:
-          'Used to load DS/ES register and other provided register from the memory',
+        description: 'Used to load DS/ES register and other provided register from the memory',
         usage: ['Not Supported'],
       },
       {
         opcode: 'LEA',
         name: 'Load address of operand',
         example: '',
-        description:
-          'Used to load the address of operand into the provided register.',
+        description: 'Used to load the address of operand into the provided register.',
         usage: [
           'LEA word-register , word memory',
           'LEA word-register , word label',
@@ -565,8 +529,7 @@ operand`,
   },
   {
     name: 'Bit Manipulation',
-    instructions: [
-      {
+    instructions: [{
         opcode: 'NOT',
         name: 'Bitwise Not',
         example: 'NOT AL',
@@ -583,8 +546,7 @@ operand`,
         opcode: 'AND',
         name: 'Bitwise AND',
         example: 'AND AX, 0x10',
-        description:
-          'Used for performing bitwise AND operation between operands',
+        description: 'Used for performing bitwise AND operation between operands',
         usage: [
           'AND register , register',
           'AND word_reg , word_reg',
@@ -608,8 +570,7 @@ operand`,
         opcode: 'OR',
         name: 'Bitwise OR',
         example: 'OR BL, byte [BP]',
-        description:
-          'Used for performing bitwise OR operation between operands',
+        description: 'Used for performing bitwise OR operation between operands',
         usage: [
           'OR register , register',
           'OR word_reg , word_reg',
@@ -633,8 +594,7 @@ operand`,
         opcode: 'XOR',
         name: 'Bitwise XOR',
         example: 'XOR word l1, CX',
-        description:
-          'Used for performing bitwise XOR operation between operands',
+        description: 'Used for performing bitwise XOR operation between operands',
         usage: [
           'XOR register , register',
           'XOR word_reg , word_reg',
@@ -655,11 +615,10 @@ operand`,
         ],
       },
       {
-        opcode: 'TEST',
-        name: '',
+        opcode: '',
+        name: 'TEST',
         example: 'TEST AX, CX',
-        description:
-          'Performs AND operation, but does not store result, only update the flags',
+        description: 'Performs AND operation, but does not store result, only update the flags',
         usage: [
           'TEST register , register',
           'TEST word_reg , word_reg',
@@ -803,8 +762,7 @@ operand`,
         opcode: 'RCR',
         name: 'Rotate Right Through Carry',
         example: 'ROR byte l1',
-        description:
-          'Rotates the operand in Right direction through carry flag',
+        description: 'Rotates the operand in Right direction through carry flag',
         usage: [
           'RCR register , unsigned byte number',
           'RCR word-register , unsigned byte number',
@@ -824,8 +782,7 @@ operand`,
   },
   {
     name: 'Control Transfer',
-    instructions: [
-      {
+    instructions: [{
         opcode: 'CALL',
         name: 'CALL',
         example: 'CALL fn1',
@@ -843,8 +800,7 @@ operand`,
         opcode: 'Jumps',
         name: 'Jump instructions',
         example: 'JMP back',
-        description:
-          'Used for changing the flow of execution of instructions in the processor. opcodes supported are : jmp, ja, jnbe, jae, jnb, jb, jnae, jbe, jna, jc, je, jz, jg, jnle, jge, jnl, jl, jnge, jle, jng, jnc, jne, jnz, jno, jnp, jpo, jns, jo, jp, jpe, js, jcxz',
+        description: 'Used for changing the flow of execution of instructions in the processor. opcodes supported are : jmp, ja, jnbe, jae, jnb, jb, jnae, jbe, jna, jc, je, jz, jg, jnle, jge, jnl, jl, jnge, jle, jng, jnc, jne, jnz, jno, jnp, jpo, jns, jo, jp, jpe, js, jcxz',
         usage: ['opcode label'],
       },
       {
@@ -875,8 +831,7 @@ operand`,
   },
   {
     name: 'Control',
-    instructions: [
-      {
+    instructions: [{
         opcode: 'STC',
         name: 'STC',
         example: 'STC',
@@ -887,8 +842,7 @@ operand`,
         opcode: 'CLC',
         name: 'CLC',
         example: 'CLC',
-        description:
-          'Clear Carry Flag: This instruction resets the carry flag CF to 0.',
+        description: 'Clear Carry Flag: This instruction resets the carry flag CF to 0.',
         usage: ['CLC'],
       },
       {
@@ -909,8 +863,7 @@ operand`,
         opcode: 'CLD',
         name: 'CLD',
         example: 'CLD',
-        description:
-          'Clear Direction Flag: This instruction resets the direction flag DF to 0.',
+        description: 'Clear Direction Flag: This instruction resets the direction flag DF to 0.',
         usage: ['CLD'],
       },
       {
@@ -924,8 +877,7 @@ operand`,
         opcode: 'CLI',
         name: 'CLI',
         example: 'CLI',
-        description:
-          'Clear Interrupt Flag: This instruction resets the interrupt flag IF to 0.',
+        description: 'Clear Interrupt Flag: This instruction resets the interrupt flag IF to 0.',
         usage: ['CLI'],
       },
       {
@@ -939,8 +891,7 @@ operand`,
   },
   {
     name: 'String',
-    instructions: [
-      {
+    instructions: [{
         opcode: 'MOVS',
         name: 'MOVS',
         example: 'MOVS byte',
@@ -951,40 +902,35 @@ operand`,
         opcode: 'LODS',
         name: 'LODS',
         example: 'LODS byte',
-        description:
-          'Used to store the string byte into AL or string word into AX, String is taken from DS:SI',
+        description: 'Used to store the string byte into AL or string word into AX, String is taken from DS:SI',
         usage: ['LODS byte', 'LODS word'],
       },
       {
         opcode: 'STOS',
         name: 'STOS',
         example: 'STOS byte',
-        description:
-          'Copies the data item from AL (for bytes), AX (for words) to the destination string, pointed to by ES:DI in memory.',
+        description: 'Copies the data item from AL (for bytes), AX (for words) to the destination string, pointed to by ES:DI in memory.',
         usage: ['STOS byte', 'STOS word'],
       },
       {
         opcode: 'CMPS',
         name: 'CMPS',
         example: 'CMPS byte',
-        description:
-          'Compares two strings. This instruction compares two data items of one byte, word, pointed to by the DS:SI and ES:DI registers and sets the flags accordingly.',
+        description: 'Compares two strings. This instruction compares two data items of one byte, word, pointed to by the DS:SI and ES:DI registers and sets the flags accordingly.',
         usage: ['CMPS byte', 'CMPS word'],
       },
       {
         opcode: 'SCAS',
         name: 'SCAS',
         example: 'SCAS byte',
-        description:
-          'Used for searching a particular character or set of characters in a string.',
+        description: 'Used for searching a particular character or set of characters in a string.',
         usage: ['SCAS byte', 'SCAS word'],
       },
       {
         opcode: 'REP',
-        name: '',
+        name: 'Repeat',
         example: 'REP MOVS byte',
-        description:
-          'Used to repeat the given instruction till CX ≠ 0. It supports MOVS, LODS and STOS.',
+        description: 'Used to repeat the given instruction till CX ≠ 0. It supports MOVS, LODS and STOS.',
         usage: [
           'REP MOVS byte',
           'REP MOVS word',
@@ -996,10 +942,9 @@ operand`,
       },
       {
         opcode: 'REPE / REPZ',
-        name: '',
+        name: 'Repeat if equal or zero',
         example: 'REPE CMPS byte',
-        description:
-          'Used to repeat the given instruction until CX = 0 or zero flag ZF = 0.Supports CMPS and SCAS',
+        description: 'Used to repeat the given instruction until CX = 0 or zero flag ZF = 0.Supports CMPS and SCAS',
         usage: [
           'REPE CMPS byte',
           'REPE CMPS word',
@@ -1013,10 +958,9 @@ operand`,
       },
       {
         opcode: 'REPNE / REPNZ',
-        name: '',
+        name: 'Repeat if not equal or not zero',
         example: 'REPNE CMPS byte',
-        description:
-          'Used to repeat the given instruction until CX = 0 or zero flag ZF = 1.Supports CMPS and SCAS',
+        description: 'Used to repeat the given instruction until CX = 0 or zero flag ZF = 1.Supports CMPS and SCAS',
         usage: [
           'REPNE CMPS byte',
           'REPNE CMPS word',

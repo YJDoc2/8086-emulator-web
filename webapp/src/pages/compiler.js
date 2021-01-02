@@ -20,6 +20,7 @@ import Backdrop from '@material-ui/core/Backdrop';
 import Paper from '@material-ui/core/Paper';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import IconButton from '@material-ui/core/IconButton';
+import Snackbar from '@material-ui/core/Snackbar';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { makeStyles } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
@@ -29,64 +30,67 @@ const MB = 1024 * 1024;
 const ALLOWED_ADDRESS_MAX = MB - MEM_MAX - 1; // -1 for zero based
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    marginTop: -20,
-  },
-  backdrop: {
-    zIndex: theme.zIndex.drawer + 1,
-    color: '#fff',
-  },
-  loadingText: {
-    paddingLeft: 20,
-  },
-  flex: {
-    display: 'flex',
-  },
-  registerTable: {
-    maxWidth: 175,
-  },
-  segmentTable: {
-    minWidth: 125,
-  },
-  flagTable: {
-    marginTop: 20,
-  },
-  ramTable: {
-    marginTop: 30,
-  },
-  error: {
-    color: 'red',
-    marginTop: 10,
-    padding: 10,
-  },
-  textF: {
-    marginRight: 20,
-  },
-  runBtn: {
-    border: ' 1px solid #0f0 !important',
-    color: '#0f0 !important',
-    marginRight: 10,
-  },
-  nextBtn: {
-    border: ' 1px solid #77f !important',
-    color: '#77f !important',
-    marginRight: 10,
-  },
-  stopBtn: {
-    border: ' 1px solid red !important',
-    color: 'red !important',
-    marginRight: 10,
-  },
-  compileButton: {
-    minWidth: 120,
-    marginRight: 10,
-  },
-  topBtn: {
-    marginRight: 10,
-  },
-  spaceBelow: {
-    marginBottom: 5,
-  },
+	root: {
+		marginTop: -20,
+	},
+	backdrop: {
+		zIndex: theme.zIndex.drawer + 1,
+		color: '#fff',
+	},
+	loadingText: {
+		paddingLeft: 20,
+	},
+	flex: {
+		display: 'flex',
+	},
+	registerTable: {
+		maxWidth: 175,
+	},
+	segmentTable: {
+		minWidth: 125,
+	},
+	flagTable: {
+		marginTop: 20,
+	},
+	ramTable: {
+		marginTop: 30,
+	},
+	error: {
+		color: 'red',
+		marginTop: 10,
+		padding: 10,
+	},
+	textF: {
+		marginRight: 20,
+	},
+	runBtn: {
+		border: ' 1px solid #0f0 !important',
+		color: '#0f0 !important',
+		marginRight: 10,
+	},
+	nextBtn: {
+		border: ' 1px solid #77f !important',
+		color: '#77f !important',
+		marginRight: 10,
+	},
+	stopBtn: {
+		border: ' 1px solid red !important',
+		color: 'red !important',
+		marginRight: 10,
+	},
+	compileButton: {
+		minWidth: 120,
+		marginRight: 10,
+	},
+	topBtn: {
+		marginRight: 10,
+	},
+	spaceBelow: {
+		marginBottom: 5,
+	},
+	snackbar: {
+		marginBottom: 20
+	}
 }));
 
 // These are used as global state holders for interval value and output values, as when running
@@ -96,247 +100,258 @@ let intervalHandler = null;
 let outputHolder = '';
 //Compiler Page
 function Compiler(props) {
-  const matches = useMediaQuery('(max-width:1024px)');
-  const startIntervalTask = () => {
-    if (intervalHandler !== null) {
-      return;
-    }
-    intervalHandler = setInterval(async () => {
-      try {
-        let res = driver.next();
-        setLine(driver.line);
-        if (res.halt) {
-          setCompiled(false);
-          setHalted(true);
-          stopIntervalTask();
-        }
-        if (res.int) {
-          if (res.int === 3) {
-            // don't do anything here
-            stopIntervalTask();
-          }
-          if (res.int === 10) {
-            let out = outputHolder + '\n' + driver.int_10();
-            outputHolder = out;
-            setOutput(out);
-          }
-          if (res.int === 21) {
-            if (res.ah === 2) {
-              let out = outputHolder + '\n' + driver.get_int_21();
-              outputHolder = out;
-              setOutput(out);
-            } else {
-              setHalted(true);
-              stopIntervalTask();
-            }
-          }
-        }
-        set8086State(driver);
-      } catch (e) {
-        console.log(e);
-        setCompiled(false);
-        setHalted(true);
-        setErrors(e);
-        stopIntervalTask();
-      }
-    }, 500);
-  };
+	const matches = useMediaQuery('(max-width:1024px)');
+	const startIntervalTask = () => {
+		if(intervalHandler !== null) {
+			return;
+		}
+		intervalHandler = setInterval(async () => {
+			try {
+				let res = driver.next();
+				setLine(driver.line);
+				if(res.halt) {
+					setCompiled(false);
+					setHalted(true);
+					showSnackbar('Execution Halted!')
+					stopIntervalTask();
+				}
+				if(res.int) {
+					if(res.int === 3) {
+						// don't do anything here
+						stopIntervalTask();
+					}
+					if(res.int === 10) {
+						let out = outputHolder + '\n' + driver.int_10();
+						outputHolder = out;
+						setOutput(out);
+					}
+					if(res.int === 21) {
+						if(res.ah === 2) {
+							let out = outputHolder + '\n' + driver.get_int_21();
+							outputHolder = out;
+							setOutput(out);
+						} else {
+							setHalted(true);
+							showSnackbar('Execution Halted!')
+							stopIntervalTask();
+						}
+					}
+				}
+				set8086State(driver);
+			} catch (e) {
+				console.log(e);
+				setCompiled(false);
+				setHalted(true);
+				setErrors(e);
+				stopIntervalTask();
+			}
+		}, 500);
+	};
 
-  const stopIntervalTask = () => {
-    clearInterval(intervalHandler);
-    intervalHandler = null;
-  };
+	const stopIntervalTask = () => {
+		clearInterval(intervalHandler);
+		intervalHandler = null;
+	};
 
-  let codeEditor = useRef(null);
-  const { currentTheme } = useContext(CustomThemeContext);
-  const classes = useStyles();
-  const [halted, setHalted] = useState(false); // To check if compilation is halted, if this is true all buttons except compile are disabled
-  const [memory, setMemory] = useState([
-    [
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-    ],
-    [
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-    ],
-    [
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-    ],
-    [
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-    ],
-    [
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-    ],
-    [
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-    ],
-    [
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-    ],
-    [
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-    ],
-  ]);
-  const [input, setInput] = useState('');
-  const [output, setOutput] = useState('');
-  const [driver, setDriver] = useState(null); //To set driver
-  const [startAddress, setStartAddress] = useState('00000'); //Start address of memory
-  const [compiled, setCompiled] = useState(false); // To enable/disable Run, next and stop button
-  const [loading, setLoading] = useState(false); //Backdrop
-  const [errors, setErrors] = useState(''); // Post compilation errors are stored here
-  const [addressError, setAddressError] = useState(''); // Stores error in address start format
-  const [errorAnnotations, setErrorAnnotations] = useState([]); //For Error Annotations
-  const [register, setRegister] = useState({
-    ah: '00',
-    al: '00',
-    bh: '00',
-    bl: '00',
-    ch: '00',
-    cl: '00',
-    dh: '00',
-    dl: '00',
-    si: '0000',
-    di: '0000',
-    bp: '0000',
-    sp: '0000',
-    ss: '0000',
-    ds: '0000',
-    es: '0000',
-  });
-  const [flags, setFlags] = useState({
-    of: 0,
-    df: 0,
-    if: 0,
-    tf: 0,
-    sf: 0,
-    zf: 0,
-    af: 0,
-    pf: 0,
-    cf: 0,
-  });
-  const [code, setCode] = useState(
-    localStorage.getItem('x86code') ||
-      `; Program to show use of interrupts
+	let codeEditor = useRef(null);
+	const { currentTheme } = useContext(CustomThemeContext);
+	const [openSnackbar, setOpenSnackbar] = useState(false)
+	const [snackbarText, setSnackbarText] = useState('')
+	const showSnackbar = text => {
+		setSnackbarText(text)
+		setOpenSnackbar(true)
+		setTimeout(function() {
+			setOpenSnackbar(false)
+		}, 2000)
+	}
+
+	const classes = useStyles();
+	const [halted, setHalted] = useState(false); // To check if compilation is halted, if this is true all buttons except compile are disabled
+	const [memory, setMemory] = useState([
+		[
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+		],
+		[
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+		],
+		[
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+		],
+		[
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+		],
+		[
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+		],
+		[
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+		],
+		[
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+		],
+		[
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+			'00',
+		],
+	]);
+	const [input, setInput] = useState('');
+	const [output, setOutput] = useState('');
+	const [driver, setDriver] = useState(null); //To set driver
+	const [startAddress, setStartAddress] = useState('00000'); //Start address of memory
+	const [compiled, setCompiled] = useState(false); // To enable/disable Run, next and stop button
+	const [loading, setLoading] = useState(false); //Backdrop
+	const [errors, setErrors] = useState(''); // Post compilation errors are stored here
+	const [addressError, setAddressError] = useState(''); // Stores error in address start format
+	const [errorAnnotations, setErrorAnnotations] = useState([]); //For Error Annotations
+	const [register, setRegister] = useState({
+		ah: '00',
+		al: '00',
+		bh: '00',
+		bl: '00',
+		ch: '00',
+		cl: '00',
+		dh: '00',
+		dl: '00',
+		si: '0000',
+		di: '0000',
+		bp: '0000',
+		sp: '0000',
+		ss: '0000',
+		ds: '0000',
+		es: '0000',
+	});
+	const [flags, setFlags] = useState({ of: 0,
+		df: 0,
+		if: 0,
+		tf: 0,
+		sf: 0,
+		zf: 0,
+		af: 0,
+		pf: 0,
+		cf: 0,
+	});
+	const [code, setCode] = useState(
+		localStorage.getItem('x86code') ||
+		`; Program to show use of interrupts
 ; Also, Hello World program !
 hello: DB "Hello World" ; store string
 
@@ -349,218 +364,226 @@ MOV ES, BX              ; move segment start of string to es, 0
 MOV BP, OFFSET hello    ; move start offset of string in bp
 MOV DL, 0               ; start writing from col 0
 int 0x10                ; BIOS interrupt`
-  ); //State to maintain the code string
-  //To add an error annotation, call this function and pas row number (starts with 0), column number (starts with 0) and error text
-  const addAnnotation = (errorText) => {
-    if (errorText === '') {
-      setErrorAnnotations([]);
-      return;
-    }
-    if (errorText.length > 30) {
-      errorText = errorText.slice(0, errorText.indexOf(' ', 30)) + '...';
-    }
-    var re = /(?=(\d+))/; //to find digit
-    let rowNumber =
-      re.exec(errorText.slice(errorText.indexOf('at line ')))[1] - 1; //subtract 1 as index starts from 0
-    setErrorAnnotations((errorAnnotations) => [
-      ...errorAnnotations,
-      { row: rowNumber, column: 0, type: 'error', text: errorText },
-    ]);
-  };
+	); //State to maintain the code string
+	//To add an error annotation, call this function and pas row number (starts with 0), column number (starts with 0) and error text
+	const addAnnotation = (errorText) => {
+		if(errorText === '') {
+			setErrorAnnotations([]);
+			return;
+		}
+		if(errorText.length > 30) {
+			errorText = errorText.slice(0, errorText.indexOf(' ', 30)) + '...';
+		}
+		var re = /(?=(\d+))/; //to find digit
+		let rowNumber =
+			re.exec(errorText.slice(errorText.indexOf('at line ')))[1] - 1; //subtract 1 as index starts from 0
+		setErrorAnnotations((errorAnnotations) => [
+			...errorAnnotations,
+			{ row: rowNumber, column: 0, type: 'error', text: errorText },
+		]);
+	};
 
-  //Uncomment below lines for Marker
-  // const [markers, setMarkers] = useState([])
-  // const addMarker = (startRowNumber, startColumnNumber, endRowNumber, endColumnNumber) => {
-  // 	setMarkers(markers => [...markers, { startRow: startRowNumber, startCol: startColumnNumber, endRow: endRowNumber, endCol: endColumnNumber, className: 'error-marker', type: 'background' }])
-  // }
+	//Uncomment below lines for Marker
+	// const [markers, setMarkers] = useState([])
+	// const addMarker = (startRowNumber, startColumnNumber, endRowNumber, endColumnNumber) => {
+	// 	setMarkers(markers => [...markers, { startRow: startRowNumber, startCol: startColumnNumber, endRow: endRowNumber, endCol: endColumnNumber, className: 'error-marker', type: 'background' }])
+	// }
 
-  const set8086State = (driver) => {
-    let reg = driver.get_reg();
-    let flags = driver.get_flags();
-    let start = parseInt('0x' + startAddress);
-    let mem = driver.get_mem(start, start + MEM_MAX - 1);
-    setFlags({
-      of: flags.of,
-      df: flags.df,
-      if: flags.iflag,
-      tf: flags.tf,
-      sf: flags.sf,
-      zf: flags.zf,
-      af: flags.af,
-      pf: flags.pf,
-      cf: flags.cf,
-    });
-    setMemory(convertArray(mem));
-    setRegister({
-      ah: reg.ah.toString(16).padStart(2, 0),
-      al: reg.al.toString(16).padStart(2, 0),
-      bh: reg.bh.toString(16).padStart(2, 0),
-      bl: reg.bl.toString(16).padStart(2, 0),
-      ch: reg.ch.toString(16).padStart(2, 0),
-      cl: reg.cl.toString(16).padStart(2, 0),
-      dh: reg.dh.toString(16).padStart(2, 0),
-      dl: reg.dl.toString(16).padStart(2, 0),
-      si: reg.si.toString(16).padStart(4, 0),
-      di: reg.di.toString(16).padStart(4, 0),
-      bp: reg.bp.toString(16).padStart(4, 0),
-      sp: reg.sp.toString(16).padStart(4, 0),
-      ss: reg.ss.toString(16).padStart(4, 0),
-      ds: reg.ds.toString(16).padStart(4, 0),
-      es: reg.es.toString(16).padStart(4, 0),
-    });
-  };
-  // Call when compiling the code
-  const compile = () => {
-    setInput('');
-    setOutput('');
-    clearTimeout();
-    outputHolder = '';
-    if (props.wasm) {
-      try {
-        let driver = props.wasm.preprocess(code);
-        setDriver(driver);
-        setLine(driver.line);
-        //	Compile code here
-        setCompiled(true);
-        setHalted(false);
-        set8086State(driver);
-        setErrors('');
-        addAnnotation('');
-      } catch (e) {
-        // e is going to be of string type, if it is one returned from rust
-        // if it is an object, or unknown type error,
-        // it may be stack size issue, read README for more info
-        console.log(e);
-        setCompiled(false);
-        setHalted(true);
-        setErrors(e);
-        addAnnotation(e);
-      }
+	const set8086State = (driver) => {
+		let reg = driver.get_reg();
+		let flags = driver.get_flags();
+		let start = parseInt('0x' + startAddress);
+		let mem = driver.get_mem(start, start + MEM_MAX - 1);
+		setFlags({ of: flags.of,
+			df: flags.df,
+			if: flags.iflag,
+			tf: flags.tf,
+			sf: flags.sf,
+			zf: flags.zf,
+			af: flags.af,
+			pf: flags.pf,
+			cf: flags.cf,
+		});
+		setMemory(convertArray(mem));
+		setRegister({
+			ah: reg.ah.toString(16).padStart(2, 0),
+			al: reg.al.toString(16).padStart(2, 0),
+			bh: reg.bh.toString(16).padStart(2, 0),
+			bl: reg.bl.toString(16).padStart(2, 0),
+			ch: reg.ch.toString(16).padStart(2, 0),
+			cl: reg.cl.toString(16).padStart(2, 0),
+			dh: reg.dh.toString(16).padStart(2, 0),
+			dl: reg.dl.toString(16).padStart(2, 0),
+			si: reg.si.toString(16).padStart(4, 0),
+			di: reg.di.toString(16).padStart(4, 0),
+			bp: reg.bp.toString(16).padStart(4, 0),
+			sp: reg.sp.toString(16).padStart(4, 0),
+			ss: reg.ss.toString(16).padStart(4, 0),
+			ds: reg.ds.toString(16).padStart(4, 0),
+			es: reg.es.toString(16).padStart(4, 0),
+		});
+	};
+	// Call when compiling the code
+	const compile = () => {
+		setInput('');
+		setOutput('');
+		clearTimeout();
+		outputHolder = '';
+		if(props.wasm) {
+			try {
+				let driver = props.wasm.preprocess(code);
+				setDriver(driver);
+				setLine(driver.line);
+				//	Compile code here
+				setCompiled(true);
+				setHalted(false);
+				set8086State(driver);
+				setErrors('');
+				addAnnotation('');
+			} catch (e) {
+				// e is going to be of string type, if it is one returned from rust
+				// if it is an object, or unknown type error,
+				// it may be stack size issue, read README for more info
+				console.log(e);
+				setCompiled(false);
+				setHalted(true);
+				showSnackbar('Error Occured!')
+				setErrors(e);
+				addAnnotation(e);
+			}
 
-      localStorage.setItem('x86code', code);
-    } else {
-      setLoading(true);
-    }
-  };
+			localStorage.setItem('x86code', code);
+		} else {
+			setLoading(true);
+		}
+	};
 
-  // To set editor to highlight a line
-  const setLine = (line) => {
-    codeEditor.current.editor.gotoLine(line);
-  };
+	// To set editor to highlight a line
+	const setLine = (line) => {
+		codeEditor.current.editor.gotoLine(line);
+	};
 
-  // Validate start address
-  const validateAndSetAddress = (address) => {
-    if (!driver) {
-      setAddressError('Compile Program Before Setting Memory');
-      return;
-    }
-    if (address === '') {
-      setStartAddress('');
-      return;
-    }
-    if (/^[0-9A-F]{0,5}$/.test(address)) {
-      let start = parseInt('0x' + address);
+	// Validate start address
+	const validateAndSetAddress = (address) => {
+		if(!driver) {
+			setAddressError('Compile Program Before Setting Memory');
+			return;
+		}
+		if(address === '') {
+			setStartAddress('');
+			return;
+		}
+		if(/^[0-9A-F]{0,5}$/.test(address)) {
+			let start = parseInt('0x' + address);
 
-      if (start > ALLOWED_ADDRESS_MAX) {
-        setAddressError(
-          'Must be between 00000 to ' +
-            ALLOWED_ADDRESS_MAX.toString(16).toUpperCase()
-        );
-        return;
-      }
-      setAddressError('');
-      setStartAddress(address);
-    } else {
-      setStartAddress(startAddress);
-      setAddressError('Must be between 00000 to FFF7F');
-    }
-  };
+			if(start > ALLOWED_ADDRESS_MAX) {
+				setAddressError(
+					'Must be between 00000 to ' +
+					ALLOWED_ADDRESS_MAX.toString(16).toUpperCase()
+				);
+				return;
+			}
+			setAddressError('');
+			setStartAddress(address);
+		} else {
+			setStartAddress(startAddress);
+			setAddressError('Must be between 00000 to FFF7F');
+		}
+	};
 
-  // On change handler for set code editor
-  const onChange = (newValue) => {
-    setCode(newValue);
-  };
+	// On change handler for set code editor
+	const onChange = (newValue) => {
+		setCode(newValue);
+	};
 
-  //called when you enter a start address and press set
-  const saveAddress = () => {
-    if (!addressError) {
-      let start = parseInt('0x' + startAddress);
-      let mem = driver.get_mem(start, start + MEM_MAX - 1);
-      setMemory(convertArray(mem));
-    }
-  };
+	//called when you enter a start address and press set
+	const saveAddress = () => {
+		if(!addressError) {
+			let start = parseInt('0x' + startAddress);
+			let mem = driver.get_mem(start, start + MEM_MAX - 1);
+			setMemory(convertArray(mem));
+		}
+	};
 
-  //runs when you press RUN button
-  const runCode = () => {
-    startIntervalTask();
-  };
+	//runs when you press RUN button
+	const runCode = () => {
+		startIntervalTask();
+	};
 
-  //runs when you press NEXT button
-  const executeNext = () => {
-    try {
-      let res = driver.next();
-      setLine(driver.line);
-      if (res.halt) {
-        setCompiled(false);
-        setHalted(true);
-      }
-      if (res.int) {
-        if (res.int === 3) {
-          // don't do anything here
-        }
-        if (res.int === 10) {
-          let out = outputHolder + '\n' + driver.int_10();
-          outputHolder = out;
-          setOutput(out);
-        }
-        if (res.int === 21) {
-          if (res.ah === 2) {
-            let out = outputHolder + '\n' + driver.get_int_21();
-            outputHolder = out;
-            setOutput(out);
-          } else {
-            setHalted(true);
-          }
-        }
-      }
-      set8086State(driver);
-    } catch (e) {
-      console.log(e);
-      setCompiled(false);
-      setHalted(true);
-      setErrors(e);
-      addAnnotation(e);
-    }
-  };
+	//runs when you press NEXT button
+	const executeNext = () => {
+		try {
+			let res = driver.next();
+			setLine(driver.line);
+			if(res.halt) {
+				setCompiled(false);
+				setHalted(true);
+				showSnackbar('Execution Halted!')
+			}
+			if(res.int) {
+				if(res.int === 3) {
+					// don't do anything here
+				}
+				if(res.int === 10) {
+					let out = outputHolder + '\n' + driver.int_10();
+					outputHolder = out;
+					setOutput(out);
+				}
+				if(res.int === 21) {
+					if(res.ah === 2) {
+						let out = outputHolder + '\n' + driver.get_int_21();
+						outputHolder = out;
+						setOutput(out);
+					} else {
+						setHalted(true);
+						showSnackbar('Execution Halted!')
+					}
+				}
+			}
+			set8086State(driver);
+		} catch (e) {
+			console.log(e);
+			setCompiled(false);
+			setHalted(true);
+			showSnackbar('Error Occured!')
+			setErrors(e);
+			addAnnotation(e);
+		}
+	};
 
-  //runs when you press STOP button
-  const stopCode = () => {
-    stopIntervalTask();
-  };
+	//runs when you press STOP button
+	const stopCode = () => {
+		stopIntervalTask();
+	};
 
-  //To set an input
-  const handleInput = () => {
-    if (halted && driver) {
-      driver.set_int_21(input.slice(0));
-      setHalted(false);
-    }
-  };
+	//To set an input
+	const handleInput = () => {
+		if(halted && driver) {
+			driver.set_int_21(input.slice(0));
+			setHalted(false);
+		}
+	};
 
-  const convertArray = (arr) => {
-    let temp = [];
-    let temp2d = [];
-    arr.forEach((item, index) => {
-      temp.push(item);
-      if (index % 16 === 15) {
-        temp2d.push(temp);
-        temp = [];
-      }
-    });
-    return temp2d;
-  };
+	const convertArray = (arr) => {
+		let temp = [];
+		let temp2d = [];
+		arr.forEach((item, index) => {
+			temp.push(item);
+			if(index % 16 === 15) {
+				temp2d.push(temp);
+				temp = [];
+			}
+		});
+		return temp2d;
+	};
 
-  return (
-    <div className={classes.root}>
+	return (
+		<div className={classes.root}>
+	<Snackbar
+	  open={openSnackbar}
+	  message={snackbarText}
+	  style={classes.snackbar}
+	/>
       <Backdrop className={classes.backdrop} open={loading}>
         <CircularProgress color='inherit' />
         <h3 className={classes.loadingText}>Compiling</h3>
@@ -910,7 +933,7 @@ int 0x10                ; BIOS interrupt`
         </Grid>
       </Grid>
     </div>
-  );
+	);
 }
 
 export default Compiler;

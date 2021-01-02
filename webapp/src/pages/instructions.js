@@ -8,34 +8,34 @@ import { makeStyles } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 const useStyles = makeStyles((theme) => ({
-  sidebar: {
-    position: 'fixed',
-    verticalAlign: 'middle',
-    paddingTop: 30,
-    paddingBottom: 30,
-  },
-  navLink: {
-    cursor: 'pointer',
-    '&:hover': {
-      color: '#f4c430',
-    },
-  },
-  instructions: {
-    borderLeft: '1px solid silver',
-    paddingLeft: 20,
-  },
-  instructionName: {
-    marginBottom: 25,
-  },
+	sidebar: {
+		position: 'fixed',
+		verticalAlign: 'middle',
+		paddingTop: 10,
+		paddingBottom: 30,
+	},
+	navLink: {
+		cursor: 'pointer',
+		'&:hover': {
+			color: '#f4c430',
+		},
+	},
+	instructions: {
+		borderLeft: '1px solid silver',
+		paddingLeft: 20,
+	},
+	instructionName: {
+		marginBottom: 25,
+	},
 }));
 
 function InstructionSet() {
-  const classes = useStyles();
-  const matches = useMediaQuery('(max-width:1024px)');
-  //JSON for instructions
-  const [instructionList] = useState(instruction_set);
-  return (
-    <div>
+	const classes = useStyles();
+	const matches = useMediaQuery('(max-width:1324px)');
+	//JSON for instructions
+	const [instructionList] = useState(instruction_set);
+	return (
+		<div>
       <br />
       <Typography variant='h4'> Instruction Set:</Typography>
       <br />
@@ -82,7 +82,7 @@ function InstructionSet() {
                   name={instruction.name}
                   example={instruction.example}
                   description={instruction.description}
-                  key={instruction.opcode}
+                  key={instruction.name}
                   usage={instruction.usage}
                 />
               ))}
@@ -93,7 +93,7 @@ function InstructionSet() {
         </Grid>
       </Grid>
     </div>
-  );
+	);
 }
 
 export default InstructionSet;
