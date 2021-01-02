@@ -20,7 +20,7 @@
 		"web-vitals": "^0.2.4"
 	},
 	"scripts": {
-		"deploy":"gh-pages -d build -b deploy",
+		"deploy": "gh-pages -d build -b deploy",
 		"start": "react-app-rewired start",
 		"build": "react-app-rewired build",
 		"test": "react-app-rewired test",
