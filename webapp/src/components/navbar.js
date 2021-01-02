@@ -36,7 +36,7 @@ function Navbar() {
   const loc = useLocation();
   const { currentTheme, setTheme } = useContext(CustomThemeContext);
   const handleThemeChange = (event) => {
-    if (currentTheme === 'normal') {
+    if(currentTheme === 'normal') {
       setTheme('dark');
     } else {
       setTheme('normal');
@@ -91,7 +91,7 @@ function Navbar() {
               <img
                 style={
                   currentTheme === 'dark'
-                    ? { filter: 'invert(1)', height: '2rem', rotate: '90deg' }
+                    ? { filter: 'invert(0.7)', height: '2rem', rotate: '90deg' }
                     : { height: '2rem', rotate: '90deg' }
                 }
                 src={cpu}
