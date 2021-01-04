@@ -26,14 +26,17 @@ const useStyles = makeStyles((theme) => ({
   cardLeft: {
     padding: 30,
     borderRadius: '0px 30px 30px 0px',
+    height: '100%'
   },
   cardRight: {
     padding: 30,
     borderRadius: '30px 0px 0px 30px',
+    height: '100%'
   },
   cardCenter: {
     padding: 30,
     borderRadius: '30px 30px 30px 30px',
+    height: '100%'
   },
   heading: {
     fontWeight: 500,
@@ -68,7 +71,7 @@ function Home() {
               />
             </Grid>
             <Grid item md={6} className={classes.headerText}>
-              <Typography variant='h5' className={classes.heading} gutterBottom>
+              <Typography variant='h5' component="h1" className={classes.heading} gutterBottom>
                 {' '}
                 8086 EMULATOR{' '}
               </Typography>
@@ -96,7 +99,7 @@ function Home() {
                   Command line version
                 </a>
                 <br />
-                Made Using React , WASM and Rust.
+                Made Using React, WASM and Rust.
                 <br />
               </Typography>
             </Grid>
@@ -105,7 +108,7 @@ function Home() {
       </Tilt>
       <Grid container spacing={5}>
         <Grid item md={4}>
-          <Tilt className='Tilt' options={{ max: 30, scale: 1.05 }}>
+          <Tilt className='Tilt' options={{ max: 30, scale: 1.05 }} style={{height:'100%'}}>
             <Paper className={classes.cardLeft} elevation={7}>
               <Typography variant='h5' className={classes.heading} gutterBottom>
                 {' '}
@@ -119,7 +122,7 @@ function Home() {
           </Tilt>
         </Grid>
         <Grid item md={4}>
-          <Tilt className='Tilt' options={{ max: 30, scale: 1.05 }}>
+          <Tilt className='Tilt' options={{ max: 30, scale: 1.05 }} style={{height:'100%'}}>
             <Paper className={classes.cardCenter} elevation={7}>
               <Typography variant='h5' className={classes.heading} gutterBottom>
                 {' '}
@@ -133,7 +136,7 @@ function Home() {
           </Tilt>
         </Grid>
         <Grid item md={4}>
-          <Tilt className='Tilt' options={{ max: 30, scale: 1.05 }}>
+          <Tilt className='Tilt' options={{ max: 30, scale: 1.05 }} style={{height:'100%'}}>
             <Paper className={classes.cardRight} elevation={7}>
               <Typography variant='h5' className={classes.heading} gutterBottom>
                 {' '}
@@ -147,7 +150,7 @@ function Home() {
           </Tilt>
         </Grid>
         <Grid item md={4}>
-          <Tilt className='Tilt' options={{ max: 30, scale: 1.05 }}>
+          <Tilt className='Tilt' options={{ max: 30, scale: 1.05 }} style={{height:'100%'}}>
             <Paper className={classes.cardLeft} elevation={7}>
               <Typography variant='h5' className={classes.heading} gutterBottom>
                 {' '}
@@ -161,7 +164,7 @@ function Home() {
           </Tilt>
         </Grid>
         <Grid item md={4}>
-          <Tilt className='Tilt' options={{ max: 30, scale: 1.05 }}>
+          <Tilt className='Tilt' options={{ max: 30, scale: 1.05 }} style={{height:'100%'}}>
             <Paper className={classes.cardCenter} elevation={7}>
               <Typography variant='h5' className={classes.heading} gutterBottom>
                 {' '}
@@ -175,7 +178,7 @@ function Home() {
           </Tilt>
         </Grid>
         <Grid item md={4}>
-          <Tilt className='Tilt' options={{ max: 30, scale: 1.05 }}>
+          <Tilt className='Tilt' options={{ max: 30, scale: 1.05 }} style={{height:'100%'}}>
             <Paper className={classes.cardRight} elevation={7}>
               <Typography variant='h5' className={classes.heading} gutterBottom>
                 {' '}
