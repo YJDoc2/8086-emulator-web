@@ -55,6 +55,9 @@ const useStyles = makeStyles((theme) => ({
   },
   btnLink: {
     textDecoration: 'none'
+  },
+  img: {
+    minHeight: 300
   }
 }));
 
@@ -70,6 +73,7 @@ function Home() {
                 src={HomeImage}
                 width='100%'
                 alt='laptop mobile compatible'
+                className={classes.img}
               />
             </Grid>
             <Grid item md={6} className={classes.headerText}>
@@ -102,8 +106,27 @@ function Home() {
                 </a>
                 <br />
                 Made Using React, WASM and Rust.
-                <br />
               </Typography>
+      <div align='center' className={classes.btnDiv}>
+        <Link to="/8086-emulator-web/help" className={classes.btnLink}>
+        <Button
+          variant='outlined'
+          color='primary'
+          className={classes.bottomBtn}
+        >
+          Instruction Set
+        </Button>
+        </Link>
+        <Link to="/8086-emulator-web/compile" className={classes.btnLink}>
+        <Button
+          variant='contained'
+          color='primary'
+          className={classes.bottomBtn}
+        >
+          8086 Compiler
+        </Button>
+        </Link>
+      </div>
             </Grid>
           </Grid>
         </Paper>
@@ -194,26 +217,6 @@ function Home() {
           </Tilt>
         </Grid>
       </Grid>
-      <div align='center' className={classes.btnDiv}>
-        <Link to="/8086-emulator-web/help" className={classes.btnLink}>
-        <Button
-          variant='outlined'
-          color='primary'
-          className={classes.bottomBtn}
-        >
-          Instruction Set
-        </Button>
-        </Link>
-        <Link to="/8086-emulator-web/compile" className={classes.btnLink}>
-        <Button
-          variant='contained'
-          color='primary'
-          className={classes.bottomBtn}
-        >
-          8086 Compiler
-        </Button>
-        </Link>
-      </div>
     </div>
   );
 }
