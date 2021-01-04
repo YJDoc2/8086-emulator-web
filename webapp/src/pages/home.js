@@ -6,7 +6,7 @@ import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-import { useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 //Tilt
 import Tilt from 'react-tilt';
 
@@ -53,11 +53,13 @@ const useStyles = makeStyles((theme) => ({
     textDecoration: 'underline',
     color: theme.palette.secondary.contrastText,
   },
+  btnLink: {
+    textDecoration: 'none'
+  }
 }));
 
 function Home() {
   const classes = useStyles();
-  const history = useHistory();
   return (
     <div>
       <Tilt className='Tilt' options={{ max: 10, scale: 1.05 }}>
@@ -193,22 +195,24 @@ function Home() {
         </Grid>
       </Grid>
       <div align='center' className={classes.btnDiv}>
+        <Link to="/8086-emulator-web/help" className={classes.btnLink}>
         <Button
           variant='outlined'
           color='primary'
           className={classes.bottomBtn}
-          onClick={() => history.push('/8086-emulator-web/help')}
         >
           Instruction Set
         </Button>
+        </Link>
+        <Link to="/8086-emulator-web/compile" className={classes.btnLink}>
         <Button
           variant='contained'
           color='primary'
           className={classes.bottomBtn}
-          onClick={() => history.push('/8086-emulator-web/compile')}
         >
           8086 Compiler
         </Button>
+        </Link>
       </div>
     </div>
   );
