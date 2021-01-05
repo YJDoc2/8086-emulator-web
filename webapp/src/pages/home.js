@@ -6,7 +6,7 @@ import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-import { useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 //Tilt
 import Tilt from 'react-tilt';
 
@@ -26,14 +26,17 @@ const useStyles = makeStyles((theme) => ({
   cardLeft: {
     padding: 30,
     borderRadius: '0px 30px 30px 0px',
+    height: '100%'
   },
   cardRight: {
     padding: 30,
     borderRadius: '30px 0px 0px 30px',
+    height: '100%'
   },
   cardCenter: {
     padding: 30,
     borderRadius: '30px 30px 30px 30px',
+    height: '100%'
   },
   heading: {
     fontWeight: 500,
@@ -50,11 +53,16 @@ const useStyles = makeStyles((theme) => ({
     textDecoration: 'underline',
     color: theme.palette.secondary.contrastText,
   },
+  btnLink: {
+    textDecoration: 'none'
+  },
+  img: {
+    minHeight: 300
+  }
 }));
 
 function Home() {
   const classes = useStyles();
-  const history = useHistory();
   return (
     <div>
       <Tilt className='Tilt' options={{ max: 10, scale: 1.05 }}>
@@ -65,10 +73,11 @@ function Home() {
                 src={HomeImage}
                 width='100%'
                 alt='laptop mobile compatible'
+                className={classes.img}
               />
             </Grid>
             <Grid item md={6} className={classes.headerText}>
-              <Typography variant='h5' className={classes.heading} gutterBottom>
+              <Typography variant='h5' component="h1" className={classes.heading} gutterBottom>
                 {' '}
                 8086 EMULATOR{' '}
               </Typography>
@@ -96,16 +105,35 @@ function Home() {
                   Command line version
                 </a>
                 <br />
-                Made Using React , WASM and Rust.
-                <br />
+                Made Using React, WASM and Rust.
               </Typography>
+      <div align='center' className={classes.btnDiv}>
+        <Link to="/8086-emulator-web/help" className={classes.btnLink}>
+        <Button
+          variant='outlined'
+          color='primary'
+          className={classes.bottomBtn}
+        >
+          Instruction Set
+        </Button>
+        </Link>
+        <Link to="/8086-emulator-web/compile" className={classes.btnLink}>
+        <Button
+          variant='contained'
+          color='primary'
+          className={classes.bottomBtn}
+        >
+          8086 Compiler
+        </Button>
+        </Link>
+      </div>
             </Grid>
           </Grid>
         </Paper>
       </Tilt>
       <Grid container spacing={5}>
         <Grid item md={4}>
-          <Tilt className='Tilt' options={{ max: 30, scale: 1.05 }}>
+          <Tilt className='Tilt' options={{ max: 30, scale: 1.05 }} style={{height:'100%'}}>
             <Paper className={classes.cardLeft} elevation={7}>
               <Typography variant='h5' className={classes.heading} gutterBottom>
                 {' '}
@@ -119,7 +147,7 @@ function Home() {
           </Tilt>
         </Grid>
         <Grid item md={4}>
-          <Tilt className='Tilt' options={{ max: 30, scale: 1.05 }}>
+          <Tilt className='Tilt' options={{ max: 30, scale: 1.05 }} style={{height:'100%'}}>
             <Paper className={classes.cardCenter} elevation={7}>
               <Typography variant='h5' className={classes.heading} gutterBottom>
                 {' '}
@@ -133,7 +161,7 @@ function Home() {
           </Tilt>
         </Grid>
         <Grid item md={4}>
-          <Tilt className='Tilt' options={{ max: 30, scale: 1.05 }}>
+          <Tilt className='Tilt' options={{ max: 30, scale: 1.05 }} style={{height:'100%'}}>
             <Paper className={classes.cardRight} elevation={7}>
               <Typography variant='h5' className={classes.heading} gutterBottom>
                 {' '}
@@ -147,7 +175,7 @@ function Home() {
           </Tilt>
         </Grid>
         <Grid item md={4}>
-          <Tilt className='Tilt' options={{ max: 30, scale: 1.05 }}>
+          <Tilt className='Tilt' options={{ max: 30, scale: 1.05 }} style={{height:'100%'}}>
             <Paper className={classes.cardLeft} elevation={7}>
               <Typography variant='h5' className={classes.heading} gutterBottom>
                 {' '}
@@ -161,7 +189,7 @@ function Home() {
           </Tilt>
         </Grid>
         <Grid item md={4}>
-          <Tilt className='Tilt' options={{ max: 30, scale: 1.05 }}>
+          <Tilt className='Tilt' options={{ max: 30, scale: 1.05 }} style={{height:'100%'}}>
             <Paper className={classes.cardCenter} elevation={7}>
               <Typography variant='h5' className={classes.heading} gutterBottom>
                 {' '}
@@ -175,7 +203,7 @@ function Home() {
           </Tilt>
         </Grid>
         <Grid item md={4}>
-          <Tilt className='Tilt' options={{ max: 30, scale: 1.05 }}>
+          <Tilt className='Tilt' options={{ max: 30, scale: 1.05 }} style={{height:'100%'}}>
             <Paper className={classes.cardRight} elevation={7}>
               <Typography variant='h5' className={classes.heading} gutterBottom>
                 {' '}
@@ -189,24 +217,6 @@ function Home() {
           </Tilt>
         </Grid>
       </Grid>
-      <div align='center' className={classes.btnDiv}>
-        <Button
-          variant='outlined'
-          color='primary'
-          className={classes.bottomBtn}
-          onClick={() => history.push('/8086-emulator-web/help')}
-        >
-          Instruction Set
-        </Button>
-        <Button
-          variant='contained'
-          color='primary'
-          className={classes.bottomBtn}
-          onClick={() => history.push('/8086-emulator-web/compile')}
-        >
-          8086 Compiler
-        </Button>
-      </div>
     </div>
   );
 }
