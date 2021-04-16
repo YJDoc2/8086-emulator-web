@@ -172,6 +172,13 @@ function Compiler(props) {
     clearInterval(intervalHandler);
     intervalHandler = null;
   };
+  //Auto Saving
+  const resetTimeout = (id, newID) => {
+    clearTimeout(id);
+    return newID;
+  };
+  const [timeout, settimeout] = useState(null);
+  const [saved, setSaved] = useState(false);
 
   let codeEditor = useRef(null);
   let compileRef = useRef(null);
@@ -527,6 +534,15 @@ int 0x10                ; BIOS interrupt`
   // On change handler for set code editor
   const onChange = (newValue) => {
     setCode(newValue);
+    localStorage.setItem("x86code", newValue);
+
+    settimeout(resetTimeout(timeout, setTimeout(saveValue(), 400)));
+  };
+  //Auto Save
+  const saveValue = () => {
+    setSaved(true);
+
+    setTimeout(() => setSaved(false), 1000);
   };
 
   //called when you enter a start address and press set
@@ -801,6 +817,17 @@ int 0x10                ; BIOS interrupt`
             </Grid>
           </Grid>
           <Paper ref={editorContainer}>
+            <div
+              style={{
+                fontSize: 18,
+                paddingRight: 10,
+                paddingLeft: 10,
+                color: "red",
+                float: "right",
+              }}
+            >
+              <p>{saved ? "Saved" : ""}</p>
+            </div>
             <AceEditor
               ref={codeEditor}
               aria-describedby={tutorialStep === 0 ? "editor" : ""}
