@@ -2,29 +2,29 @@
 
 body,
 html {
-  height: 100%;
+	height: 100%;
 }
 
 #page-container {
-  position: relative;
-  min-height: 100vh;
-  padding-bottom: 2.4rem;
+	position: relative;
+	min-height: 100vh;
+	padding-bottom: 2.4rem;
 }
 
 #footer {
-  width: 100%;
-  margin-top: -37px;
-  /* Footer height */
+	width: 100%;
+	margin-top: -37px;
+	/* Footer height */
 }
 
 body {
-  margin: 0;
-  font-family: "JetBrains Mono", monospace;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+	margin: 0;
+	font-family: "JetBrains Mono", monospace;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
+	font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+		monospace;
 }
