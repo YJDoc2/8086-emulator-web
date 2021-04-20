@@ -1,8 +1,8 @@
 {
   "files": {
-    "main.css": "/8086-emulator-web/static/css/main.d08cbe4d.chunk.css",
-    "main.js": "/8086-emulator-web/static/js/main.a785da8c.chunk.js",
-    "main.js.map": "/8086-emulator-web/static/js/main.a785da8c.chunk.js.map",
+    "main.css": "/8086-emulator-web/static/css/main.9bf47b15.chunk.css",
+    "main.js": "/8086-emulator-web/static/js/main.a494e89c.chunk.js",
+    "main.js.map": "/8086-emulator-web/static/js/main.a494e89c.chunk.js.map",
     "runtime-main.js": "/8086-emulator-web/static/js/runtime-main.ab86f4e7.js",
     "runtime-main.js.map": "/8086-emulator-web/static/js/runtime-main.ab86f4e7.js.map",
     "static/js/2.9c323a04.chunk.js": "/8086-emulator-web/static/js/2.9c323a04.chunk.js",
@@ -11,7 +11,7 @@
     "4fd987312722793cd5b5.module.wasm": "/8086-emulator-web/4fd987312722793cd5b5.module.wasm",
     "static/js/3.1aa570d9.chunk.js.map": "/8086-emulator-web/static/js/3.1aa570d9.chunk.js.map",
     "index.html": "/8086-emulator-web/index.html",
-    "static/css/main.d08cbe4d.chunk.css.map": "/8086-emulator-web/static/css/main.d08cbe4d.chunk.css.map",
+    "static/css/main.9bf47b15.chunk.css.map": "/8086-emulator-web/static/css/main.9bf47b15.chunk.css.map",
     "static/js/2.9c323a04.chunk.js.LICENSE.txt": "/8086-emulator-web/static/js/2.9c323a04.chunk.js.LICENSE.txt",
     "static/media/ExpandIcon.dc874ec0.svg": "/8086-emulator-web/static/media/ExpandIcon.dc874ec0.svg",
     "static/media/chip-memory.44cc777a.svg": "/8086-emulator-web/static/media/chip-memory.44cc777a.svg",
@@ -20,7 +20,7 @@
   "entrypoints": [
     "static/js/runtime-main.ab86f4e7.js",
     "static/js/2.9c323a04.chunk.js",
-    "static/css/main.d08cbe4d.chunk.css",
-    "static/js/main.a785da8c.chunk.js"
+    "static/css/main.9bf47b15.chunk.css",
+    "static/js/main.a494e89c.chunk.js"
   ]
 }
