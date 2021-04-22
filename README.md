@@ -25,7 +25,7 @@ To build install Rust and wasm-pack as instructed in https://rustwasm.github.io/
 Note that there is know issue when allocating large size arrays , even on heap in rust :
 https://github.com/rust-lang/rust/issues/53827
 As we are using memory size of 1MB (maybe we should rethink that), and there are already some other objects on stack, this causes 'runtime error: index out of bounds' if compiled normally.
-To overcome this, before compiling, add this to ~/.cargo/config (create config file if not present) :
+To overcome this, before compiling, create a folder named `.cargo` in root directory, make a file named `config` and add this :
 
 ```TOML
 [target.wasm32-unknown-unknown]
@@ -39,7 +39,7 @@ This is according to : https://github.com/rustwasm/wasm-pack/issues/479
 
 We have tried to optimize stack usage by covering various structs in Box instead of allocating on stack, and manually calling std::mem::drop on them once their use is done, but that still causes same issue, so the only choice remaining was to increase the default allocated stack size.
 
-After adding above in config, run wasm-pack in root folder of this project, without any arguments, which should build the wasm package and create a folder named `pkg`.
+After adding above in config, run `wasm-pack build` in root folder of this project, which should build the wasm package and create a folder named `pkg`.
 
 After that change directory to the webapp folder, and run
 
@@ -69,16 +69,10 @@ which will create the `build` folder, but **NOTE** that to run this one will req
 
 ```
 .
-├── src                 ->  the Rust code for core preprocessor , interpreter and driver
+├── src                 ->  the Rust code for the driver
     ├── driver          ->  code for the Web driver
-    ├── data_parser     ->  code for data parser, might be removed later
-    ├── instructions    -> contains functions which are used to run some opcode instructions, might be removed later
-    ├── interpreter     -> code and tests for the interpreter, might be removed later
-    ├── preprocessor    -> code and test for the preprocessor, might be removed later
-    ├── util            -> utility and helper functions / structures, might be removed later
-    ├── arch.rs         -> definition of 8086 architecture struct, might be removed later
-    ├── vm.rs           -> definition of vm struct, might be removed later
-    └── lib.rs          -> lib file which re-exports various structs and function
+    ├── util.rs         -> set up the panic hook for easier debugging
+    └── lib.rs          -> lib file which re-exports driver struct ad public
 ├── webapp              -> Folder for React frontend
     ├── public          -> contain public images and inedx.html
     └── src             -> contains main source files for React

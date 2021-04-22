@@ -26,9 +26,7 @@ wee_alloc = { version = "0.4.5", optional = true }
 lalrpop-util = "0.19.1"
 regex = "1"
 console_error_panic_hook = { version = "0.1.6", optional = true }
-
-
-
+lib8086 = { git = "https://github.com/YJDoc2/8086-Emulator", package="emulator_8086"}
 
 [dev-dependencies]
 wasm-bindgen-test = "0.3.13"

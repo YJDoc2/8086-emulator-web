@@ -1,11 +1,11 @@
 use super::error_helper::get_err_pos;
 use super::util::{get_flags, get_reg, JSFlags, JSReg};
-use crate::util::data_util::{get_byte_reg, set_byte_reg, ByteReg};
-use crate::InterpreterContext;
-use crate::LexerHelper;
-use crate::PreprocessorOutput;
-use crate::VM;
-use crate::{Interpreter, State};
+use lib8086::util::data_util::{get_byte_reg, set_byte_reg, ByteReg};
+use lib8086::InterpreterContext;
+use lib8086::LexerHelper;
+use lib8086::PreprocessorOutput;
+use lib8086::VM;
+use lib8086::{Interpreter, State};
 use std::collections::HashMap;
 use std::fmt::Write;
 use wasm_bindgen::prelude::*;

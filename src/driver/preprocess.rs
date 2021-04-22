@@ -1,12 +1,12 @@
 use super::driver::new_webdriver;
 use super::driver::WebDriver;
 use super::error_helper::get_err_pos;
-use crate::DataParser;
-use crate::InterpreterContext;
-use crate::LabelType;
-use crate::LexerHelper;
-use crate::VM;
-use crate::{Preprocessor, PreprocessorContext, PreprocessorOutput};
+use lib8086::DataParser;
+use lib8086::InterpreterContext;
+use lib8086::LabelType;
+use lib8086::LexerHelper;
+use lib8086::VM;
+use lib8086::{Preprocessor, PreprocessorContext, PreprocessorOutput};
 use lalrpop_util::ParseError;
 use std::mem::drop;
 

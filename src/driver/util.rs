@@ -1,6 +1,6 @@
-use crate::util::data_util::{get_byte_reg, ByteReg};
-use crate::VM;
-use crate::{get_flag_state, Flags};
+use lib8086::util::data_util::{get_byte_reg, ByteReg};
+use lib8086::VM;
+use lib8086::{get_flag_state, Flags};
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
