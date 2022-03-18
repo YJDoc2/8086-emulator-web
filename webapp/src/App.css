@@ -6,6 +6,14 @@
   padding-bottom: 3vh;
 }
 
+.tilty {
+  transform-style: preserve-3d;
+}
+
+.tilty * {
+  transform-style: preserve-3d;
+}
+
 #sidebar {
   position: sticky;
   position: -webkit-sticky;
