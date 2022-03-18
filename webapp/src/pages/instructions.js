@@ -1,11 +1,10 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState } from "react";
 import Instruction from "../components/instruction";
 import { instruction_set } from "../components/instructionSet";
 // React Waypoints
 import { Waypoint } from "react-waypoint";
 //Material UI
 import Typography from "@material-ui/core/Typography";
-import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 
@@ -43,20 +42,7 @@ const useStyles = makeStyles((theme) => ({
 function InstructionSet() {
   const classes = useStyles();
   const matches = useMediaQuery("(max-width:1324px)");
-  //JSON for instructions
-  const sidebarRef = useRef();
   const [active, setActive] = useState({});
-  const [offset, setOffset] = useState(0);
-  const sidebarTopOffset = sidebarRef.current?.offsetTop;
-  console.log({ sidebarTopOffset });
-
-  useEffect(() => {
-    const onScroll = () => setOffset(window.pageYOffset);
-    // clean up code
-    window.removeEventListener("scroll", onScroll);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
 
   return (
     <div>
