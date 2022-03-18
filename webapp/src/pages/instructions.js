@@ -1,99 +1,127 @@
-import React, { useState } from 'react';
-import Instruction from '../components/instruction';
-import { instruction_set } from '../components/instructionSet';
+import React, { useState, useEffect, useRef } from "react";
+import Instruction from "../components/instruction";
+import { instruction_set } from "../components/instructionSet";
+// React Waypoints
+import { Waypoint } from "react-waypoint";
 //Material UI
-import Typography from '@material-ui/core/Typography';
-import Grid from '@material-ui/core/Grid';
-import { makeStyles } from '@material-ui/core/styles';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
+import Typography from "@material-ui/core/Typography";
+import Grid from "@material-ui/core/Grid";
+import { makeStyles } from "@material-ui/core/styles";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 const useStyles = makeStyles((theme) => ({
-	sidebar: {
-		position: 'fixed',
-		verticalAlign: 'middle',
-		paddingTop: 10,
-		paddingBottom: 30,
-	},
-	navLink: {
-		cursor: 'pointer',
-		'&:hover': {
-			color: '#f4c430',
-		},
-	},
-	instructions: {
-		borderLeft: '1px solid silver',
-		paddingLeft: 20,
-	},
-	instructionName: {
-		marginBottom: 25,
-	},
+  navLink: {
+    cursor: "pointer",
+    paddingLeft: 10,
+    marginBottom: 0,
+    paddingTop: 5,
+    paddingBottom: 5,
+    "&:hover": {
+      color: "#FBE7AA",
+    },
+  },
+  instructions: {
+    borderLeft: "1px solid silver",
+    paddingLeft: 20,
+    marginLeft: 250,
+  },
+  instructionName: {
+    marginBottom: 25,
+  },
+  active: {
+    borderLeftColor: "#f4c430",
+    borderLeftStyle: "solid",
+    borderLeftWidth: 3,
+    paddingLeft: 7,
+    color: "#f4c430",
+  },
+  marginBottom30: {
+    marginBottom: 30,
+  },
 }));
 
 function InstructionSet() {
-	const classes = useStyles();
-	const matches = useMediaQuery('(max-width:1324px)');
-	//JSON for instructions
-	const [instructionList] = useState(instruction_set);
-	return (
-		<div>
+  const classes = useStyles();
+  const matches = useMediaQuery("(max-width:1324px)");
+  //JSON for instructions
+  const sidebarRef = useRef();
+  const [active, setActive] = useState({});
+  const [offset, setOffset] = useState(0);
+  const sidebarTopOffset = sidebarRef.current?.offsetTop;
+  console.log({ sidebarTopOffset });
+
+  useEffect(() => {
+    const onScroll = () => setOffset(window.pageYOffset);
+    // clean up code
+    window.removeEventListener("scroll", onScroll);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  return (
+    <div>
       <br />
-      <Typography variant='h4'> Instruction Set:</Typography>
+      <Typography variant="h4"> Instruction Set:</Typography>
       <br />
-      <Grid container>
-        <Grid
-          item
-          md={2}
-          className={classes.sidebar}
-          style={matches ? { display: 'none' } : null}
-        >
-          {instructionList.map((instructiongroup) => (
-            <Typography
-              onClick={() =>
-                window.scrollTo({
-                  top:
-                    document.getElementById(
-                      `instruction-${instructiongroup.name}`
-                    ).offsetTop - 50,
-                  behavior: 'smooth',
-                })
-              }
-              variant='h6'
-              key={`nav-${instructiongroup.name}`}
-              gutterBottom
-              className={classes.navLink}
-            >
+      <div id="sidebar">
+        {instruction_set.map((instructiongroup) => (
+          <Typography
+            onClick={() =>
+              window.scrollTo({
+                top:
+                  document.getElementById(
+                    `instruction-${instructiongroup.name}`
+                  ).offsetTop - 50,
+                behavior: "smooth",
+              })
+            }
+            variant="h6"
+            key={`nav-${instructiongroup.name}`}
+            gutterBottom
+            className={`${classes.navLink} ${
+              active[instructiongroup.name] && classes.active
+            }`}
+          >
+            {instructiongroup.name}
+          </Typography>
+        ))}
+      </div>
+      <div style={matches ? { display: "none" } : null}></div>
+      <div className={!matches ? classes.instructions : null}>
+        {instruction_set.map((instructiongroup) => (
+          <div
+            key={`instruction-${instructiongroup.name}`}
+            id={`instruction-${instructiongroup.name}`}
+          >
+            <Typography variant="h5" className={classes.instructionName}>
               {instructiongroup.name}
             </Typography>
-          ))}
-        </Grid>
-        <Grid item md={2} style={matches ? { display: 'none' } : null}></Grid>
-        <Grid item md={10} className={!matches ? classes.instructions : null}>
-          {instructionList.map((instructiongroup) => (
-            <div
-              key={`instruction-${instructiongroup.name}`}
-              id={`instruction-${instructiongroup.name}`}
+            <Waypoint
+              onEnter={() =>
+                setActive({ ...active, [instructiongroup.name]: true })
+              }
+              onLeave={() =>
+                setActive({ ...active, [instructiongroup.name]: false })
+              }
             >
-              <Typography variant='h5' className={classes.instructionName}>
-                {instructiongroup.name}
-              </Typography>
-              {instructiongroup.instructions.map((instruction) => (
-                <Instruction
-                  opcode={instruction.opcode}
-                  name={instruction.name}
-                  example={instruction.example}
-                  description={instruction.description}
-                  key={instruction.name}
-                  usage={instruction.usage}
-                />
-              ))}
-              <br />
-              <br />
-            </div>
-          ))}
-        </Grid>
-      </Grid>
+              <div className={classes.marginBottom30}>
+                {instructiongroup.instructions.map((instruction) => (
+                  <Instruction
+                    opcode={instruction.opcode}
+                    name={instruction.name}
+                    example={instruction.example}
+                    description={instruction.description}
+                    key={instruction.name}
+                    usage={instruction.usage}
+                  />
+                ))}
+              </div>
+            </Waypoint>
+          </div>
+        ))}
+      </div>
     </div>
-	);
+  );
 }
 
 export default InstructionSet;
