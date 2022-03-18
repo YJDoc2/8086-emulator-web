@@ -3,7 +3,7 @@ import Instruction from "../components/instruction";
 import { instruction_set } from "../components/instructionSet";
 // React Waypoints
 import { Waypoint } from "react-waypoint";
-//Material UI
+// Material UI
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
@@ -11,7 +11,7 @@ import useMediaQuery from "@material-ui/core/useMediaQuery";
 const useStyles = makeStyles((theme) => ({
   navLink: {
     cursor: "pointer",
-    paddingLeft: 10,
+    paddingLeft: 15,
     marginBottom: 0,
     paddingTop: 5,
     paddingBottom: 5,
@@ -26,12 +26,13 @@ const useStyles = makeStyles((theme) => ({
   },
   instructionName: {
     marginBottom: 25,
+    fontWeight: "700",
   },
   active: {
     borderLeftColor: "#f4c430",
     borderLeftStyle: "solid",
     borderLeftWidth: 3,
-    paddingLeft: 7,
+    paddingLeft: 12,
     color: "#f4c430",
   },
   marginBottom30: {
