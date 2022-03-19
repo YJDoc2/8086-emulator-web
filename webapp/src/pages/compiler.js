@@ -108,7 +108,7 @@ const useStyles = makeStyles((theme) => ({
   },
   tutorialIcon: {
     position: "absolute",
-    right: 150,
+    right: 165,
     top: 10,
   },
   hidden: {
@@ -638,7 +638,7 @@ int 0x10                ; BIOS interrupt`
   };
 
   const nextTutorial = () => {
-    if (tutorialStep === 8) {
+    if (tutorialStep === 8 || (matches && tutorialStep === 7)) {
       setTutorial(false);
       localStorage.setItem("tutorial", "done");
     }
@@ -859,6 +859,7 @@ int 0x10                ; BIOS interrupt`
               ref={downloadRef}
               aria-describedby={tutorialStep === 8 ? "download_code" : ""}
               style={{
+                display: matches ? "none" : "block",
                 flex: 1,
                 fontSize: 18,
                 paddingRight: 10,
@@ -879,7 +880,13 @@ int 0x10                ; BIOS interrupt`
               </Tooltip>
             </div>
             <a
-              style={{ position: "absolute", top: 50, right: 9, zIndex: 100 }}
+              style={{
+                display: matches ? "none" : "block",
+                position: "absolute",
+                top: 50,
+                right: 9,
+                zIndex: 100,
+              }}
               href="https://github.com/YJDoc2/8086-Emulator/tree/master/examples"
               target="_blank"
               rel="noopener noreferrer"
@@ -906,6 +913,9 @@ int 0x10                ; BIOS interrupt`
                 vertical: "top",
                 horizontal: "center",
               }}
+              style={{
+                display: matches ? "none" : "block",
+              }}
             >
               <Typography className={classes.tooltips} component="div">
                 <b>Step 9</b>
@@ -915,6 +925,7 @@ int 0x10                ; BIOS interrupt`
             </Popover>
             <div
               style={{
+                display: matches ? "none" : "block",
                 position: "absolute",
                 bottom: 10,
                 right: 3,
@@ -928,6 +939,7 @@ int 0x10                ; BIOS interrupt`
                 </span>
               )}
             </div>
+
             <AceEditor
               ref={codeEditor}
               aria-describedby={tutorialStep === 0 ? "editor" : ""}
