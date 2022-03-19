@@ -86,7 +86,8 @@ function Navbar() {
                 <Terminal
                   style={{
                     width: 32,
-                    filter: currentTheme === "dark" ? "invert(1)" : "none",
+                    // filter: currentTheme === "dark" ? "invert(1)" : "none",
+                    fill: currentTheme === "dark" ? "#ccc" : "#111",
                   }}
                 />
               </a>
