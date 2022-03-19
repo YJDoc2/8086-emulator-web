@@ -118,11 +118,12 @@ const useStyles = makeStyles((theme) => ({
   tableHead: {
     backgroundColor: theme.palette.common.black,
     color: theme.palette.common.white,
+    fontWeight: "700",
   },
   flag: {
     paddingLeft: 10,
   },
-  flagName: {
+  cursor: {
     cursor: "pointer",
   },
 }));
@@ -727,7 +728,9 @@ int 0x10                ; BIOS interrupt`
         <Grid item lg={7}>
           <Grid container spacing={2} className={classes.spaceBelow}>
             <Grid item lg={4}>
-              <Typography variant="h5">Code Editor</Typography>
+              <Typography variant="h5" style={{ fontWeight: "800" }}>
+                Code Editor
+              </Typography>
             </Grid>
             <Grid item lg={8} align="right">
               <Button
@@ -1165,19 +1168,40 @@ int 0x10                ; BIOS interrupt`
                   <TableBody>
                     <TableRow>
                       <TableCell component="th" scope="row">
-                        SS
+                        <Tooltip
+                          title="Stack Segment"
+                          arrow
+                          className={classes.cursor}
+                          placement="left"
+                        >
+                          <span>SS</span>
+                        </Tooltip>
                       </TableCell>
                       <TableCell align="right">{register.ss}</TableCell>
                     </TableRow>
                     <TableRow>
                       <TableCell component="th" scope="row">
-                        DS
+                        <Tooltip
+                          title="Data Segment"
+                          arrow
+                          className={classes.cursor}
+                          placement="left"
+                        >
+                          <span>DS</span>
+                        </Tooltip>
                       </TableCell>
                       <TableCell align="right">{register.ds}</TableCell>
                     </TableRow>
                     <TableRow>
                       <TableCell component="th" scope="row">
-                        ES
+                        <Tooltip
+                          title="Extra Segment"
+                          arrow
+                          className={classes.cursor}
+                          placement="left"
+                        >
+                          <span>ES</span>
+                        </Tooltip>
                       </TableCell>
                       <TableCell align="right">{register.es}</TableCell>
                     </TableRow>
@@ -1198,25 +1222,53 @@ int 0x10                ; BIOS interrupt`
                   <TableBody>
                     <TableRow>
                       <TableCell component="th" scope="row">
-                        SP
+                        <Tooltip
+                          title="Stack Pointer"
+                          arrow
+                          className={classes.cursor}
+                          placement="left"
+                        >
+                          <span>SP</span>
+                        </Tooltip>
                       </TableCell>
                       <TableCell align="right">{register.sp}</TableCell>
                     </TableRow>
                     <TableRow>
                       <TableCell component="th" scope="row">
-                        BP
+                        <Tooltip
+                          title="Base Pointer"
+                          arrow
+                          className={classes.cursor}
+                          placement="left"
+                        >
+                          <span>BP</span>
+                        </Tooltip>
                       </TableCell>
                       <TableCell align="right">{register.bp}</TableCell>
                     </TableRow>
                     <TableRow>
                       <TableCell component="th" scope="row">
-                        SI
+                        <Tooltip
+                          title="Source Index"
+                          arrow
+                          className={classes.cursor}
+                          placement="left"
+                        >
+                          <span>SI</span>
+                        </Tooltip>
                       </TableCell>
                       <TableCell align="right">{register.si}</TableCell>
                     </TableRow>
                     <TableRow>
                       <TableCell component="th" scope="row">
-                        DI
+                        <Tooltip
+                          title="Destination Index"
+                          arrow
+                          className={classes.cursor}
+                          placement="left"
+                        >
+                          <span>DI</span>
+                        </Tooltip>
                       </TableCell>
                       <TableCell align="right">{register.di}</TableCell>
                     </TableRow>
@@ -1247,81 +1299,85 @@ int 0x10                ; BIOS interrupt`
                   <TableCell
                     component="th"
                     scope="column"
-                    className={classes.flagName}
+                    className={classes.cursor}
                   >
-                    <Tooltip title="Overflow Flag" placement="left">
+                    <Tooltip title="Overflow Flag" placement="left" arrow>
                       <span>OF</span>
                     </Tooltip>
                   </TableCell>
                   <TableCell
                     component="th"
                     scope="column"
-                    className={classes.flagName}
+                    className={classes.cursor}
                   >
-                    <Tooltip title="Directional Flag" placement="left">
+                    <Tooltip title="Directional Flag" placement="left" arrow>
                       <span>DF</span>
                     </Tooltip>
                   </TableCell>
                   <TableCell
                     component="th"
                     scope="column"
-                    className={classes.flagName}
+                    className={classes.cursor}
                   >
-                    <Tooltip title="Interrupt Flag" placement="left">
+                    <Tooltip title="Interrupt Flag" placement="left" arrow>
                       <span>IF</span>
                     </Tooltip>
                   </TableCell>
                   <TableCell
                     component="th"
                     scope="column"
-                    className={classes.flagName}
+                    className={classes.cursor}
                   >
-                    <Tooltip title="Trap Flag" placement="left">
+                    <Tooltip title="Trap Flag" placement="left" arrow>
                       <span>TF</span>
                     </Tooltip>
                   </TableCell>
                   <TableCell
                     component="th"
                     scope="column"
-                    className={classes.flagName}
+                    className={classes.cursor}
                   >
-                    <Tooltip title="Sign Flag" placement="left">
+                    <Tooltip title="Sign Flag" placement="left" arrow>
                       <span>SF</span>
                     </Tooltip>
                   </TableCell>
                   <TableCell
                     component="th"
                     scope="column"
-                    className={classes.flagName}
+                    className={classes.cursor}
                   >
-                    <Tooltip title="Zero Flag" placement="left">
+                    <Tooltip title="Zero Flag" placement="left" arrow>
                       <span>ZF</span>
                     </Tooltip>
                   </TableCell>
                   <TableCell
                     component="th"
                     scope="column"
-                    className={classes.flagName}
+                    className={classes.cursor}
                   >
-                    <Tooltip title="Auxiliary Carry Flag" placement="left">
+                    <Tooltip
+                      title="Auxiliary Carry Flag"
+                      placement="left"
+                      arrow
+                    >
                       <span>AF</span>
                     </Tooltip>
                   </TableCell>
                   <TableCell
                     component="th"
                     scope="column"
-                    className={classes.flagName}
+                    className={classes.cursor}
                   >
-                    <Tooltip title="Parity Flag" placement="left">
+                    <Tooltip title="Parity Flag" placement="left" arrow>
                       <span>PF</span>
                     </Tooltip>
                   </TableCell>
                   <TableCell
                     component="th"
                     scope="column"
-                    className={classes.flagName}
+                    className={classes.cursor}
                   >
-                    <Tooltip title="Carry Flag" placement="left">
+                    <Tooltip title="Carry Flag" placement="left" arrow>
                       <span>CF</span>
                     </Tooltip>
                   </TableCell>
