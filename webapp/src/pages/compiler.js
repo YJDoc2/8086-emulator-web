@@ -29,6 +29,7 @@ import Tooltip from "@material-ui/core/Tooltip";
 // Images
 import help from "../images/help.png";
 import { ReactComponent as DownloadButton } from "../images/download.svg";
+import { ReactComponent as Examples } from "../images/examples.svg";
 
 const MEM_MAX = 16 * 8;
 const MB = 1024 * 1024;
@@ -56,20 +57,18 @@ const useStyles = makeStyles((theme) => ({
   },
   flex: {
     display: "flex",
-  },
-  registerTable: {
-    maxWidth: 175,
-    marginRight: 20,
+    flexWrap: "wrap",
   },
   segmentTable: {
-    minWidth: 125,
-    marginRight: 20,
+    marginRight: 15,
+    marginLeft: 15,
   },
   flagTable: {
     marginTop: 20,
+    marginBottom: 10,
   },
   ramTable: {
-    marginTop: 30,
+    marginTop: 10,
   },
   error: {
     color: "red",
@@ -109,7 +108,7 @@ const useStyles = makeStyles((theme) => ({
   },
   tutorialIcon: {
     position: "absolute",
-    right: 110,
+    right: 150,
     top: 10,
   },
   hidden: {
@@ -118,6 +117,12 @@ const useStyles = makeStyles((theme) => ({
   tableHead: {
     backgroundColor: theme.palette.common.black,
     color: theme.palette.common.white,
+  },
+  flag: {
+    paddingLeft: 10,
+  },
+  flagName: {
+    cursor: "pointer",
   },
 }));
 
@@ -842,6 +847,7 @@ int 0x10                ; BIOS interrupt`
           </Grid>
           <Paper
             ref={editorContainer}
+            elevation={5}
             style={{
               position: "relative",
             }}
@@ -866,7 +872,7 @@ int 0x10                ; BIOS interrupt`
               <Tooltip title="Download Code" arrow>
                 <DownloadButton
                   style={{
-                    width: 22,
+                    width: 24,
                     fill: currentTheme === "dark" ? "#ccc" : "black",
                   }}
                 />
@@ -915,7 +921,7 @@ int 0x10                ; BIOS interrupt`
               }}
             >
               {saved && (
-                <span className="save-icon" style={{ color: "blue" }}>
+                <span className="save-icon">
                   <span className="loader"></span>
                   <span className="loader"></span>
                   <span className="loader"></span>
@@ -970,6 +976,7 @@ int 0x10                ; BIOS interrupt`
                 fullWidth
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
+                style={{ marginTop: 10 }}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
@@ -1016,130 +1023,140 @@ int 0x10                ; BIOS interrupt`
             </Typography>
           </Popover>
           <div className={classes.flex}>
-            <TableContainer className={classes.registerTable} component={Paper}>
-              <Table size="small" aria-label="simple table">
-                <TableHead>
-                  <TableRow>
-                    <TableCell
-                      className={classes.tableHead}
-                      style={{ width: "33%" }}
-                    >
-                      Reg
-                    </TableCell>
-                    <TableCell
-                      className={classes.tableHead}
-                      style={{ width: "33%" }}
-                    >
-                      H
-                    </TableCell>
-                    <TableCell
-                      className={classes.tableHead}
-                      style={{ width: "33%" }}
-                    >
-                      L
-                    </TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  <TableRow>
-                    <TableCell component="th" scope="row">
-                      A
-                    </TableCell>
-                    <TableCell align="right">{register.ah}</TableCell>
-                    <TableCell align="right">{register.al}</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell component="th" scope="row">
-                      B
-                    </TableCell>
-                    <TableCell align="right">{register.bh}</TableCell>
-                    <TableCell align="right">{register.bl}</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell component="th" scope="row">
-                      C
-                    </TableCell>
-                    <TableCell align="right">{register.ch}</TableCell>
-                    <TableCell align="right">{register.cl}</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell component="th" scope="row">
-                      D
-                    </TableCell>
-                    <TableCell align="right">{register.dh}</TableCell>
-                    <TableCell align="right">{register.dl}</TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-            </TableContainer>
-            <TableContainer className={classes.segmentTable} component={Paper}>
-              <Table size="small" aria-label="simple table">
-                <TableHead className={classes.tableHead}>
-                  <TableRow>
-                    <TableCell colSpan={2} className={classes.tableHead}>
-                      Segments
-                    </TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  <TableRow>
-                    <TableCell component="th" scope="row">
-                      SS
-                    </TableCell>
-                    <TableCell align="right">{register.ss}</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell component="th" scope="row">
-                      DS
-                    </TableCell>
-                    <TableCell align="right">{register.ds}</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell component="th" scope="row">
-                      ES
-                    </TableCell>
-                    <TableCell align="right">{register.es}</TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-            </TableContainer>
-            <TableContainer className={classes.segmentTable} component={Paper}>
-              <Table size="small" aria-label="simple table">
-                <TableHead>
-                  <TableRow>
-                    <TableCell colSpan={2} className={classes.tableHead}>
-                      Pointers
-                    </TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  <TableRow>
-                    <TableCell component="th" scope="row">
-                      SP
-                    </TableCell>
-                    <TableCell align="right">{register.sp}</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell component="th" scope="row">
-                      BP
-                    </TableCell>
-                    <TableCell align="right">{register.bp}</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell component="th" scope="row">
-                      SI
-                    </TableCell>
-                    <TableCell align="right">{register.si}</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell component="th" scope="row">
-                      DI
-                    </TableCell>
-                    <TableCell align="right">{register.di}</TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-            </TableContainer>
+            <Paper elevation={5} style={{ flex: 1 }}>
+              <TableContainer component={Paper}>
+                <Table size="small" aria-label="simple table">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell
+                        className={classes.tableHead}
+                        style={{ width: "33%" }}
+                      >
+                        Reg
+                      </TableCell>
+                      <TableCell
+                        className={classes.tableHead}
+                        style={{ width: "33%" }}
+                      >
+                        H
+                      </TableCell>
+                      <TableCell
+                        className={classes.tableHead}
+                        style={{ width: "33%" }}
+                      >
+                        L
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    <TableRow>
+                      <TableCell component="th" scope="row">
+                        A
+                      </TableCell>
+                      <TableCell align="right">{register.ah}</TableCell>
+                      <TableCell align="right">{register.al}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell component="th" scope="row">
+                        B
+                      </TableCell>
+                      <TableCell align="right">{register.bh}</TableCell>
+                      <TableCell align="right">{register.bl}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell component="th" scope="row">
+                        C
+                      </TableCell>
+                      <TableCell align="right">{register.ch}</TableCell>
+                      <TableCell align="right">{register.cl}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell component="th" scope="row">
+                        D
+                      </TableCell>
+                      <TableCell align="right">{register.dh}</TableCell>
+                      <TableCell align="right">{register.dl}</TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Paper>
+            <Paper
+              elevation={5}
+              className={classes.segmentTable}
+              style={{ flex: 1 }}
+            >
+              <TableContainer>
+                <Table size="small" aria-label="simple table">
+                  <TableHead className={classes.tableHead}>
+                    <TableRow>
+                      <TableCell colSpan={2} className={classes.tableHead}>
+                        Segments
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    <TableRow>
+                      <TableCell component="th" scope="row">
+                        SS
+                      </TableCell>
+                      <TableCell align="right">{register.ss}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell component="th" scope="row">
+                        DS
+                      </TableCell>
+                      <TableCell align="right">{register.ds}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell component="th" scope="row">
+                        ES
+                      </TableCell>
+                      <TableCell align="right">{register.es}</TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Paper>
+            <Paper elevation={5} style={{ flex: 1 }}>
+              <TableContainer component={Paper}>
+                <Table size="small" aria-label="simple table">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell colSpan={2} className={classes.tableHead}>
+                        Pointers
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    <TableRow>
+                      <TableCell component="th" scope="row">
+                        SP
+                      </TableCell>
+                      <TableCell align="right">{register.sp}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell component="th" scope="row">
+                        BP
+                      </TableCell>
+                      <TableCell align="right">{register.bp}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell component="th" scope="row">
+                        SI
+                      </TableCell>
+                      <TableCell align="right">{register.si}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell component="th" scope="row">
+                        DI
+                      </TableCell>
+                      <TableCell align="right">{register.di}</TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Paper>
           </div>
           <TableContainer
             className={classes.flagTable}
@@ -1160,62 +1177,161 @@ int 0x10                ; BIOS interrupt`
                   </TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableCell component="th" scope="column">
-                    OF
+                  <TableCell
+                    component="th"
+                    scope="column"
+                    className={classes.flagName}
+                  >
+                    <Tooltip title="Overflow Flag" placement="left">
+                      <span>OF</span>
+                    </Tooltip>
                   </TableCell>
-                  <TableCell component="th" scope="column">
-                    DF
+                  <TableCell
+                    component="th"
+                    scope="column"
+                    className={classes.flagName}
+                  >
+                    <Tooltip title="Directional Flag" placement="left">
+                      <span>DF</span>
+                    </Tooltip>
                   </TableCell>
-                  <TableCell component="th" scope="column">
-                    IF
+                  <TableCell
+                    component="th"
+                    scope="column"
+                    className={classes.flagName}
+                  >
+                    <Tooltip title="Interrupt Flag" placement="left">
+                      <span>IF</span>
+                    </Tooltip>
                   </TableCell>
-                  <TableCell component="th" scope="column">
-                    TF
+                  <TableCell
+                    component="th"
+                    scope="column"
+                    className={classes.flagName}
+                  >
+                    <Tooltip title="Trap Flag" placement="left">
+                      <span>TF</span>
+                    </Tooltip>
                   </TableCell>
-                  <TableCell component="th" scope="column">
-                    SF
+                  <TableCell
+                    component="th"
+                    scope="column"
+                    className={classes.flagName}
+                  >
+                    <Tooltip title="Sign Flag" placement="left">
+                      <span>SF</span>
+                    </Tooltip>
                   </TableCell>
-                  <TableCell component="th" scope="column">
-                    ZF
+                  <TableCell
+                    component="th"
+                    scope="column"
+                    className={classes.flagName}
+                  >
+                    <Tooltip title="Zero Flag" placement="left">
+                      <span>ZF</span>
+                    </Tooltip>
                   </TableCell>
-                  <TableCell component="th" scope="column">
-                    AF
+                  <TableCell
+                    component="th"
+                    scope="column"
+                    className={classes.flagName}
+                  >
+                    <Tooltip title="Auxiliary Carry Flag" placement="left">
+                      <span>AF</span>
+                    </Tooltip>
                   </TableCell>
-                  <TableCell component="th" scope="column">
-                    PF
+                  <TableCell
+                    component="th"
+                    scope="column"
+                    className={classes.flagName}
+                  >
+                    <Tooltip title="Parity Flag" placement="left">
+                      <span>PF</span>
+                    </Tooltip>
                   </TableCell>
-                  <TableCell component="th" scope="column">
-                    CF
+                  <TableCell
+                    component="th"
+                    scope="column"
+                    className={classes.flagName}
+                  >
+                    <Tooltip title="Carry Flag" placement="left">
+                      <span>CF</span>
+                    </Tooltip>
                   </TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 <TableRow>
-                  <TableCell align="center" component="th" scope="row">
+                  <TableCell
+                    align="center"
+                    component="th"
+                    scope="row"
+                    className={classes.flag}
+                  >
                     {flags.of}
                   </TableCell>
-                  <TableCell align="center" component="th" scope="row">
+                  <TableCell
+                    align="center"
+                    component="th"
+                    scope="row"
+                    className={classes.flag}
+                  >
                     {flags.df}
                   </TableCell>
-                  <TableCell align="center" component="th" scope="row">
+                  <TableCell
+                    align="center"
+                    component="th"
+                    scope="row"
+                    className={classes.flag}
+                  >
                     {flags.if}
                   </TableCell>
-                  <TableCell align="center" component="th" scope="row">
+                  <TableCell
+                    align="center"
+                    component="th"
+                    scope="row"
+                    className={classes.flag}
+                  >
                     {flags.tf}
                   </TableCell>
-                  <TableCell align="center" component="th" scope="row">
+                  <TableCell
+                    align="center"
+                    component="th"
+                    scope="row"
+                    className={classes.flag}
+                  >
                     {flags.sf}
                   </TableCell>
-                  <TableCell align="center" component="th" scope="row">
+                  <TableCell
+                    align="center"
+                    component="th"
+                    scope="row"
+                    className={classes.flag}
+                  >
                     {flags.zf}
                   </TableCell>
-                  <TableCell align="center" component="th" scope="row">
+                  <TableCell
+                    align="center"
+                    component="th"
+                    scope="row"
+                    className={classes.flag}
+                  >
                     {flags.af}
                   </TableCell>
-                  <TableCell align="center" component="th" scope="row">
+                  <TableCell
+                    align="center"
+                    component="th"
+                    scope="row"
+                    className={classes.flag}
+                  >
                     {flags.pf}
                   </TableCell>
-                  <TableCell align="center" component="th" scope="row">
+                  <TableCell
+                    align="center"
+                    component="th"
+                    scope="row"
+                    className={classes.flag}
+                  >
                     {flags.cf}
                   </TableCell>
                 </TableRow>
@@ -1272,27 +1388,29 @@ int 0x10                ; BIOS interrupt`
               </Tooltip>
             </Grid>
           </Grid>
-          <TableContainer
-            className={classes.ramTable}
-            ref={ramRef}
-            aria-describedby={tutorialStep === 7 ? "ram" : ""}
-            component={Paper}
-          >
-            <Table padding="none" size="small" aria-label="simple table">
-              <TableBody>
-                {memory.map((row, index1) => (
-                  <TableRow key={index1}>
-                    {row.map((item, index2) => (
-                      <TableCell align="center" key={index2}>
-                        {item.toString(16).length === 1 ? "0" : ""}
-                        {item.toString(16)}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+          <Paper elevation={5}>
+            <TableContainer
+              className={classes.ramTable}
+              ref={ramRef}
+              aria-describedby={tutorialStep === 7 ? "ram" : ""}
+              component={Paper}
+            >
+              <Table padding="none" size="small" aria-label="simple table">
+                <TableBody>
+                  {memory.map((row, index1) => (
+                    <TableRow key={index1}>
+                      {row.map((item, index2) => (
+                        <TableCell align="center" key={index2}>
+                          {item.toString(16).length === 1 ? "0" : ""}
+                          {item.toString(16)}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Paper>
           <Popover
             id={"ram"}
             open={tutorialStep === 7}
