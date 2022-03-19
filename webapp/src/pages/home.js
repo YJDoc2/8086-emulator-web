@@ -177,8 +177,7 @@ function Home() {
           >
             <Paper className={classes.cardCenter} elevation={7}>
               <Typography variant="h5" className={classes.heading} gutterBottom>
-                {" "}
-                Access To 1 MB Memory{" "}
+                Access To 1 MB Memory
               </Typography>
               <Typography variant="body1" className={classes.content}>
                 The Emulator supports complete 1 MB Memory, which can be
@@ -196,8 +195,7 @@ function Home() {
           >
             <Paper className={classes.cardRight} elevation={7}>
               <Typography variant="h5" className={classes.heading} gutterBottom>
-                {" "}
-                Validated Jump and Call using labels{" "}
+                Validated Jump and Call using Labels
               </Typography>
               <Typography variant="body1" className={classes.content}>
                 As Jumps and calls only allows valid labels, it does not permit
@@ -215,12 +213,11 @@ function Home() {
           >
             <Paper className={classes.cardLeft} elevation={7}>
               <Typography variant="h5" className={classes.heading} gutterBottom>
-                {" "}
-                Selected interrupts{" "}
+                Supports Most of the 8086 Interrupts
               </Typography>
               <Typography variant="body1" className={classes.content}>
-                As this Emulator does not have 'true' memory (See Github
-                Repository), This only allows selected interrupts.
+                Being an Emulator, this does not have 'true' memory (See Github
+                Repository) so it supports all interrupts barring select few.
               </Typography>
             </Paper>
           </Tilty>
@@ -234,12 +231,12 @@ function Home() {
           >
             <Paper className={classes.cardCenter} elevation={7}>
               <Typography variant="h5" className={classes.heading} gutterBottom>
-                {" "}
-                Line by Line Execution{" "}
+                Line by Line Execution
               </Typography>
               <Typography variant="body1" className={classes.content}>
                 Supports running all instructions automatically, or manual line
-                by line execution.
+                by line execution. You can also stop the automatic execution
+                with a simple button click.
               </Typography>
             </Paper>
           </Tilty>
@@ -253,12 +250,11 @@ function Home() {
           >
             <Paper className={classes.cardRight} elevation={7}>
               <Typography variant="h5" className={classes.heading} gutterBottom>
-                {" "}
-                Shows Registers and Flags{" "}
+                Check Registers and Flags in Real Time
               </Typography>
               <Typography variant="body1" className={classes.content}>
                 Updates Flags and registers along with the execution, so can
-                check the state of Emulator easily.
+                check the state of Emulator easily, all in a single view.
               </Typography>
             </Paper>
           </Tilty>
