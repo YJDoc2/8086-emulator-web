@@ -864,7 +864,12 @@ int 0x10                ; BIOS interrupt`
               }}
             >
               <Tooltip title="Download Code" arrow>
-                <DownloadButton />
+                <DownloadButton
+                  style={{
+                    width: 22,
+                    fill: currentTheme === "dark" ? "#ccc" : "black",
+                  }}
+                />
               </Tooltip>
             </div>
             <Popover
@@ -891,11 +896,11 @@ int 0x10                ; BIOS interrupt`
               style={{
                 position: "absolute",
                 bottom: 10,
-                right: 0,
+                right: 3,
               }}
             >
               {saved && (
-                <span className="save-icon">
+                <span className="save-icon" style={{ color: "blue" }}>
                   <span className="loader"></span>
                   <span className="loader"></span>
                   <span className="loader"></span>
