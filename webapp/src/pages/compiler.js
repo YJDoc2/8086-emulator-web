@@ -115,6 +115,10 @@ const useStyles = makeStyles((theme) => ({
   hidden: {
     display: "none",
   },
+  tableHead: {
+    backgroundColor: theme.palette.common.black,
+    color: theme.palette.common.white,
+  },
 }));
 
 // These are used as global state holders for interval value and output values, as when running
@@ -163,7 +167,6 @@ function Compiler(props) {
         }
         set8086State(driver);
       } catch (e) {
-        console.log(e);
         setCompiled(false);
         setHalted(true);
         setErrors(e);
@@ -483,7 +486,6 @@ int 0x10                ; BIOS interrupt`
         // e is going to be of string type, if it is one returned from rust
         // if it is an object, or unknown type error,
         // it may be stack size issue, read README for more info
-        console.log(e);
         setCompiled(false);
         setHalted(true);
         showSnackbar("Error Occured!");
@@ -540,8 +542,7 @@ int 0x10                ; BIOS interrupt`
   const saveValue = () => {
     setSaved(true);
 
-    const id = setTimeout(() => setSaved(false), 1600);
-    console.log(id);
+    setTimeout(() => setSaved(false), 1600);
   };
 
   //called when you enter a start address and press set
@@ -839,70 +840,67 @@ int 0x10                ; BIOS interrupt`
               </Popover>
             </Grid>
           </Grid>
-          <Paper ref={editorContainer}>
+          <Paper
+            ref={editorContainer}
+            style={{
+              position: "relative",
+            }}
+          >
             <div
+              onClick={() => {
+                downloadCode(code);
+              }}
+              ref={downloadRef}
+              aria-describedby={tutorialStep === 8 ? "download_code" : ""}
               style={{
-                height: 455, //height of parent
+                flex: 1,
+                fontSize: 18,
+                paddingRight: 10,
+                paddingLeft: 10,
+                marginTop: 10,
+                color: "red",
                 float: "right",
-                position: "relative",
+                cursor: "pointer",
               }}
             >
-              <div
-                onClick={() => {
-                  downloadCode(code);
-                }}
-                ref={downloadRef}
-                aria-describedby={tutorialStep === 8 ? "download_code" : ""}
-                style={{
-                  flex: 1,
-                  fontSize: 18,
-                  paddingRight: 10,
-                  paddingLeft: 10,
-                  marginTop: 10,
-                  color: "red",
-                  float: "right",
-                  cursor: "pointer",
-                }}
-              >
-                <Tooltip title="Download Code" arrow>
-                  <DownloadButton />
-                </Tooltip>
-              </div>
-              <Popover
-                id={"downloadCode"}
-                open={tutorialStep === 8}
-                anchorEl={downloadRef.current}
-                onClose={() => nextTutorial()}
-                anchorOrigin={{
-                  vertical: "bottom",
-                  horizontal: "center",
-                }}
-                transformOrigin={{
-                  vertical: "top",
-                  horizontal: "center",
-                }}
-              >
-                <Typography className={classes.tooltips} component="div">
-                  <b>Step 9</b>
-                  <hr />
-                  Download Code from here
-                </Typography>
-              </Popover>
-              <div
-                style={{
-                  position: "absolute",
-                  bottom: 0,
-                  left: 3,
-                }}
-              >
-                {saved && (
-                  <span className="save-icon">
-                    <span className="loader"></span>
-                    <span className="loader"></span>
-                    <span className="loader"></span>
-                  </span>
-                )}
-              </div>
+              <Tooltip title="Download Code" arrow>
+                <DownloadButton />
+              </Tooltip>
+            </div>
+            <Popover
+              id={"downloadCode"}
+              open={tutorialStep === 8}
+              anchorEl={downloadRef.current}
+              onClose={() => nextTutorial()}
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "center",
+              }}
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "center",
+              }}
+            >
+              <Typography className={classes.tooltips} component="div">
+                <b>Step 9</b>
+                <hr />
+                Download Code from here
+              </Typography>
+            </Popover>
+            <div
+              style={{
+                position: "absolute",
+                bottom: 10,
+                right: 0,
+              }}
+            >
+              {saved && (
+                <span className="save-icon">
+                  <span className="loader"></span>
+                  <span className="loader"></span>
+                  <span className="loader"></span>
+                </span>
+              )}
             </div>
             <AceEditor
               ref={codeEditor}
@@ -1002,9 +1000,24 @@ int 0x10                ; BIOS interrupt`
               <Table size="small" aria-label="simple table">
                 <TableHead>
                   <TableRow>
-                    <TableCell>Reg</TableCell>
-                    <TableCell align="right">H</TableCell>
-                    <TableCell align="right">L</TableCell>
+                    <TableCell
+                      className={classes.tableHead}
+                      style={{ width: "33%" }}
+                    >
+                      Reg
+                    </TableCell>
+                    <TableCell
+                      className={classes.tableHead}
+                      style={{ width: "33%" }}
+                    >
+                      H
+                    </TableCell>
+                    <TableCell
+                      className={classes.tableHead}
+                      style={{ width: "33%" }}
+                    >
+                      L
+                    </TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -1041,9 +1054,11 @@ int 0x10                ; BIOS interrupt`
             </TableContainer>
             <TableContainer className={classes.segmentTable} component={Paper}>
               <Table size="small" aria-label="simple table">
-                <TableHead>
+                <TableHead className={classes.tableHead}>
                   <TableRow>
-                    <TableCell colSpan={2}>Segments</TableCell>
+                    <TableCell colSpan={2} className={classes.tableHead}>
+                      Segments
+                    </TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -1072,7 +1087,9 @@ int 0x10                ; BIOS interrupt`
               <Table size="small" aria-label="simple table">
                 <TableHead>
                   <TableRow>
-                    <TableCell colSpan={2}>Pointers</TableCell>
+                    <TableCell colSpan={2} className={classes.tableHead}>
+                      Pointers
+                    </TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -1114,7 +1131,11 @@ int 0x10                ; BIOS interrupt`
             <Table size="small" aria-label="simple table">
               <TableHead>
                 <TableRow>
-                  <TableCell component="th" colSpan="9">
+                  <TableCell
+                    component="th"
+                    colSpan="9"
+                    className={classes.tableHead}
+                  >
                     Flags:
                   </TableCell>
                 </TableRow>
@@ -1223,10 +1244,12 @@ int 0x10                ; BIOS interrupt`
               />
             </Grid>
             <Grid item lg={2} md={4} style={matches ? { marginTop: 20 } : null}>
-              <Button variant="outlined" size="large" onClick={saveAddress}>
-                {" "}
-                Set{" "}
-              </Button>
+              <Tooltip title="Set the starting address for the below memory table">
+                <Button variant="outlined" size="large" onClick={saveAddress}>
+                  {" "}
+                  Set{" "}
+                </Button>
+              </Tooltip>
             </Grid>
           </Grid>
           <TableContainer
