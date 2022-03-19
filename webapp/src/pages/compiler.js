@@ -25,6 +25,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import { makeStyles } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import Popover from "@material-ui/core/Popover";
+import Tooltip from "@material-ui/core/Tooltip";
 // Images
 import help from "../images/help.png";
 import { ReactComponent as DownloadButton } from "../images/download.svg";
@@ -670,20 +671,23 @@ int 0x10                ; BIOS interrupt`
           language-code="en"
         ></df-messenger>
       </div>
-      <IconButton
-        onClick={() => startTutorial()}
-        className={matches ? classes.hidden : classes.tutorialIcon}
-      >
-        <img
-          style={
-            currentTheme === "dark"
-              ? { filter: "invert(0.7)", height: "2rem" }
-              : { height: "2rem", opacity: 0.4 }
-          }
-          src={help}
-          alt="start tutorial"
-        />
-      </IconButton>
+
+      <Tooltip title="Tutorial" arrow>
+        <IconButton
+          onClick={() => startTutorial()}
+          className={matches ? classes.hidden : classes.tutorialIcon}
+        >
+          <img
+            style={
+              currentTheme === "dark"
+                ? { filter: "invert(0.7)", height: "2rem" }
+                : { height: "2rem", opacity: 0.4 }
+            }
+            src={help}
+            alt="start tutorial"
+          />
+        </IconButton>
+      </Tooltip>
       <Snackbar
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
         open={openSnackbar}
@@ -856,9 +860,12 @@ int 0x10                ; BIOS interrupt`
                   marginTop: 10,
                   color: "red",
                   float: "right",
+                  cursor: "pointer",
                 }}
               >
-                <DownloadButton />
+                <Tooltip title="Download Code" arrow>
+                  <DownloadButton />
+                </Tooltip>
               </div>
               <Popover
                 id={"downloadCode"}
@@ -944,7 +951,13 @@ int 0x10                ; BIOS interrupt`
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
-                      <IconButton onClick={handleInput}>&#10003;</IconButton>
+                      <Tooltip
+                        title="Use this to submit your input on runtime"
+                        arrow
+                        placement="right"
+                      >
+                        <IconButton onClick={handleInput}>&#10003;</IconButton>
+                      </Tooltip>
                     </InputAdornment>
                   ),
                 }}
