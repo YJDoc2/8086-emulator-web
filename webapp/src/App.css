@@ -76,7 +76,7 @@ body {
 
 .save-icon:after {
   content: "✓";
-  color: green;
+  color: rgb(9, 221, 9);
   font-size: 30px;
   position: absolute;
   top: 5%;
@@ -107,7 +107,7 @@ body {
 
 .loader:after {
   content: "";
-  background: #2c3033;
+  background: rgb(9, 221, 9);
   width: 0;
   height: 5px;
   position: absolute;

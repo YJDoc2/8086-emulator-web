@@ -536,12 +536,14 @@ int 0x10                ; BIOS interrupt`
   const onChange = (newValue) => {
     setCode(newValue);
     localStorage.setItem("x86code", newValue);
-    saveValue();
+    callAnimation();
   };
   //Auto Save
+  const callAnimation = () => {
+    if (!saved) setTimeout(() => saveValue(), 1000);
+  };
   const saveValue = () => {
     setSaved(true);
-
     setTimeout(() => setSaved(false), 1600);
   };
 
@@ -890,8 +892,11 @@ int 0x10                ; BIOS interrupt`
             <div
               style={{
                 position: "absolute",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
                 bottom: 10,
-                right: 0,
+                right: 2,
               }}
             >
               {saved && (
