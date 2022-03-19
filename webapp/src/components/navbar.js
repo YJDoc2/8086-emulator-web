@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import { CustomThemeContext } from "../themes/CustomThemeProvider";
 // Assets
 import cpu from "../images/chip-memory.svg";
+import { ReactComponent as Terminal } from "../images/terminal.svg";
 // MuI Components
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -9,6 +10,7 @@ import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Tooltip from "@material-ui/core/Tooltip";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 // Routing
 import { useHistory, useLocation } from "react-router-dom";
 
@@ -22,7 +24,6 @@ const useStyles = makeStyles((theme) => ({
   title: {
     fontWeight: 800,
     cursor: "pointer",
-    fontSize: 30,
   },
   navbar: {
     padding: 5,
@@ -34,6 +35,7 @@ const useStyles = makeStyles((theme) => ({
 
 function Navbar() {
   const classes = useStyles();
+  const matches = useMediaQuery("(min-width:1024px)");
   const history = useHistory();
   const loc = useLocation();
   const { currentTheme, setTheme } = useContext(CustomThemeContext);
@@ -68,10 +70,28 @@ function Navbar() {
               component="span"
               onClick={() => history.push("/8086-emulator-web/")}
               className={classes.title}
+              style={{ fontSize: matches ? 30 : 24 }}
             >
               8086 Compiler
             </Typography>
           </div>
+          {matches && (
+            <Tooltip title="Explore Command Line Version" arrow>
+              <a
+                style={{ padding: 5, marginTop: 8, marginRight: 5 }}
+                href="https://github.com/YJDoc2/8086-Emulator/"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <Terminal
+                  style={{
+                    width: 32,
+                    filter: currentTheme === "dark" ? "invert(1)" : "none",
+                  }}
+                />
+              </a>
+            </Tooltip>
+          )}
           {loc.pathname !== "/8086-emulator-web/help" && (
             <Tooltip title="Instructions Page" arrow>
               <IconButton
