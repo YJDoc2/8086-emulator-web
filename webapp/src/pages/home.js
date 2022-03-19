@@ -47,6 +47,7 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 300,
     marginTop: 30,
     transform: "translateZ(30px)",
+    textAlign: "justify",
   },
   bottomBtn: {
     minWidth: 200,
@@ -118,16 +119,7 @@ function Home() {
                 <br />
                 Made Using React, WASM and Rust.
               </Typography>
-              <div align="center" className={classes.btnDiv}>
-                <Link to="/8086-emulator-web/help" className={classes.btnLink}>
-                  <Button
-                    variant="outlined"
-                    color="primary"
-                    className={classes.bottomBtn}
-                  >
-                    Instruction Set
-                  </Button>
-                </Link>
+              <div className={classes.btnDiv}>
                 <Link
                   to="/8086-emulator-web/compile"
                   className={classes.btnLink}
@@ -136,8 +128,18 @@ function Home() {
                     variant="contained"
                     color="primary"
                     className={classes.bottomBtn}
+                    style={{ boxShadow: "#F4C430 0px 22px 70px 24px;" }}
                   >
-                    8086 Compiler
+                    Try Online 8086 Compiler
+                  </Button>
+                </Link>
+                <Link to="/8086-emulator-web/help" className={classes.btnLink}>
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    className={classes.bottomBtn}
+                  >
+                    Instruction Set
                   </Button>
                 </Link>
               </div>
@@ -159,8 +161,8 @@ function Home() {
                 Multiple Themes{" "}
               </Typography>
               <Typography variant="body1" className={classes.content}>
-                Available in Bright and Dark Theme, Click the sun button in
-                Navbar to change the themes.
+                We know that programmers love the dark theme. Toggle between
+                Bright and Dark Theme using the theme button in Navbar.
               </Typography>
             </Paper>
           </Tilty>
@@ -179,7 +181,7 @@ function Home() {
               </Typography>
               <Typography variant="body1" className={classes.content}>
                 The Emulator supports complete 1 MB Memory, which can be
-                accessed from side panel.
+                accessed from the memory table.
               </Typography>
             </Paper>
           </Tilty>
@@ -194,11 +196,11 @@ function Home() {
             <Paper className={classes.cardRight} elevation={7}>
               <Typography variant="h5" className={classes.heading} gutterBottom>
                 {" "}
-                Jump and Call uses labels{" "}
+                Validated Jump and Call using labels{" "}
               </Typography>
               <Typography variant="body1" className={classes.content}>
-                As Jumps and calls only allows valid labels, it does not allow
-                jumps to incorrect position.
+                As Jumps and calls only allows valid labels, it does not permit
+                any jumps to incorrect position.
               </Typography>
             </Paper>
           </Tilty>
