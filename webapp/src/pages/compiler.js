@@ -109,8 +109,8 @@ const useStyles = makeStyles((theme) => ({
   },
   tutorialIcon: {
     position: "absolute",
-    right: 165,
-    top: 10,
+    right: 158,
+    top: 11,
   },
   hidden: {
     display: "none",
@@ -978,9 +978,8 @@ int 0x10                ; BIOS interrupt`
             {/* AutoSave */}
             <div
               style={{
-                display: matches ? "none" : "block",
+                display: matches ? "none" : "flex",
                 position: "absolute",
-                display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
                 bottom: 10,
