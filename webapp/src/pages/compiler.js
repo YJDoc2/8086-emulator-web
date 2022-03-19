@@ -847,7 +847,6 @@ int 0x10                ; BIOS interrupt`
             <div style={{ flex: 1, flexDirection: "row" }}>
               <div
                 onClick={() => {
-                  console.log("hhh");
                   downloadCode(code);
                 }}
                 ref={downloadRef}
@@ -893,7 +892,7 @@ int 0x10                ; BIOS interrupt`
                   fontSize: 18,
                   paddingRight: 10,
                   paddingLeft: 10,
-                  color: "red",
+                  color: "green",
                   float: "right",
                 }}
               >
