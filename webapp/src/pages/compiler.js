@@ -174,12 +174,6 @@ function Compiler(props) {
     clearInterval(intervalHandler);
     intervalHandler = null;
   };
-  //Auto Saving
-  const resetTimeout = (id, newID) => {
-    clearTimeout(id);
-    return newID;
-  };
-  const [timeout, settimeout] = useState(null);
   const [saved, setSaved] = useState(false);
 
   let codeEditor = useRef(null);
@@ -538,14 +532,14 @@ int 0x10                ; BIOS interrupt`
   const onChange = (newValue) => {
     setCode(newValue);
     localStorage.setItem("x86code", newValue);
-
-    settimeout(resetTimeout(timeout, setTimeout(saveValue(), 400)));
+    saveValue();
   };
   //Auto Save
   const saveValue = () => {
     setSaved(true);
 
-    setTimeout(() => setSaved(false), 1000);
+    const id = setTimeout(() => setSaved(false), 1600);
+    console.log(id);
   };
 
   //called when you enter a start address and press set
@@ -844,7 +838,13 @@ int 0x10                ; BIOS interrupt`
             </Grid>
           </Grid>
           <Paper ref={editorContainer}>
-            <div style={{ flex: 1, flexDirection: "row" }}>
+            <div
+              style={{
+                height: 455, //height of parent
+                float: "right",
+                position: "relative",
+              }}
+            >
               <div
                 onClick={() => {
                   downloadCode(code);
@@ -888,15 +888,18 @@ int 0x10                ; BIOS interrupt`
               </Popover>
               <div
                 style={{
-                  clear: "both",
-                  fontSize: 18,
-                  paddingRight: 10,
-                  paddingLeft: 10,
-                  color: "green",
-                  float: "right",
+                  position: "absolute",
+                  bottom: 0,
+                  left: 3,
                 }}
               >
-                <p>{saved ? "Saved" : ""}</p>
+                {saved && (
+                  <span className="save-icon">
+                    <span className="loader"></span>
+                    <span className="loader"></span>
+                    <span className="loader"></span>
+                  </span>
+                )}
               </div>
             </div>
             <AceEditor
