@@ -872,6 +872,21 @@ int 0x10                ; BIOS interrupt`
                 />
               </Tooltip>
             </div>
+            <a
+              style={{ position: "absolute", top: 50, right: 9, zIndex: 100 }}
+              href="https://github.com/YJDoc2/8086-Emulator/tree/master/examples"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Tooltip title="Example Programs" arrow>
+                <Examples
+                  style={{
+                    width: 25,
+                    fill: currentTheme === "dark" ? "#ccc" : "black",
+                  }}
+                />
+              </Tooltip>
+            </a>
             <Popover
               id={"downloadCode"}
               open={tutorialStep === 8}
