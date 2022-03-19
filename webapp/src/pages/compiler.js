@@ -30,6 +30,7 @@ import Tooltip from "@material-ui/core/Tooltip";
 import help from "../images/help.png";
 import { ReactComponent as DownloadButton } from "../images/download.svg";
 import { ReactComponent as Examples } from "../images/examples.svg";
+import { ReactComponent as CopyIcon } from "../images/copy.svg";
 
 const MEM_MAX = 16 * 8;
 const MB = 1024 * 1024;
@@ -199,13 +200,14 @@ function Compiler(props) {
 
   const { currentTheme } = useContext(CustomThemeContext);
   const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [openCopySnackbar, setOpenCopySnackbar] = useState(false);
   const [snackbarText, setSnackbarText] = useState("");
   const showSnackbar = (text) => {
     setSnackbarText(text);
     setOpenSnackbar(true);
     setTimeout(function () {
       setOpenSnackbar(false);
-    }, 2000);
+    }, 3000);
   };
 
   const classes = useStyles();
@@ -663,6 +665,18 @@ int 0x10                ; BIOS interrupt`
     }
   }, []);
 
+  const copyToClipboard = () => {
+    navigator.clipboard
+      .writeText(code)
+      .then(() => {
+        setOpenCopySnackbar(true);
+        setTimeout(function () {
+          setOpenCopySnackbar(false);
+        }, 2000);
+      })
+      .catch((e) => console.error(e));
+  };
+
   return (
     <div className={classes.root}>
       <div className={classes.chatbot}>
@@ -694,6 +708,12 @@ int 0x10                ; BIOS interrupt`
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
         open={openSnackbar}
         message={snackbarText}
+        className={classes.snackbar}
+      />
+      <Snackbar
+        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+        open={openCopySnackbar}
+        message="Copied to Clipboard"
         className={classes.snackbar}
       />
       <Backdrop className={classes.backdrop} open={loading}>
@@ -852,6 +872,7 @@ int 0x10                ; BIOS interrupt`
               position: "relative",
             }}
           >
+            {/* Download */}
             <div
               onClick={() => {
                 downloadCode(code);
@@ -879,27 +900,7 @@ int 0x10                ; BIOS interrupt`
                 />
               </Tooltip>
             </div>
-            <a
-              style={{
-                display: matches ? "none" : "block",
-                position: "absolute",
-                top: 50,
-                right: 9,
-                zIndex: 100,
-              }}
-              href="https://github.com/YJDoc2/8086-Emulator/tree/master/examples"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Tooltip title="Example Programs" arrow>
-                <Examples
-                  style={{
-                    width: 25,
-                    fill: currentTheme === "dark" ? "#ccc" : "black",
-                  }}
-                />
-              </Tooltip>
-            </a>
+
             <Popover
               id={"downloadCode"}
               open={tutorialStep === 8}
@@ -923,6 +924,56 @@ int 0x10                ; BIOS interrupt`
                 Download Code from here
               </Typography>
             </Popover>
+
+            {/* Examples */}
+            <a
+              style={{
+                display: matches ? "none" : "block",
+                position: "absolute",
+                top: 55,
+                right: 9,
+                zIndex: 100,
+              }}
+              href="https://github.com/YJDoc2/8086-Emulator/tree/master/examples"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Tooltip title="Example Programs" arrow>
+                <Examples
+                  style={{
+                    width: 25,
+                    fill: currentTheme === "dark" ? "#ccc" : "black",
+                  }}
+                />
+              </Tooltip>
+            </a>
+
+            {/* Copy to Clipboard */}
+            <div
+              onClick={copyToClipboard}
+              style={{
+                display: matches ? "none" : "block",
+                position: "absolute",
+                top: 103,
+                right: 9,
+                zIndex: 100,
+                cursor: "pointer",
+              }}
+            >
+              <Tooltip title="Copy to Clipboard" arrow>
+                <span>
+                  {" "}
+                  <CopyIcon
+                    style={{
+                      width: 24,
+                      fill: currentTheme === "dark" ? "#ccc" : "black",
+                    }}
+                  />
+                </span>
+              </Tooltip>
+            </div>
+
+            {/* AutoSave */}
             <div
               style={{
                 display: matches ? "none" : "block",
