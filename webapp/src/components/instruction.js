@@ -25,6 +25,7 @@ const useStyles = makeStyles((theme) => ({
     flexBasis: "20%",
     flexShrink: 0,
     fontSize: 20,
+    fontWeight: "700",
   },
   name: {
     flexBasis: "50%",
@@ -71,7 +72,13 @@ function Instruction(props) {
         )}
         <Typography
           className={props.example ? classes.name : classes.nameBig}
-          style={matches && !!props.opcode ? { display: "none" } : null}
+          style={
+            matches && !!props.opcode
+              ? { display: "none" }
+              : !props.opcode
+              ? { fontWeight: "700" }
+              : null
+          }
         >
           {props.name}
         </Typography>

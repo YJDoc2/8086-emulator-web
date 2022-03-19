@@ -102,7 +102,7 @@ function Navbar() {
                   style={
                     currentTheme === "normal"
                       ? { fontWeight: "bold" }
-                      : { color: "#ccc" }
+                      : { color: currentTheme === "dark" ? "#ccc" : "#111" }
                   }
                   className={classes.info}
                 >

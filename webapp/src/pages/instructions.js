@@ -47,8 +47,10 @@ function InstructionSet() {
 
   return (
     <div>
-      <br />
-      <Typography variant="h4"> Instruction Set:</Typography>
+      <Typography variant="h4" style={{ fontWeight: "800" }}>
+        {" "}
+        Instruction Set:
+      </Typography>
       <br />
       <div id="sidebar">
         {instruction_set.map((instructiongroup) => (

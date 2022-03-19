@@ -23,6 +23,7 @@ const useStyles = makeStyles((theme) => ({
   headerText: {
     padding: 30,
     transform: "translateZ(30px)",
+    fontWeight: "800",
   },
   cardLeft: {
     padding: 30,
@@ -40,11 +41,11 @@ const useStyles = makeStyles((theme) => ({
     height: "100%",
   },
   heading: {
-    fontWeight: 500,
+    fontWeight: "800",
     transform: "translateZ(30px)",
   },
   content: {
-    fontWeight: 300,
+    fontWeight: "300",
     marginTop: 30,
     transform: "translateZ(30px)",
     textAlign: "justify",
@@ -57,6 +58,7 @@ const useStyles = makeStyles((theme) => ({
   link: {
     textDecoration: "underline",
     color: theme.palette.secondary.contrastText,
+    textDecorationThickness: 1,
   },
   btnLink: {
     textDecoration: "none",
@@ -85,13 +87,12 @@ function Home() {
             </Grid>
             <Grid item md={6} className={classes.headerText}>
               <Typography
-                variant="h5"
+                variant="h4"
                 component="h1"
                 className={classes.heading}
                 gutterBottom
               >
-                {" "}
-                8086 EMULATOR{" "}
+                Online 8086 EMULATOR{" "}
               </Typography>
               <Typography variant="body1" className={classes.content}>
                 Platform and Device Independent!
