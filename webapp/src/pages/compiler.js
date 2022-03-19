@@ -59,9 +59,11 @@ const useStyles = makeStyles((theme) => ({
   },
   registerTable: {
     maxWidth: 175,
+    marginRight: 20,
   },
   segmentTable: {
     minWidth: 125,
+    marginRight: 20,
   },
   flagTable: {
     marginTop: 20,
@@ -995,133 +997,113 @@ int 0x10                ; BIOS interrupt`
               Check Registers values here.
             </Typography>
           </Popover>
-          <Grid
-            container
-            spacing={3}
-            ref={registerRef}
-            aria-describedby={tutorialStep === 5 ? "register" : ""}
-          >
-            <Grid item lg={5}>
-              <TableContainer
-                className={classes.registerTable}
-                component={Paper}
-              >
-                <Table size="small" aria-label="simple table">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>Reg</TableCell>
-                      <TableCell align="right">H</TableCell>
-                      <TableCell align="right">L</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    <TableRow>
-                      <TableCell component="th" scope="row">
-                        A
-                      </TableCell>
-                      <TableCell align="right">{register.ah}</TableCell>
-                      <TableCell align="right">{register.al}</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell component="th" scope="row">
-                        B
-                      </TableCell>
-                      <TableCell align="right">{register.bh}</TableCell>
-                      <TableCell align="right">{register.bl}</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell component="th" scope="row">
-                        C
-                      </TableCell>
-                      <TableCell align="right">{register.ch}</TableCell>
-                      <TableCell align="right">{register.cl}</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell component="th" scope="row">
-                        D
-                      </TableCell>
-                      <TableCell align="right">{register.dh}</TableCell>
-                      <TableCell align="right">{register.dl}</TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </Grid>
-            <Grid item>
-              <TableContainer
-                className={classes.segmentTable}
-                component={Paper}
-              >
-                <Table size="small" aria-label="simple table">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell colSpan={2}>Segments</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    <TableRow>
-                      <TableCell component="th" scope="row">
-                        SS
-                      </TableCell>
-                      <TableCell align="right">{register.ss}</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell component="th" scope="row">
-                        DS
-                      </TableCell>
-                      <TableCell align="right">{register.ds}</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell component="th" scope="row">
-                        ES
-                      </TableCell>
-                      <TableCell align="right">{register.es}</TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </Grid>
-            <Grid item>
-              <TableContainer
-                className={classes.segmentTable}
-                component={Paper}
-              >
-                <Table size="small" aria-label="simple table">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell colSpan={2}>Pointers</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    <TableRow>
-                      <TableCell component="th" scope="row">
-                        SP
-                      </TableCell>
-                      <TableCell align="right">{register.sp}</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell component="th" scope="row">
-                        BP
-                      </TableCell>
-                      <TableCell align="right">{register.bp}</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell component="th" scope="row">
-                        SI
-                      </TableCell>
-                      <TableCell align="right">{register.si}</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell component="th" scope="row">
-                        DI
-                      </TableCell>
-                      <TableCell align="right">{register.di}</TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </Grid>
-          </Grid>
+          <div className={classes.flex}>
+            <TableContainer className={classes.registerTable} component={Paper}>
+              <Table size="small" aria-label="simple table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Reg</TableCell>
+                    <TableCell align="right">H</TableCell>
+                    <TableCell align="right">L</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  <TableRow>
+                    <TableCell component="th" scope="row">
+                      A
+                    </TableCell>
+                    <TableCell align="right">{register.ah}</TableCell>
+                    <TableCell align="right">{register.al}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell component="th" scope="row">
+                      B
+                    </TableCell>
+                    <TableCell align="right">{register.bh}</TableCell>
+                    <TableCell align="right">{register.bl}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell component="th" scope="row">
+                      C
+                    </TableCell>
+                    <TableCell align="right">{register.ch}</TableCell>
+                    <TableCell align="right">{register.cl}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell component="th" scope="row">
+                      D
+                    </TableCell>
+                    <TableCell align="right">{register.dh}</TableCell>
+                    <TableCell align="right">{register.dl}</TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </TableContainer>
+            <TableContainer className={classes.segmentTable} component={Paper}>
+              <Table size="small" aria-label="simple table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell colSpan={2}>Segments</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  <TableRow>
+                    <TableCell component="th" scope="row">
+                      SS
+                    </TableCell>
+                    <TableCell align="right">{register.ss}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell component="th" scope="row">
+                      DS
+                    </TableCell>
+                    <TableCell align="right">{register.ds}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell component="th" scope="row">
+                      ES
+                    </TableCell>
+                    <TableCell align="right">{register.es}</TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </TableContainer>
+            <TableContainer className={classes.segmentTable} component={Paper}>
+              <Table size="small" aria-label="simple table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell colSpan={2}>Pointers</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  <TableRow>
+                    <TableCell component="th" scope="row">
+                      SP
+                    </TableCell>
+                    <TableCell align="right">{register.sp}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell component="th" scope="row">
+                      BP
+                    </TableCell>
+                    <TableCell align="right">{register.bp}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell component="th" scope="row">
+                      SI
+                    </TableCell>
+                    <TableCell align="right">{register.si}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell component="th" scope="row">
+                      DI
+                    </TableCell>
+                    <TableCell align="right">{register.di}</TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </div>
           <TableContainer
             className={classes.flagTable}
             aria-describedby={tutorialStep === 6 ? "flags" : ""}
