@@ -92,7 +92,7 @@ function Home() {
                 className={classes.heading}
                 gutterBottom
               >
-                Online 8086 EMULATOR{" "}
+                Online 8086 EMULATOR
               </Typography>
               <Typography variant="body1" className={classes.content}>
                 Platform and Device Independent!
@@ -156,10 +156,9 @@ function Home() {
             scale={1.05}
             style={{ height: "100%" }}
           >
-            <Paper className={classes.cardLeft} elevation={7}>
+            <Paper className={classes.cardLeft} elevation={7} tabIndex="0">
               <Typography variant="h5" className={classes.heading} gutterBottom>
-                {" "}
-                Multiple Themes{" "}
+                Multiple Themes
               </Typography>
               <Typography variant="body1" className={classes.content}>
                 We know that programmers love the dark theme. Toggle between
@@ -175,7 +174,7 @@ function Home() {
             scale={1.05}
             style={{ height: "100%" }}
           >
-            <Paper className={classes.cardCenter} elevation={7}>
+            <Paper className={classes.cardCenter} elevation={7} tabIndex="0">
               <Typography variant="h5" className={classes.heading} gutterBottom>
                 Access To 1 MB Memory
               </Typography>
@@ -193,7 +192,7 @@ function Home() {
             scale={1.05}
             style={{ height: "100%" }}
           >
-            <Paper className={classes.cardRight} elevation={7}>
+            <Paper className={classes.cardRight} elevation={7} tabIndex="0">
               <Typography variant="h5" className={classes.heading} gutterBottom>
                 Validated Jump and Call using Labels
               </Typography>
@@ -211,7 +210,7 @@ function Home() {
             scale={1.05}
             style={{ height: "100%" }}
           >
-            <Paper className={classes.cardLeft} elevation={7}>
+            <Paper className={classes.cardLeft} elevation={7} tabIndex="0">
               <Typography variant="h5" className={classes.heading} gutterBottom>
                 Supports Most of the 8086 Interrupts
               </Typography>
@@ -229,7 +228,7 @@ function Home() {
             scale={1.05}
             style={{ height: "100%" }}
           >
-            <Paper className={classes.cardCenter} elevation={7}>
+            <Paper className={classes.cardCenter} elevation={7} tabIndex="0">
               <Typography variant="h5" className={classes.heading} gutterBottom>
                 Line by Line Execution
               </Typography>
@@ -248,7 +247,7 @@ function Home() {
             scale={1.05}
             style={{ height: "100%" }}
           >
-            <Paper className={classes.cardRight} elevation={7}>
+            <Paper className={classes.cardRight} elevation={7} tabIndex="0">
               <Typography variant="h5" className={classes.heading} gutterBottom>
                 Check Registers and Flags in Real Time
               </Typography>

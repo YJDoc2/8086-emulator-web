@@ -71,6 +71,12 @@ function Navbar() {
               onClick={() => history.push("/8086-emulator-web/")}
               className={classes.title}
               style={{ fontSize: matches ? 30 : 24 }}
+              tabIndex="0"
+              onKeyUp={(e) => {
+                if (e.key === "Enter") {
+                  history.push("/8086-emulator-web/");
+                }
+              }}
             >
               8086 Compiler
             </Typography>
