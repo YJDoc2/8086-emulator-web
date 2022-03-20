@@ -695,6 +695,7 @@ int 0x10                ; BIOS interrupt`
         <IconButton
           onClick={() => startTutorial()}
           className={matches ? classes.hidden : classes.tutorialIcon}
+          aria-label="Help Tutorial"
         >
           <img
             style={
@@ -743,14 +744,18 @@ int 0x10                ; BIOS interrupt`
                 disabled={!props.wasm}
                 className={classes.compileButton}
               >
-                {" "}
-                COMPILE{" "}
+                COMPILE
               </Button>
               <Popover
                 id={"compile"}
                 open={tutorialStep === 1}
                 anchorEl={compileRef.current}
                 onClose={() => nextTutorial()}
+                onKeyUp={(e) => {
+                  if (e.key === "Enter") {
+                    nextTutorial();
+                  }
+                }}
                 anchorOrigin={{
                   vertical: "bottom",
                   horizontal: "center",
@@ -777,14 +782,18 @@ int 0x10                ; BIOS interrupt`
                   compiled && !halted ? classes.runBtn : classes.topBtn
                 }
               >
-                {" "}
-                Run{" "}
+                Run
               </Button>
               <Popover
                 id={"run"}
                 open={tutorialStep === 2}
                 anchorEl={runRef.current}
                 onClose={() => nextTutorial()}
+                onKeyUp={(e) => {
+                  if (e.key === "Enter") {
+                    nextTutorial();
+                  }
+                }}
                 anchorOrigin={{
                   vertical: "bottom",
                   horizontal: "center",
@@ -811,14 +820,18 @@ int 0x10                ; BIOS interrupt`
                   compiled && !halted ? classes.nextBtn : classes.topBtn
                 }
               >
-                {" "}
-                Next{" "}
+                Next
               </Button>
               <Popover
                 id={"single_step"}
                 open={tutorialStep === 3}
                 anchorEl={singleStepRef.current}
                 onClose={() => nextTutorial()}
+                onKeyUp={(e) => {
+                  if (e.key === "Enter") {
+                    nextTutorial();
+                  }
+                }}
                 anchorOrigin={{
                   vertical: "bottom",
                   horizontal: "center",
@@ -845,14 +858,18 @@ int 0x10                ; BIOS interrupt`
                   compiled && !halted ? classes.stopBtn : classes.topBtn
                 }
               >
-                {" "}
-                Stop{" "}
+                Stop
               </Button>
               <Popover
                 id={"stop"}
                 open={tutorialStep === 4}
                 anchorEl={stopRef.current}
                 onClose={() => nextTutorial()}
+                onKeyUp={(e) => {
+                  if (e.key === "Enter") {
+                    nextTutorial();
+                  }
+                }}
                 anchorOrigin={{
                   vertical: "bottom",
                   horizontal: "center",
@@ -911,6 +928,11 @@ int 0x10                ; BIOS interrupt`
               open={tutorialStep === 8}
               anchorEl={downloadRef.current}
               onClose={() => nextTutorial()}
+              onKeyUp={(e) => {
+                if (e.key === "Enter") {
+                  nextTutorial();
+                }
+              }}
               anchorOrigin={{
                 vertical: "bottom",
                 horizontal: "center",
@@ -967,7 +989,6 @@ int 0x10                ; BIOS interrupt`
             >
               <Tooltip title="Copy to Clipboard" arrow>
                 <span>
-                  {" "}
                   <CopyIcon
                     style={{
                       width: 24,
@@ -1019,6 +1040,11 @@ int 0x10                ; BIOS interrupt`
             open={tutorialStep === 0}
             anchorEl={editorContainer.current}
             onClose={() => nextTutorial()}
+            onKeyUp={(e) => {
+              if (e.key === "Enter") {
+                nextTutorial();
+              }
+            }}
             anchorOrigin={{
               vertical: "bottom",
               horizontal: "center",
@@ -1077,6 +1103,11 @@ int 0x10                ; BIOS interrupt`
             open={tutorialStep === 5}
             anchorEl={registerRef.current}
             onClose={() => nextTutorial()}
+            onKeyUp={(e) => {
+              if (e.key === "Enter") {
+                nextTutorial();
+              }
+            }}
             anchorOrigin={{
               vertical: "bottom",
               horizontal: "center",
@@ -1467,6 +1498,11 @@ int 0x10                ; BIOS interrupt`
             open={tutorialStep === 6}
             anchorEl={flagRef.current}
             onClose={() => nextTutorial()}
+            onKeyUp={(e) => {
+              if (e.key === "Enter") {
+                nextTutorial();
+              }
+            }}
             anchorOrigin={{
               vertical: "bottom",
               horizontal: "center",
@@ -1505,8 +1541,7 @@ int 0x10                ; BIOS interrupt`
             <Grid item lg={2} md={4} style={matches ? { marginTop: 20 } : null}>
               <Tooltip title="Set the starting address for the below memory table">
                 <Button variant="outlined" size="large" onClick={saveAddress}>
-                  {" "}
-                  Set{" "}
+                  Set
                 </Button>
               </Tooltip>
             </Grid>
@@ -1539,6 +1574,11 @@ int 0x10                ; BIOS interrupt`
             open={tutorialStep === 7}
             anchorEl={ramRef.current}
             onClose={() => nextTutorial()}
+            onKeyUp={(e) => {
+              if (e.key === "Enter") {
+                nextTutorial();
+              }
+            }}
             anchorOrigin={{
               vertical: "bottom",
               horizontal: "center",
