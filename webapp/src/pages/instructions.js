@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import Instruction from "../components/instruction";
 import { instruction_set } from "../components/instructionSet";
-// React Waypoints
-import { Waypoint } from "react-waypoint";
 // Material UI
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
@@ -16,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
     paddingTop: 5,
     paddingBottom: 5,
     "&:hover": {
-      color: "#FBE7AA",
+      color: "#F4C430",
     },
   },
   instructions: {
@@ -28,13 +26,6 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: 25,
     fontWeight: "700",
   },
-  active: {
-    borderLeftColor: "#f4c430",
-    borderLeftStyle: "solid",
-    borderLeftWidth: 3,
-    paddingLeft: 12,
-    color: "#f4c430",
-  },
   marginBottom30: {
     marginBottom: 30,
   },
@@ -43,12 +34,10 @@ const useStyles = makeStyles((theme) => ({
 function InstructionSet() {
   const classes = useStyles();
   const matches = useMediaQuery("(max-width:1324px)");
-  const [active, setActive] = useState({});
 
   return (
     <div>
       <Typography variant="h4" style={{ fontWeight: "800" }}>
-        {" "}
         Instruction Set:
       </Typography>
       <br />
@@ -67,9 +56,7 @@ function InstructionSet() {
             variant="h6"
             key={`nav-${instructiongroup.name}`}
             gutterBottom
-            className={`${classes.navLink} ${
-              active[instructiongroup.name] && classes.active
-            }`}
+            className={classes.navLink}
           >
             {instructiongroup.name}
           </Typography>
@@ -85,27 +72,18 @@ function InstructionSet() {
             <Typography variant="h5" className={classes.instructionName}>
               {instructiongroup.name}
             </Typography>
-            <Waypoint
-              onEnter={() =>
-                setActive({ ...active, [instructiongroup.name]: true })
-              }
-              onLeave={() =>
-                setActive({ ...active, [instructiongroup.name]: false })
-              }
-            >
-              <div className={classes.marginBottom30}>
-                {instructiongroup.instructions.map((instruction) => (
-                  <Instruction
-                    opcode={instruction.opcode}
-                    name={instruction.name}
-                    example={instruction.example}
-                    description={instruction.description}
-                    key={instruction.name}
-                    usage={instruction.usage}
-                  />
-                ))}
-              </div>
-            </Waypoint>
+            <div className={classes.marginBottom30}>
+              {instructiongroup.instructions.map((instruction) => (
+                <Instruction
+                  opcode={instruction.opcode}
+                  name={instruction.name}
+                  example={instruction.example}
+                  description={instruction.description}
+                  key={instruction.name}
+                  usage={instruction.usage}
+                />
+              ))}
+            </div>
           </div>
         ))}
       </div>
