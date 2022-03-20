@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import Instruction from "../components/instruction";
 import { instruction_set } from "../components/instructionSet";
 // Material UI
