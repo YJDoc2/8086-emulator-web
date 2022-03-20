@@ -66,6 +66,8 @@ function Instruction(props) {
         aria-controls={props.name}
         id={props.name}
         className={classes.expandIcon}
+        aria-label={props.name}
+        aria-labelledby={`${props.name.replace(/ /g, "")}-title`}
       >
         {props.opcode && (
           <Typography className={classes.opcode}>{props.opcode}</Typography>
@@ -79,6 +81,7 @@ function Instruction(props) {
               ? { fontWeight: "700" }
               : null
           }
+          id={`${props.name.replace(/ /g, "")}-title`}
         >
           {props.name}
         </Typography>

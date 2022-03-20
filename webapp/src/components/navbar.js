@@ -77,6 +77,8 @@ function Navbar() {
                   history.push("/8086-emulator-web/");
                 }
               }}
+              aria-label="Visit the Home Page"
+              role="link"
             >
               8086 Compiler
             </Typography>
@@ -102,6 +104,8 @@ function Navbar() {
           {loc.pathname !== "/8086-emulator-web/help" && (
             <Tooltip title="Instructions Page" arrow>
               <IconButton
+                aria-label="Visit the Instructions Page"
+                role="link"
                 onClick={() => history.push("/8086-emulator-web/help")}
               >
                 <span
@@ -121,6 +125,8 @@ function Navbar() {
             <Tooltip title="Compiler Page" arrow>
               <IconButton
                 onClick={() => history.push("/8086-emulator-web/compile")}
+                aria-label="Visit the Compiler Page"
+                role="link"
               >
                 <img
                   style={
@@ -149,6 +155,7 @@ function Navbar() {
               onClick={handleThemeChange}
               id="themeBtn"
               style={{ marginRight: -20 }}
+              aria-label="Change Color Theme"
             >
               <img
                 style={currentTheme === "dark" ? { filter: "invert(1)" } : null}
