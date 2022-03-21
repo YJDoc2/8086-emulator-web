@@ -1,33 +1,36 @@
-import React, { useState, useContext, useRef, useEffect } from 'react';
-import { CustomThemeContext } from '../themes/CustomThemeProvider';
+import React, { useState, useContext, useRef, useEffect } from "react";
+import { CustomThemeContext } from "../themes/CustomThemeProvider";
 // Ace Editor
-import AceEditor from 'react-ace';
-import 'ace-builds/src-noconflict/mode-assembly_x86';
-import 'ace-builds/src-noconflict/theme-dreamweaver';
-import 'ace-builds/src-noconflict/theme-twilight';
+import AceEditor from "react-ace";
+import "ace-builds/src-noconflict/mode-assembly_x86";
+import "ace-builds/src-noconflict/theme-dreamweaver";
+import "ace-builds/src-noconflict/theme-twilight";
 // Material UI
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
-import Grid from '@material-ui/core/Grid';
-import Textfield from '@material-ui/core/TextField';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Backdrop from '@material-ui/core/Backdrop';
-import Paper from '@material-ui/core/Paper';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import IconButton from '@material-ui/core/IconButton';
-import Snackbar from '@material-ui/core/Snackbar';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import { makeStyles } from '@material-ui/core/styles';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
-import Popover from '@material-ui/core/Popover';
+import Button from "@material-ui/core/Button";
+import Typography from "@material-ui/core/Typography";
+import Grid from "@material-ui/core/Grid";
+import Textfield from "@material-ui/core/TextField";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableContainer from "@material-ui/core/TableContainer";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import Backdrop from "@material-ui/core/Backdrop";
+import Paper from "@material-ui/core/Paper";
+import InputAdornment from "@material-ui/core/InputAdornment";
+import IconButton from "@material-ui/core/IconButton";
+import Snackbar from "@material-ui/core/Snackbar";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import { makeStyles } from "@material-ui/core/styles";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
+import Popover from "@material-ui/core/Popover";
+import Tooltip from "@material-ui/core/Tooltip";
 // Images
-import help from '../images/help.png';
-import { ReactComponent as DownloadButton } from '../images/download.svg';
+import help from "../images/help.png";
+import { ReactComponent as DownloadButton } from "../images/download.svg";
+import { ReactComponent as Examples } from "../images/examples.svg";
+import { ReactComponent as CopyIcon } from "../images/copy.svg";
 
 const MEM_MAX = 16 * 8;
 const MB = 1024 * 1024;
@@ -39,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
   },
   backdrop: {
     zIndex: theme.zIndex.drawer + 3,
-    color: '#fff',
+    color: "#fff",
   },
   tutorialBackdrop: {
     zIndex: theme.zIndex.drawer + 1,
@@ -54,22 +57,22 @@ const useStyles = makeStyles((theme) => ({
     paddingLeft: 20,
   },
   flex: {
-    display: 'flex',
-  },
-  registerTable: {
-    maxWidth: 175,
+    display: "flex",
+    flexWrap: "wrap",
   },
   segmentTable: {
-    minWidth: 125,
+    marginRight: 15,
+    marginLeft: 15,
   },
   flagTable: {
     marginTop: 20,
+    marginBottom: 10,
   },
   ramTable: {
-    marginTop: 30,
+    marginTop: 10,
   },
   error: {
-    color: 'red',
+    color: "red",
     marginTop: 10,
     padding: 10,
   },
@@ -77,18 +80,18 @@ const useStyles = makeStyles((theme) => ({
     marginRight: 20,
   },
   runBtn: {
-    border: ' 1px solid #0f0 !important',
-    color: '#0f0 !important',
+    border: " 1px solid #0f0 !important",
+    color: "#0f0 !important",
     marginRight: 10,
   },
   nextBtn: {
-    border: ' 1px solid #77f !important',
-    color: '#77f !important',
+    border: " 1px solid #77f !important",
+    color: "#77f !important",
     marginRight: 10,
   },
   stopBtn: {
-    border: ' 1px solid red !important',
-    color: 'red !important',
+    border: " 1px solid red !important",
+    color: "red !important",
     marginRight: 10,
   },
   compileButton: {
@@ -102,15 +105,26 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: 5,
   },
   snackbar: {
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   tutorialIcon: {
-    position: 'absolute',
-    right: 110,
-    top: 10,
+    position: "absolute",
+    right: 158,
+    top: 11,
   },
   hidden: {
-    display: 'none',
+    display: "none",
+  },
+  tableHead: {
+    backgroundColor: theme.palette.common.black,
+    color: theme.palette.common.white,
+    fontWeight: "700",
+  },
+  flag: {
+    paddingLeft: 10,
+  },
+  cursor: {
+    cursor: "pointer",
   },
 }));
 
@@ -118,10 +132,10 @@ const useStyles = makeStyles((theme) => ({
 // in interval Task, the interval Handler value is set to null when re rendering is done,
 // and it does not get latest value of output either.
 let intervalHandler = null;
-let outputHolder = '';
+let outputHolder = "";
 //Compiler Page
 function Compiler(props) {
-  const matches = useMediaQuery('(max-width:1024px)');
+  const matches = useMediaQuery("(max-width:1024px)");
   const startIntervalTask = () => {
     if (intervalHandler !== null) {
       return;
@@ -133,7 +147,7 @@ function Compiler(props) {
         if (res.halt) {
           setCompiled(false);
           setHalted(true);
-          showSnackbar('Execution Halted!');
+          showSnackbar("Execution Halted!");
           stopIntervalTask();
         }
         if (res.int) {
@@ -142,25 +156,24 @@ function Compiler(props) {
             stopIntervalTask();
           }
           if (res.int === 10) {
-            let out = outputHolder + '\n' + driver.int_10();
+            let out = outputHolder + "\n" + driver.int_10();
             outputHolder = out;
             setOutput(out);
           }
           if (res.int === 21) {
             if (res.ah === 2) {
-              let out = outputHolder + '\n' + driver.get_int_21();
+              let out = outputHolder + "\n" + driver.get_int_21();
               outputHolder = out;
               setOutput(out);
             } else {
               stopIntervalTask();
               setHalted(true);
-              showSnackbar('Please Give input for INT 21');
+              showSnackbar("Please Give input for INT 21");
             }
           }
         }
         set8086State(driver);
       } catch (e) {
-        console.log(e);
         setCompiled(false);
         setHalted(true);
         setErrors(e);
@@ -173,12 +186,6 @@ function Compiler(props) {
     clearInterval(intervalHandler);
     intervalHandler = null;
   };
-  //Auto Saving
-  const resetTimeout = (id, newID) => {
-    clearTimeout(id);
-    return newID;
-  };
-  const [timeout, settimeout] = useState(null);
   const [saved, setSaved] = useState(false);
 
   let codeEditor = useRef(null);
@@ -194,190 +201,191 @@ function Compiler(props) {
 
   const { currentTheme } = useContext(CustomThemeContext);
   const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [snackbarText, setSnackbarText] = useState('');
+  const [openCopySnackbar, setOpenCopySnackbar] = useState(false);
+  const [snackbarText, setSnackbarText] = useState("");
   const showSnackbar = (text) => {
     setSnackbarText(text);
     setOpenSnackbar(true);
     setTimeout(function () {
       setOpenSnackbar(false);
-    }, 2000);
+    }, 3000);
   };
 
   const classes = useStyles();
   const [halted, setHalted] = useState(false); // To check if compilation is halted, if this is true all buttons except compile are disabled
   const [memory, setMemory] = useState([
     [
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
     ],
     [
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
     ],
     [
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
     ],
     [
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
     ],
     [
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
     ],
     [
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
     ],
     [
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
     ],
     [
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
-      '00',
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
+      "00",
     ],
   ]);
-  const [input, setInput] = useState('');
-  const [output, setOutput] = useState('');
+  const [input, setInput] = useState("");
+  const [output, setOutput] = useState("");
   const [tutorial, setTutorial] = useState(false); // To show backdrop for tutorial
   const [tutorialStep, setTutorialStep] = useState(-1); // To show backdrop for tutorial
   const [driver, setDriver] = useState(null); //To set driver
-  const [startAddress, setStartAddress] = useState('00000'); //Start address of memory
+  const [startAddress, setStartAddress] = useState("00000"); //Start address of memory
   const [compiled, setCompiled] = useState(false); // To enable/disable Run, next and stop button
   const [loading, setLoading] = useState(false); //Backdrop
-  const [errors, setErrors] = useState(''); // Post compilation errors are stored here
-  const [addressError, setAddressError] = useState(''); // Stores error in address start format
+  const [errors, setErrors] = useState(""); // Post compilation errors are stored here
+  const [addressError, setAddressError] = useState(""); // Stores error in address start format
   const [errorAnnotations, setErrorAnnotations] = useState([]); //For Error Annotations
   const [register, setRegister] = useState({
-    ah: '00',
-    al: '00',
-    bh: '00',
-    bl: '00',
-    ch: '00',
-    cl: '00',
-    dh: '00',
-    dl: '00',
-    si: '0000',
-    di: '0000',
-    bp: '0000',
-    sp: '0000',
-    ss: '0000',
-    ds: '0000',
-    es: '0000',
+    ah: "00",
+    al: "00",
+    bh: "00",
+    bl: "00",
+    ch: "00",
+    cl: "00",
+    dh: "00",
+    dl: "00",
+    si: "0000",
+    di: "0000",
+    bp: "0000",
+    sp: "0000",
+    ss: "0000",
+    ds: "0000",
+    es: "0000",
   });
   const [flags, setFlags] = useState({
     of: 0,
@@ -391,7 +399,7 @@ function Compiler(props) {
     cf: 0,
   });
   const [code, setCode] = useState(
-    localStorage.getItem('x86code') ||
+    localStorage.getItem("x86code") ||
       `; Program to show use of interrupts
 ; Also, Hello World program !
 hello: DB "Hello World" ; store string
@@ -408,19 +416,19 @@ int 0x10                ; BIOS interrupt`
   ); //State to maintain the code string
   //To add an error annotation, call this function and pas row number (starts with 0), column number (starts with 0) and error text
   const addAnnotation = (errorText) => {
-    if (errorText === '') {
+    if (errorText === "") {
       setErrorAnnotations([]);
       return;
     }
     if (errorText.length > 30) {
-      errorText = errorText.slice(0, errorText.indexOf(' ', 30)) + '...';
+      errorText = errorText.slice(0, errorText.indexOf(" ", 30)) + "...";
     }
     var re = /(?=(\d+))/; //to find digit
     let rowNumber =
-      re.exec(errorText.slice(errorText.indexOf('at line ')))[1] - 1; //subtract 1 as index starts from 0
+      re.exec(errorText.slice(errorText.indexOf("at line ")))[1] - 1; //subtract 1 as index starts from 0
     setErrorAnnotations((errorAnnotations) => [
       ...errorAnnotations,
-      { row: rowNumber, column: 0, type: 'error', text: errorText },
+      { row: rowNumber, column: 0, type: "error", text: errorText },
     ]);
   };
 
@@ -433,7 +441,7 @@ int 0x10                ; BIOS interrupt`
   const set8086State = (driver) => {
     let reg = driver.get_reg();
     let flags = driver.get_flags();
-    let start = parseInt('0x' + startAddress);
+    let start = parseInt("0x" + startAddress);
     let mem = driver.get_mem(start, start + MEM_MAX - 1);
     setFlags({
       of: flags.of,
@@ -467,10 +475,10 @@ int 0x10                ; BIOS interrupt`
   };
   // Call when compiling the code
   const compile = () => {
-    setInput('');
-    setOutput('');
+    setInput("");
+    setOutput("");
     clearTimeout();
-    outputHolder = '';
+    outputHolder = "";
     if (props.wasm) {
       try {
         let driver = props.wasm.preprocess(code);
@@ -480,21 +488,20 @@ int 0x10                ; BIOS interrupt`
         setCompiled(true);
         setHalted(false);
         set8086State(driver);
-        setErrors('');
-        addAnnotation('');
+        setErrors("");
+        addAnnotation("");
       } catch (e) {
         // e is going to be of string type, if it is one returned from rust
         // if it is an object, or unknown type error,
         // it may be stack size issue, read README for more info
-        console.log(e);
         setCompiled(false);
         setHalted(true);
-        showSnackbar('Error Occured!');
+        showSnackbar("Error Occured!");
         setErrors(e);
         addAnnotation(e);
       }
 
-      localStorage.setItem('x86code', code);
+      localStorage.setItem("x86code", code);
     } else {
       setLoading(true);
     }
@@ -508,49 +515,50 @@ int 0x10                ; BIOS interrupt`
   // Validate start address
   const validateAndSetAddress = (address) => {
     if (!driver) {
-      setAddressError('Compile Program Before Setting Memory');
+      setAddressError("Compile Program Before Setting Memory");
       return;
     }
-    if (address === '') {
-      setStartAddress('');
+    if (address === "") {
+      setStartAddress("");
       return;
     }
     if (/^[0-9A-F]{0,5}$/.test(address)) {
-      let start = parseInt('0x' + address);
+      let start = parseInt("0x" + address);
 
       if (start > ALLOWED_ADDRESS_MAX) {
         setAddressError(
-          'Must be between 00000 to ' +
+          "Must be between 00000 to " +
             ALLOWED_ADDRESS_MAX.toString(16).toUpperCase()
         );
         return;
       }
-      setAddressError('');
+      setAddressError("");
       setStartAddress(address);
     } else {
       setStartAddress(startAddress);
-      setAddressError('Must be between 00000 to FFF7F');
+      setAddressError("Must be between 00000 to FFF7F");
     }
   };
 
   // On change handler for set code editor
   const onChange = (newValue) => {
     setCode(newValue);
-    localStorage.setItem('x86code', newValue);
-
-    settimeout(resetTimeout(timeout, setTimeout(saveValue(), 400)));
+    localStorage.setItem("x86code", newValue);
+    callAnimation();
   };
   //Auto Save
+  const callAnimation = () => {
+    if (!saved) setTimeout(() => saveValue(), 1000);
+  };
   const saveValue = () => {
     setSaved(true);
-
-    setTimeout(() => setSaved(false), 1000);
+    setTimeout(() => setSaved(false), 1600);
   };
 
   //called when you enter a start address and press set
   const saveAddress = () => {
     if (!addressError) {
-      let start = parseInt('0x' + startAddress);
+      let start = parseInt("0x" + startAddress);
       let mem = driver.get_mem(start, start + MEM_MAX - 1);
       setMemory(convertArray(mem));
     }
@@ -569,25 +577,25 @@ int 0x10                ; BIOS interrupt`
       if (res.halt) {
         setCompiled(false);
         setHalted(true);
-        showSnackbar('Execution Halted!');
+        showSnackbar("Execution Halted!");
       }
       if (res.int) {
         if (res.int === 3) {
           // don't do anything here
         }
         if (res.int === 10) {
-          let out = outputHolder + '\n' + driver.int_10();
+          let out = outputHolder + "\n" + driver.int_10();
           outputHolder = out;
           setOutput(out);
         }
         if (res.int === 21) {
           if (res.ah === 2) {
-            let out = outputHolder + '\n' + driver.get_int_21();
+            let out = outputHolder + "\n" + driver.get_int_21();
             outputHolder = out;
             setOutput(out);
           } else {
             setHalted(true);
-            showSnackbar('Execution Halted!');
+            showSnackbar("Execution Halted!");
           }
         }
       }
@@ -596,7 +604,7 @@ int 0x10                ; BIOS interrupt`
       console.log(e);
       setCompiled(false);
       setHalted(true);
-      showSnackbar('Error Occured!');
+      showSnackbar("Error Occured!");
       setErrors(e);
       addAnnotation(e);
     }
@@ -612,7 +620,7 @@ int 0x10                ; BIOS interrupt`
     if (halted && driver) {
       driver.set_int_21(input.slice(0));
       setHalted(false);
-      showSnackbar('Click Run or Next to continue Execution');
+      showSnackbar("Click Run or Next to continue Execution");
     }
   };
 
@@ -635,63 +643,85 @@ int 0x10                ; BIOS interrupt`
   };
 
   const nextTutorial = () => {
-    if (tutorialStep === 8) {
+    if (tutorialStep === 8 || (matches && tutorialStep === 7)) {
       setTutorial(false);
-      localStorage.setItem('tutorial', 'done');
+      localStorage.setItem("tutorial", "done");
     }
     setTutorialStep(tutorialStep + 1);
   };
 
   //Function for downloading the code
   const downloadCode = (text) => {
-    const element = document.createElement('a');
+    const element = document.createElement("a");
     const file = new Blob([code], {
-      type: 'text/plain;charset=utf-8',
+      type: "text/plain;charset=utf-8",
     });
     element.href = URL.createObjectURL(file);
-    element.download = 'MyAssemblyCode.s';
+    element.download = "MyAssemblyCode.s";
     document.body.appendChild(element);
     element.click();
   };
 
   useEffect(() => {
-    if (localStorage.getItem('tutorial') !== 'done') {
+    if (localStorage.getItem("tutorial") !== "done") {
       startTutorial();
     }
   }, []);
+
+  const copyToClipboard = () => {
+    navigator.clipboard
+      .writeText(code)
+      .then(() => {
+        setOpenCopySnackbar(true);
+        setTimeout(function () {
+          setOpenCopySnackbar(false);
+        }, 2000);
+      })
+      .catch((e) => console.error(e));
+  };
 
   return (
     <div className={classes.root}>
       <div className={classes.chatbot}>
         <df-messenger
-          intent='WELCOME'
-          chat-title='8086-FAQ'
-          agent-id='e8ee4339-e450-41f5-9715-d8f8b2aa45a1'
-          language-code='en'
+          intent="WELCOME"
+          chat-title="8086-FAQ"
+          agent-id="e8ee4339-e450-41f5-9715-d8f8b2aa45a1"
+          language-code="en"
         ></df-messenger>
       </div>
-      <IconButton
-        onClick={() => startTutorial()}
-        className={matches ? classes.hidden : classes.tutorialIcon}
-      >
-        <img
-          style={
-            currentTheme === 'dark'
-              ? { filter: 'invert(0.7)', height: '2rem' }
-              : { height: '2rem', opacity: 0.4 }
-          }
-          src={help}
-          alt='start tutorial'
-        />
-      </IconButton>
+
+      <Tooltip title="Tutorial" arrow>
+        <IconButton
+          onClick={() => startTutorial()}
+          className={matches ? classes.hidden : classes.tutorialIcon}
+          aria-label="Help Tutorial"
+        >
+          <img
+            style={
+              currentTheme === "dark"
+                ? { filter: "invert(0.7)", height: "2rem" }
+                : { height: "2rem", opacity: 0.4 }
+            }
+            src={help}
+            alt="start tutorial"
+          />
+        </IconButton>
+      </Tooltip>
       <Snackbar
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
         open={openSnackbar}
         message={snackbarText}
         className={classes.snackbar}
       />
+      <Snackbar
+        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+        open={openCopySnackbar}
+        message="Copied to Clipboard"
+        className={classes.snackbar}
+      />
       <Backdrop className={classes.backdrop} open={loading}>
-        <CircularProgress color='inherit' />
+        <CircularProgress color="inherit" />
         <h3 className={classes.loadingText}>Compiling</h3>
       </Backdrop>
       <Backdrop className={classes.tutorialBackdrop} open={tutorial}></Backdrop>
@@ -699,46 +729,52 @@ int 0x10                ; BIOS interrupt`
         <Grid item lg={7}>
           <Grid container spacing={2} className={classes.spaceBelow}>
             <Grid item lg={4}>
-              <Typography variant='h5'>Code Editor</Typography>
+              <Typography variant="h5" style={{ fontWeight: "800" }}>
+                Code Editor
+              </Typography>
             </Grid>
-            <Grid item lg={8} align='right'>
+            <Grid item lg={8} align="right">
               <Button
-                aria-describedby={tutorialStep === 1 ? 'compile' : ''}
-                variant='contained'
-                color='primary'
-                size='small'
+                aria-describedby={tutorialStep === 1 ? "compile" : ""}
+                variant="contained"
+                color="primary"
+                size="small"
                 ref={compileRef}
                 onClick={compile}
                 disabled={!props.wasm}
                 className={classes.compileButton}
               >
-                {' '}
-                COMPILE{' '}
+                COMPILE
               </Button>
               <Popover
-                id={'compile'}
+                id={"compile"}
                 open={tutorialStep === 1}
                 anchorEl={compileRef.current}
                 onClose={() => nextTutorial()}
+                onKeyUp={(e) => {
+                  if (e.key === "Enter") {
+                    nextTutorial();
+                  }
+                }}
                 anchorOrigin={{
-                  vertical: 'bottom',
-                  horizontal: 'center',
+                  vertical: "bottom",
+                  horizontal: "center",
                 }}
                 transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'center',
+                  vertical: "top",
+                  horizontal: "center",
                 }}
               >
-                <Typography className={classes.tooltips} component='div'>
+                <Typography className={classes.tooltips} component="div">
                   <b>Step 2</b>
                   <hr />
                   Next, Compile the code.
                 </Typography>
               </Popover>
               <Button
-                variant='outlined'
-                aria-describedby={tutorialStep === 2 ? 'run' : ''}
-                size='small'
+                variant="outlined"
+                aria-describedby={tutorialStep === 2 ? "run" : ""}
+                size="small"
                 onClick={runCode}
                 ref={runRef}
                 disabled={!compiled || halted}
@@ -746,92 +782,104 @@ int 0x10                ; BIOS interrupt`
                   compiled && !halted ? classes.runBtn : classes.topBtn
                 }
               >
-                {' '}
-                Run{' '}
+                Run
               </Button>
               <Popover
-                id={'run'}
+                id={"run"}
                 open={tutorialStep === 2}
                 anchorEl={runRef.current}
                 onClose={() => nextTutorial()}
+                onKeyUp={(e) => {
+                  if (e.key === "Enter") {
+                    nextTutorial();
+                  }
+                }}
                 anchorOrigin={{
-                  vertical: 'bottom',
-                  horizontal: 'center',
+                  vertical: "bottom",
+                  horizontal: "center",
                 }}
                 transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'center',
+                  vertical: "top",
+                  horizontal: "center",
                 }}
               >
-                <Typography className={classes.tooltips} component='div'>
+                <Typography className={classes.tooltips} component="div">
                   <b>Step 3</b>
                   <hr />
                   Run the compiled code.
                 </Typography>
               </Popover>
               <Button
-                variant='outlined'
-                size='small'
+                variant="outlined"
+                size="small"
                 ref={singleStepRef}
-                aria-describedby={tutorialStep === 3 ? 'single_step' : ''}
+                aria-describedby={tutorialStep === 3 ? "single_step" : ""}
                 onClick={executeNext}
                 disabled={!compiled || halted}
                 className={
                   compiled && !halted ? classes.nextBtn : classes.topBtn
                 }
               >
-                {' '}
-                Next{' '}
+                Next
               </Button>
               <Popover
-                id={'single_step'}
+                id={"single_step"}
                 open={tutorialStep === 3}
                 anchorEl={singleStepRef.current}
                 onClose={() => nextTutorial()}
+                onKeyUp={(e) => {
+                  if (e.key === "Enter") {
+                    nextTutorial();
+                  }
+                }}
                 anchorOrigin={{
-                  vertical: 'bottom',
-                  horizontal: 'center',
+                  vertical: "bottom",
+                  horizontal: "center",
                 }}
                 transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'center',
+                  vertical: "top",
+                  horizontal: "center",
                 }}
               >
-                <Typography className={classes.tooltips} component='div'>
+                <Typography className={classes.tooltips} component="div">
                   <b>Step 4</b>
                   <hr />
                   Execute the next line of the instruction.
                 </Typography>
               </Popover>
               <Button
-                variant='outlined'
-                size='small'
+                variant="outlined"
+                size="small"
                 ref={stopRef}
-                aria-describedby={tutorialStep === 4 ? 'stop' : ''}
+                aria-describedby={tutorialStep === 4 ? "stop" : ""}
                 onClick={stopCode}
                 disabled={!compiled || halted}
                 className={
                   compiled && !halted ? classes.stopBtn : classes.topBtn
                 }
               >
-                {' '}
-                Stop{' '}
+                Stop
               </Button>
               <Popover
-                id={'stop'}
+                id={"stop"}
                 open={tutorialStep === 4}
                 anchorEl={stopRef.current}
                 onClose={() => nextTutorial()}
+                onKeyUp={(e) => {
+                  if (e.key === "Enter") {
+                    nextTutorial();
+                  }
+                }}
                 anchorOrigin={{
-                  vertical: 'bottom',
-                  horizontal: 'center',
+                  vertical: "bottom",
+                  horizontal: "center",
                 }}
                 transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'center',
+                  vertical: "top",
+                  horizontal: "center",
                 }}
               >
-                <Typography className={classes.tooltips} component='div'>
+                <Typography className={classes.tooltips} component="div">
                   <b>Step 5</b>
                   <hr />
                   Halt the execution.
@@ -839,91 +887,174 @@ int 0x10                ; BIOS interrupt`
               </Popover>
             </Grid>
           </Grid>
-          <Paper ref={editorContainer}>
-            <div style={{ flex: 1, flexDirection: 'row' }}>
-              <div
-                onClick={() => {
-                  console.log('hhh');
-                  downloadCode(code);
-                }}
-                ref={downloadRef}
-                aria-describedby={tutorialStep === 8 ? 'download_code' : ''}
-                style={{
-                  flex: 1,
-                  fontSize: 18,
-                  paddingRight: 10,
-                  paddingLeft: 10,
-                  marginTop: 10,
-                  color: 'red',
-                  float: 'right',
-                }}
-              >
-                <DownloadButton />
-              </div>
-              <Popover
-                id={'downloadCode'}
-                open={tutorialStep === 8}
-                anchorEl={downloadRef.current}
-                onClose={() => nextTutorial()}
-                anchorOrigin={{
-                  vertical: 'bottom',
-                  horizontal: 'center',
-                }}
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'center',
-                }}
-              >
-                <Typography className={classes.tooltips} component='div'>
-                  <b>Step 9</b>
-                  <hr />
-                  Download Code from here
-                </Typography>
-              </Popover>
-              <div
-                style={{
-                  clear: 'both',
-                  fontSize: 18,
-                  paddingRight: 10,
-                  paddingLeft: 10,
-                  color: 'red',
-                  float: 'right',
-                }}
-              >
-                <p>{saved ? 'Saved' : ''}</p>
-              </div>
+          <Paper
+            ref={editorContainer}
+            elevation={5}
+            style={{
+              position: "relative",
+            }}
+          >
+            {/* Download */}
+            <div
+              onClick={() => {
+                downloadCode(code);
+              }}
+              ref={downloadRef}
+              aria-describedby={tutorialStep === 8 ? "download_code" : ""}
+              style={{
+                display: matches ? "none" : "block",
+                flex: 1,
+                fontSize: 18,
+                paddingRight: 10,
+                paddingLeft: 10,
+                marginTop: 10,
+                color: "red",
+                float: "right",
+                cursor: "pointer",
+              }}
+            >
+              <Tooltip title="Download Code" arrow>
+                <DownloadButton
+                  style={{
+                    width: 24,
+                    fill: currentTheme === "dark" ? "#ccc" : "black",
+                  }}
+                />
+              </Tooltip>
             </div>
+
+            <Popover
+              id={"downloadCode"}
+              open={tutorialStep === 8}
+              anchorEl={downloadRef.current}
+              onClose={() => nextTutorial()}
+              onKeyUp={(e) => {
+                if (e.key === "Enter") {
+                  nextTutorial();
+                }
+              }}
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "center",
+              }}
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "center",
+              }}
+              style={{
+                display: matches ? "none" : "block",
+              }}
+            >
+              <Typography className={classes.tooltips} component="div">
+                <b>Step 9</b>
+                <hr />
+                Download Code from here
+              </Typography>
+            </Popover>
+
+            {/* Examples */}
+            <a
+              style={{
+                display: matches ? "none" : "block",
+                position: "absolute",
+                top: 55,
+                right: 9,
+                zIndex: 100,
+              }}
+              href="https://github.com/YJDoc2/8086-Emulator/tree/master/examples"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Tooltip title="Example Programs" arrow>
+                <Examples
+                  style={{
+                    width: 25,
+                    fill: currentTheme === "dark" ? "#ccc" : "black",
+                  }}
+                />
+              </Tooltip>
+            </a>
+
+            {/* Copy to Clipboard */}
+            <div
+              onClick={copyToClipboard}
+              style={{
+                display: matches ? "none" : "block",
+                position: "absolute",
+                top: 103,
+                right: 9,
+                zIndex: 100,
+                cursor: "pointer",
+              }}
+            >
+              <Tooltip title="Copy to Clipboard" arrow>
+                <span>
+                  <CopyIcon
+                    style={{
+                      width: 24,
+                      fill: currentTheme === "dark" ? "#ccc" : "black",
+                    }}
+                  />
+                </span>
+              </Tooltip>
+            </div>
+
+            {/* AutoSave */}
+            <div
+              style={{
+                display: matches ? "none" : "flex",
+                position: "absolute",
+                justifyContent: "center",
+                alignItems: "center",
+                bottom: 10,
+                right: 3,
+              }}
+            >
+              {saved && (
+                <span className="save-icon">
+                  <span className="loader"></span>
+                  <span className="loader"></span>
+                  <span className="loader"></span>
+                </span>
+              )}
+            </div>
+
             <AceEditor
               ref={codeEditor}
-              aria-describedby={tutorialStep === 0 ? 'editor' : ''}
-              mode='assembly_x86'
-              height='420px'
-              width='match-parent'
+              aria-describedby={tutorialStep === 0 ? "editor" : ""}
+              mode="assembly_x86"
+              height="60vh"
+              width="match-parent"
               value={code}
               fontSize={14}
               showPrintMargin={false}
-              theme={currentTheme === 'normal' ? 'dreamweaver' : 'twilight'}
+              theme={currentTheme === "normal" ? "dreamweaver" : "twilight"}
               onChange={onChange}
-              name='CODE_EDITOR'
+              name="CODE_EDITOR"
               editorProps={{ $blockScrolling: false }}
               annotations={errorAnnotations}
             />
           </Paper>
           <Popover
-            id={'editor'}
+            id={"editor"}
             open={tutorialStep === 0}
             anchorEl={editorContainer.current}
             onClose={() => nextTutorial()}
+            onKeyUp={(e) => {
+              if (e.key === "Enter") {
+                nextTutorial();
+              }
+            }}
             anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'center',
+              vertical: "bottom",
+              horizontal: "center",
             }}
             transformOrigin={{
-              vertical: 'top',
-              horizontal: 'center',
+              vertical: "top",
+              horizontal: "center",
             }}
           >
-            <Typography className={classes.tooltips} component='div'>
+            <Typography className={classes.tooltips} component="div">
               <b>Step 1</b>
               <hr />
               Write your Code in the editor.
@@ -937,20 +1068,27 @@ int 0x10                ; BIOS interrupt`
           ) : (
             <div>
               <Textfield
-                label='Input'
+                label="Input"
                 fullWidth
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
+                style={{ marginTop: 10 }}
                 InputProps={{
                   endAdornment: (
-                    <InputAdornment position='end'>
-                      <IconButton onClick={handleInput}>&#10003;</IconButton>
+                    <InputAdornment position="end">
+                      <Tooltip
+                        title="Use this to submit your input on runtime"
+                        arrow
+                        placement="right"
+                      >
+                        <IconButton onClick={handleInput}>&#10003;</IconButton>
+                      </Tooltip>
                     </InputAdornment>
                   ),
                 }}
               />
               <Textfield
-                label='Output'
+                label="Output"
                 value={output}
                 multiline
                 fullWidth
@@ -959,225 +1097,395 @@ int 0x10                ; BIOS interrupt`
             </div>
           )}
         </Grid>
-        <Grid item lg={5} style={matches ? { maxWidth: '100vw' } : null}>
+        <Grid item lg={5} style={matches ? { maxWidth: "100vw" } : null}>
           <Popover
-            id={'register'}
+            id={"register"}
             open={tutorialStep === 5}
             anchorEl={registerRef.current}
             onClose={() => nextTutorial()}
+            onKeyUp={(e) => {
+              if (e.key === "Enter") {
+                nextTutorial();
+              }
+            }}
             anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'center',
+              vertical: "bottom",
+              horizontal: "center",
             }}
             transformOrigin={{
-              vertical: 'top',
-              horizontal: 'center',
+              vertical: "top",
+              horizontal: "center",
             }}
           >
-            <Typography className={classes.tooltips} component='div'>
+            <Typography className={classes.tooltips} component="div">
               <b>Step 6</b>
               <hr />
               Check Registers values here.
             </Typography>
           </Popover>
-          <Grid
-            container
-            spacing={3}
-            ref={registerRef}
-            aria-describedby={tutorialStep === 5 ? 'register' : ''}
-          >
-            <Grid item lg={5}>
-              <TableContainer
-                className={classes.registerTable}
-                component={Paper}
-              >
-                <Table size='small' aria-label='simple table'>
+          <div className={classes.flex}>
+            <Paper elevation={5} style={{ flex: 1 }}>
+              <TableContainer component={Paper}>
+                <Table size="small" aria-label="simple table">
                   <TableHead>
                     <TableRow>
-                      <TableCell>Reg</TableCell>
-                      <TableCell align='right'>H</TableCell>
-                      <TableCell align='right'>L</TableCell>
+                      <TableCell
+                        className={classes.tableHead}
+                        style={{ width: "33%" }}
+                      >
+                        Reg
+                      </TableCell>
+                      <TableCell
+                        className={classes.tableHead}
+                        style={{ width: "33%" }}
+                      >
+                        H
+                      </TableCell>
+                      <TableCell
+                        className={classes.tableHead}
+                        style={{ width: "33%" }}
+                      >
+                        L
+                      </TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
                     <TableRow>
-                      <TableCell component='th' scope='row'>
+                      <TableCell component="th" scope="row">
                         A
                       </TableCell>
-                      <TableCell align='right'>{register.ah}</TableCell>
-                      <TableCell align='right'>{register.al}</TableCell>
+                      <TableCell align="right">{register.ah}</TableCell>
+                      <TableCell align="right">{register.al}</TableCell>
                     </TableRow>
                     <TableRow>
-                      <TableCell component='th' scope='row'>
+                      <TableCell component="th" scope="row">
                         B
                       </TableCell>
-                      <TableCell align='right'>{register.bh}</TableCell>
-                      <TableCell align='right'>{register.bl}</TableCell>
+                      <TableCell align="right">{register.bh}</TableCell>
+                      <TableCell align="right">{register.bl}</TableCell>
                     </TableRow>
                     <TableRow>
-                      <TableCell component='th' scope='row'>
+                      <TableCell component="th" scope="row">
                         C
                       </TableCell>
-                      <TableCell align='right'>{register.ch}</TableCell>
-                      <TableCell align='right'>{register.cl}</TableCell>
+                      <TableCell align="right">{register.ch}</TableCell>
+                      <TableCell align="right">{register.cl}</TableCell>
                     </TableRow>
                     <TableRow>
-                      <TableCell component='th' scope='row'>
+                      <TableCell component="th" scope="row">
                         D
                       </TableCell>
-                      <TableCell align='right'>{register.dh}</TableCell>
-                      <TableCell align='right'>{register.dl}</TableCell>
+                      <TableCell align="right">{register.dh}</TableCell>
+                      <TableCell align="right">{register.dl}</TableCell>
                     </TableRow>
                   </TableBody>
                 </Table>
               </TableContainer>
-            </Grid>
-            <Grid item>
-              <TableContainer
-                className={classes.segmentTable}
-                component={Paper}
-              >
-                <Table size='small' aria-label='simple table'>
-                  <TableHead>
+            </Paper>
+            <Paper
+              elevation={5}
+              className={classes.segmentTable}
+              style={{ flex: 1 }}
+            >
+              <TableContainer>
+                <Table size="small" aria-label="simple table">
+                  <TableHead className={classes.tableHead}>
                     <TableRow>
-                      <TableCell colSpan={2}>Segments</TableCell>
+                      <TableCell colSpan={2} className={classes.tableHead}>
+                        Segments
+                      </TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
                     <TableRow>
-                      <TableCell component='th' scope='row'>
-                        SS
+                      <TableCell component="th" scope="row">
+                        <Tooltip
+                          title="Stack Segment"
+                          arrow
+                          className={classes.cursor}
+                          placement="left"
+                        >
+                          <span>SS</span>
+                        </Tooltip>
                       </TableCell>
-                      <TableCell align='right'>{register.ss}</TableCell>
+                      <TableCell align="right">{register.ss}</TableCell>
                     </TableRow>
                     <TableRow>
-                      <TableCell component='th' scope='row'>
-                        DS
+                      <TableCell component="th" scope="row">
+                        <Tooltip
+                          title="Data Segment"
+                          arrow
+                          className={classes.cursor}
+                          placement="left"
+                        >
+                          <span>DS</span>
+                        </Tooltip>
                       </TableCell>
-                      <TableCell align='right'>{register.ds}</TableCell>
+                      <TableCell align="right">{register.ds}</TableCell>
                     </TableRow>
                     <TableRow>
-                      <TableCell component='th' scope='row'>
-                        ES
+                      <TableCell component="th" scope="row">
+                        <Tooltip
+                          title="Extra Segment"
+                          arrow
+                          className={classes.cursor}
+                          placement="left"
+                        >
+                          <span>ES</span>
+                        </Tooltip>
                       </TableCell>
-                      <TableCell align='right'>{register.es}</TableCell>
+                      <TableCell align="right">{register.es}</TableCell>
                     </TableRow>
                   </TableBody>
                 </Table>
               </TableContainer>
-            </Grid>
-            <Grid item>
-              <TableContainer
-                className={classes.segmentTable}
-                component={Paper}
-              >
-                <Table size='small' aria-label='simple table'>
+            </Paper>
+            <Paper elevation={5} style={{ flex: 1 }}>
+              <TableContainer component={Paper}>
+                <Table size="small" aria-label="simple table">
                   <TableHead>
                     <TableRow>
-                      <TableCell colSpan={2}>Pointers</TableCell>
+                      <TableCell colSpan={2} className={classes.tableHead}>
+                        Pointers
+                      </TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
                     <TableRow>
-                      <TableCell component='th' scope='row'>
-                        SP
+                      <TableCell component="th" scope="row">
+                        <Tooltip
+                          title="Stack Pointer"
+                          arrow
+                          className={classes.cursor}
+                          placement="left"
+                        >
+                          <span>SP</span>
+                        </Tooltip>
                       </TableCell>
-                      <TableCell align='right'>{register.sp}</TableCell>
+                      <TableCell align="right">{register.sp}</TableCell>
                     </TableRow>
                     <TableRow>
-                      <TableCell component='th' scope='row'>
-                        BP
+                      <TableCell component="th" scope="row">
+                        <Tooltip
+                          title="Base Pointer"
+                          arrow
+                          className={classes.cursor}
+                          placement="left"
+                        >
+                          <span>BP</span>
+                        </Tooltip>
                       </TableCell>
-                      <TableCell align='right'>{register.bp}</TableCell>
+                      <TableCell align="right">{register.bp}</TableCell>
                     </TableRow>
                     <TableRow>
-                      <TableCell component='th' scope='row'>
-                        SI
+                      <TableCell component="th" scope="row">
+                        <Tooltip
+                          title="Source Index"
+                          arrow
+                          className={classes.cursor}
+                          placement="left"
+                        >
+                          <span>SI</span>
+                        </Tooltip>
                       </TableCell>
-                      <TableCell align='right'>{register.si}</TableCell>
+                      <TableCell align="right">{register.si}</TableCell>
                     </TableRow>
                     <TableRow>
-                      <TableCell component='th' scope='row'>
-                        DI
+                      <TableCell component="th" scope="row">
+                        <Tooltip
+                          title="Destination Index"
+                          arrow
+                          className={classes.cursor}
+                          placement="left"
+                        >
+                          <span>DI</span>
+                        </Tooltip>
                       </TableCell>
-                      <TableCell align='right'>{register.di}</TableCell>
+                      <TableCell align="right">{register.di}</TableCell>
                     </TableRow>
                   </TableBody>
                 </Table>
               </TableContainer>
-            </Grid>
-          </Grid>
+            </Paper>
+          </div>
           <TableContainer
             className={classes.flagTable}
-            aria-describedby={tutorialStep === 6 ? 'flags' : ''}
+            aria-describedby={tutorialStep === 6 ? "flags" : ""}
             ref={flagRef}
             component={Paper}
             style={matches ? null : { minWidth: 505 }}
           >
-            <Table size='small' aria-label='simple table'>
+            <Table size="small" aria-label="simple table">
               <TableHead>
                 <TableRow>
-                  <TableCell component='th' colSpan='9'>
+                  <TableCell
+                    component="th"
+                    colSpan="9"
+                    className={classes.tableHead}
+                  >
                     Flags:
                   </TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableCell component='th' scope='column'>
-                    OF
+                  <TableCell
+                    component="th"
+                    scope="column"
+                    className={classes.cursor}
+                  >
+                    <Tooltip title="Overflow Flag" placement="left" arrow>
+                      <span>OF</span>
+                    </Tooltip>
                   </TableCell>
-                  <TableCell component='th' scope='column'>
-                    DF
+                  <TableCell
+                    component="th"
+                    scope="column"
+                    className={classes.cursor}
+                  >
+                    <Tooltip title="Directional Flag" placement="left" arrow>
+                      <span>DF</span>
+                    </Tooltip>
                   </TableCell>
-                  <TableCell component='th' scope='column'>
-                    IF
+                  <TableCell
+                    component="th"
+                    scope="column"
+                    className={classes.cursor}
+                  >
+                    <Tooltip title="Interrupt Flag" placement="left" arrow>
+                      <span>IF</span>
+                    </Tooltip>
                   </TableCell>
-                  <TableCell component='th' scope='column'>
-                    TF
+                  <TableCell
+                    component="th"
+                    scope="column"
+                    className={classes.cursor}
+                  >
+                    <Tooltip title="Trap Flag" placement="left" arrow>
+                      <span>TF</span>
+                    </Tooltip>
                   </TableCell>
-                  <TableCell component='th' scope='column'>
-                    SF
+                  <TableCell
+                    component="th"
+                    scope="column"
+                    className={classes.cursor}
+                  >
+                    <Tooltip title="Sign Flag" placement="left" arrow>
+                      <span>SF</span>
+                    </Tooltip>
                   </TableCell>
-                  <TableCell component='th' scope='column'>
-                    ZF
+                  <TableCell
+                    component="th"
+                    scope="column"
+                    className={classes.cursor}
+                  >
+                    <Tooltip title="Zero Flag" placement="left" arrow>
+                      <span>ZF</span>
+                    </Tooltip>
                   </TableCell>
-                  <TableCell component='th' scope='column'>
-                    AF
+                  <TableCell
+                    component="th"
+                    scope="column"
+                    className={classes.cursor}
+                  >
+                    <Tooltip
+                      title="Auxiliary Carry Flag"
+                      placement="left"
+                      arrow
+                    >
+                      <span>AF</span>
+                    </Tooltip>
                   </TableCell>
-                  <TableCell component='th' scope='column'>
-                    PF
+                  <TableCell
+                    component="th"
+                    scope="column"
+                    className={classes.cursor}
+                  >
+                    <Tooltip title="Parity Flag" placement="left" arrow>
+                      <span>PF</span>
+                    </Tooltip>
                   </TableCell>
-                  <TableCell component='th' scope='column'>
-                    CF
+                  <TableCell
+                    component="th"
+                    scope="column"
+                    className={classes.cursor}
+                  >
+                    <Tooltip title="Carry Flag" placement="left" arrow>
+                      <span>CF</span>
+                    </Tooltip>
                   </TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 <TableRow>
-                  <TableCell align='center' component='th' scope='row'>
+                  <TableCell
+                    align="center"
+                    component="th"
+                    scope="row"
+                    className={classes.flag}
+                  >
                     {flags.of}
                   </TableCell>
-                  <TableCell align='center' component='th' scope='row'>
+                  <TableCell
+                    align="center"
+                    component="th"
+                    scope="row"
+                    className={classes.flag}
+                  >
                     {flags.df}
                   </TableCell>
-                  <TableCell align='center' component='th' scope='row'>
+                  <TableCell
+                    align="center"
+                    component="th"
+                    scope="row"
+                    className={classes.flag}
+                  >
                     {flags.if}
                   </TableCell>
-                  <TableCell align='center' component='th' scope='row'>
+                  <TableCell
+                    align="center"
+                    component="th"
+                    scope="row"
+                    className={classes.flag}
+                  >
                     {flags.tf}
                   </TableCell>
-                  <TableCell align='center' component='th' scope='row'>
+                  <TableCell
+                    align="center"
+                    component="th"
+                    scope="row"
+                    className={classes.flag}
+                  >
                     {flags.sf}
                   </TableCell>
-                  <TableCell align='center' component='th' scope='row'>
+                  <TableCell
+                    align="center"
+                    component="th"
+                    scope="row"
+                    className={classes.flag}
+                  >
                     {flags.zf}
                   </TableCell>
-                  <TableCell align='center' component='th' scope='row'>
+                  <TableCell
+                    align="center"
+                    component="th"
+                    scope="row"
+                    className={classes.flag}
+                  >
                     {flags.af}
                   </TableCell>
-                  <TableCell align='center' component='th' scope='row'>
+                  <TableCell
+                    align="center"
+                    component="th"
+                    scope="row"
+                    className={classes.flag}
+                  >
                     {flags.pf}
                   </TableCell>
-                  <TableCell align='center' component='th' scope='row'>
+                  <TableCell
+                    align="center"
+                    component="th"
+                    scope="row"
+                    className={classes.flag}
+                  >
                     {flags.cf}
                   </TableCell>
                 </TableRow>
@@ -1186,20 +1494,25 @@ int 0x10                ; BIOS interrupt`
           </TableContainer>
 
           <Popover
-            id={'flags'}
+            id={"flags"}
             open={tutorialStep === 6}
             anchorEl={flagRef.current}
             onClose={() => nextTutorial()}
+            onKeyUp={(e) => {
+              if (e.key === "Enter") {
+                nextTutorial();
+              }
+            }}
             anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'center',
+              vertical: "bottom",
+              horizontal: "center",
             }}
             transformOrigin={{
-              vertical: 'top',
-              horizontal: 'center',
+              vertical: "top",
+              horizontal: "center",
             }}
           >
-            <Typography className={classes.tooltips} component='div'>
+            <Typography className={classes.tooltips} component="div">
               <b>Step 7</b>
               <hr />
               Check flags here
@@ -1208,66 +1521,74 @@ int 0x10                ; BIOS interrupt`
           <br />
           <Grid container>
             <Grid item lg={5} md={12} sm={12} xs={12}>
-              <Typography variant='h5'> Memory </Typography>
+              <Typography variant="h5"> Memory </Typography>
             </Grid>
             <Grid item lg={5} md={8}>
               <Textfield
                 style={matches ? { marginTop: 20 } : { top: -4 }}
                 error={!!addressError}
-                size='small'
+                size="small"
                 value={startAddress}
-                label='Start Address'
+                label="Start Address"
                 onChange={(e) => {
                   validateAndSetAddress(e.target.value.toUpperCase());
                 }}
                 helperText={addressError}
                 className={classes.textF}
-                placeholder='Start Address'
+                placeholder="Start Address"
               />
             </Grid>
             <Grid item lg={2} md={4} style={matches ? { marginTop: 20 } : null}>
-              <Button variant='outlined' size='large' onClick={saveAddress}>
-                {' '}
-                Set{' '}
-              </Button>
+              <Tooltip title="Set the starting address for the below memory table">
+                <Button variant="outlined" size="large" onClick={saveAddress}>
+                  Set
+                </Button>
+              </Tooltip>
             </Grid>
           </Grid>
-          <TableContainer
-            className={classes.ramTable}
-            ref={ramRef}
-            aria-describedby={tutorialStep === 7 ? 'ram' : ''}
-            component={Paper}
-          >
-            <Table padding='none' size='small' aria-label='simple table'>
-              <TableBody>
-                {memory.map((row, index1) => (
-                  <TableRow key={index1}>
-                    {row.map((item, index2) => (
-                      <TableCell align='center' key={index2}>
-                        {item.toString(16).length === 1 ? '0' : ''}
-                        {item.toString(16)}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+          <Paper elevation={5}>
+            <TableContainer
+              className={classes.ramTable}
+              ref={ramRef}
+              aria-describedby={tutorialStep === 7 ? "ram" : ""}
+              component={Paper}
+            >
+              <Table padding="none" size="small" aria-label="simple table">
+                <TableBody>
+                  {memory.map((row, index1) => (
+                    <TableRow key={index1}>
+                      {row.map((item, index2) => (
+                        <TableCell align="center" key={index2}>
+                          {item.toString(16).length === 1 ? "0" : ""}
+                          {item.toString(16)}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Paper>
           <Popover
-            id={'ram'}
+            id={"ram"}
             open={tutorialStep === 7}
             anchorEl={ramRef.current}
             onClose={() => nextTutorial()}
+            onKeyUp={(e) => {
+              if (e.key === "Enter") {
+                nextTutorial();
+              }
+            }}
             anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'center',
+              vertical: "bottom",
+              horizontal: "center",
             }}
             transformOrigin={{
-              vertical: 'top',
-              horizontal: 'center',
+              vertical: "top",
+              horizontal: "center",
             }}
           >
-            <Typography className={classes.tooltips} component='div'>
+            <Typography className={classes.tooltips} component="div">
               <b>Step 8</b>
               <hr />
               Check RAM Memory here. You can also adjust the memory locations
