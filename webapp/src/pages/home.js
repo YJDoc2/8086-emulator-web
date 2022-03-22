@@ -212,11 +212,11 @@ function Home() {
           >
             <Paper className={classes.cardLeft} elevation={7} tabIndex="0">
               <Typography variant="h5" className={classes.heading} gutterBottom>
-                Supports Most of the 8086 Interrupts
+                Selected Interrupts
               </Typography>
               <Typography variant="body1" className={classes.content}>
                 Being an Emulator, this does not have 'true' memory (See Github
-                Repository) so it supports all interrupts barring select few.
+                Repository) so it supports select few interrupts.
               </Typography>
             </Paper>
           </Tilty>
