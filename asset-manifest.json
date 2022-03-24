@@ -1,27 +1,30 @@
 {
   "files": {
-    "main.css": "/8086-emulator-web/static/css/main.81e223b6.chunk.css",
-    "main.js": "/8086-emulator-web/static/js/main.2d43ae9f.chunk.js",
-    "main.js.map": "/8086-emulator-web/static/js/main.2d43ae9f.chunk.js.map",
-    "runtime-main.js": "/8086-emulator-web/static/js/runtime-main.a70f90aa.js",
-    "runtime-main.js.map": "/8086-emulator-web/static/js/runtime-main.a70f90aa.js.map",
-    "static/js/2.9c323a04.chunk.js": "/8086-emulator-web/static/js/2.9c323a04.chunk.js",
-    "static/js/2.9c323a04.chunk.js.map": "/8086-emulator-web/static/js/2.9c323a04.chunk.js.map",
-    "static/js/3.88374242.chunk.js": "/8086-emulator-web/static/js/3.88374242.chunk.js",
-    "6a4daf8b76fecaa03899.module.wasm": "/8086-emulator-web/6a4daf8b76fecaa03899.module.wasm",
-    "static/js/3.88374242.chunk.js.map": "/8086-emulator-web/static/js/3.88374242.chunk.js.map",
+    "main.css": "/8086-emulator-web/static/css/main.bd0f1456.chunk.css",
+    "main.js": "/8086-emulator-web/static/js/main.b1c9052f.chunk.js",
+    "main.js.map": "/8086-emulator-web/static/js/main.b1c9052f.chunk.js.map",
+    "runtime-main.js": "/8086-emulator-web/static/js/runtime-main.47031411.js",
+    "runtime-main.js.map": "/8086-emulator-web/static/js/runtime-main.47031411.js.map",
+    "static/js/2.6007ea4f.chunk.js": "/8086-emulator-web/static/js/2.6007ea4f.chunk.js",
+    "static/js/2.6007ea4f.chunk.js.map": "/8086-emulator-web/static/js/2.6007ea4f.chunk.js.map",
+    "static/js/3.53e7a98a.chunk.js": "/8086-emulator-web/static/js/3.53e7a98a.chunk.js",
+    "f8c902c1a92873ee109e.module.wasm": "/8086-emulator-web/f8c902c1a92873ee109e.module.wasm",
+    "static/js/3.53e7a98a.chunk.js.map": "/8086-emulator-web/static/js/3.53e7a98a.chunk.js.map",
     "index.html": "/8086-emulator-web/index.html",
-    "static/css/main.81e223b6.chunk.css.map": "/8086-emulator-web/static/css/main.81e223b6.chunk.css.map",
-    "static/js/2.9c323a04.chunk.js.LICENSE.txt": "/8086-emulator-web/static/js/2.9c323a04.chunk.js.LICENSE.txt",
+    "static/css/main.bd0f1456.chunk.css.map": "/8086-emulator-web/static/css/main.bd0f1456.chunk.css.map",
+    "static/js/2.6007ea4f.chunk.js.LICENSE.txt": "/8086-emulator-web/static/js/2.6007ea4f.chunk.js.LICENSE.txt",
     "static/media/ExpandIcon.dc874ec0.svg": "/8086-emulator-web/static/media/ExpandIcon.dc874ec0.svg",
     "static/media/chip-memory.44cc777a.svg": "/8086-emulator-web/static/media/chip-memory.44cc777a.svg",
-    "static/media/download.0ea85a9e.svg": "/8086-emulator-web/static/media/download.0ea85a9e.svg",
-    "static/media/home.220b4fca.jpg": "/8086-emulator-web/static/media/home.220b4fca.jpg"
+    "static/media/copy.565d125c.svg": "/8086-emulator-web/static/media/copy.565d125c.svg",
+    "static/media/download.9b5e6ca8.svg": "/8086-emulator-web/static/media/download.9b5e6ca8.svg",
+    "static/media/examples.d913165d.svg": "/8086-emulator-web/static/media/examples.d913165d.svg",
+    "static/media/home.220b4fca.jpg": "/8086-emulator-web/static/media/home.220b4fca.jpg",
+    "static/media/terminal.b0d987c4.svg": "/8086-emulator-web/static/media/terminal.b0d987c4.svg"
   },
   "entrypoints": [
-    "static/js/runtime-main.a70f90aa.js",
-    "static/js/2.9c323a04.chunk.js",
-    "static/css/main.81e223b6.chunk.css",
-    "static/js/main.2d43ae9f.chunk.js"
+    "static/js/runtime-main.47031411.js",
+    "static/js/2.6007ea4f.chunk.js",
+    "static/css/main.bd0f1456.chunk.css",
+    "static/js/main.b1c9052f.chunk.js"
   ]
 }
