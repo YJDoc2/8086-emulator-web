@@ -1125,7 +1125,7 @@ int 0x10                ; BIOS interrupt`
           </Popover>
           <div className={classes.flex}>
             <Paper elevation={5} style={{ flex: 1 }}>
-              <TableContainer component={Paper}>
+              <TableContainer component={Paper} ref={registerRef}>
                 <Table size="small" aria-label="simple table">
                   <TableHead>
                     <TableRow>
