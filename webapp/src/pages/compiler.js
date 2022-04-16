@@ -423,7 +423,7 @@ int 0x10                ; BIOS interrupt`
     if (errorText.length > 30) {
       errorText = errorText.slice(0, errorText.indexOf(" ", 30)) + "...";
     }
-    var re = /(?=(\d+))/; //to find digit
+    let re = /(?=(\d+))/.compile(); //to find digit
     let rowNumber =
       re.exec(errorText.slice(errorText.indexOf("at line ")))[1] - 1; //subtract 1 as index starts from 0
     setErrorAnnotations((errorAnnotations) => [
