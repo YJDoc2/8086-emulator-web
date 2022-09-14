@@ -26,6 +26,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import Popover from "@material-ui/core/Popover";
 import Tooltip from "@material-ui/core/Tooltip";
+// Hotkeys
+import Hotkeys from "react-hot-keys";
 // Images
 import help from "../images/help.png";
 import { ReactComponent as DownloadButton } from "../images/download.svg";
@@ -424,9 +426,15 @@ int 0x10                ; BIOS interrupt`
     if (errorText.length > 30) {
       errorText = errorText.slice(0, errorText.indexOf(" ", 30)) + "...";
     }
-    let re = /(?=(\d+))/.compile(); //to find digit
-    let rowNumber =
-      re.exec(errorText.slice(errorText.indexOf("at line ")))[1] - 1; //subtract 1 as index starts from 0
+    let re = new RegExp(/(?=(\d+))/); //to find digit
+    console.log(errorText);
+    let rowNumber = 0;
+    if (re.exec(errorText.slice(errorText.indexOf("at line "))) !== null) {
+      rowNumber =
+        re.exec(errorText.slice(errorText.indexOf("at line ")))[1] - 1; //subtract 1 as index starts from 0
+      codeEditor.current.editor.focus();
+      codeEditor.current.editor.gotoLine(rowNumber + 1);
+    }
     setErrorAnnotations((errorAnnotations) => [
       ...errorAnnotations,
       { row: rowNumber, column: 0, type: "error", text: errorText },
@@ -682,6 +690,26 @@ int 0x10                ; BIOS interrupt`
       .catch((e) => console.error(e));
   };
 
+  // Hotkeys
+  const handleHotkeys = (s, e) => {
+    e.preventDefault();
+    if (s === "shift+c") {
+      compile();
+    } else if (s === "shift+r") {
+      if (compiled) {
+        runCode();
+      }
+    } else if (s === "shift+n") {
+      if (compiled) {
+        executeNext();
+      }
+    } else if (s === "shift+s") {
+      if (compiled) {
+        stopCode();
+      }
+    }
+  };
+
   return (
     <div className={classes.root}>
       <div className={classes.chatbot}>
@@ -736,6 +764,12 @@ int 0x10                ; BIOS interrupt`
               </Typography>
             </Grid>
             <Grid item lg={8} align="right">
+              <Hotkeys
+                keyName="shift+c"
+                onKeyUp={(s, e) => {
+                  handleHotkeys(s, e);
+                }}
+              />
               <Button
                 aria-describedby={tutorialStep === 1 ? "compile" : ""}
                 variant="contained"
@@ -1034,6 +1068,7 @@ int 0x10                ; BIOS interrupt`
               onChange={onChange}
               name="CODE_EDITOR"
               editorProps={{ $blockScrolling: false }}
+              showGutter={true}
               annotations={errorAnnotations}
             />
           </Paper>
