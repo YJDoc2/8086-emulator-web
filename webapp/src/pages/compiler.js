@@ -143,6 +143,7 @@ function Compiler(props) {
     intervalHandler = setInterval(async () => {
       try {
         let res = driver.next();
+        console.log(res);
         setLine(driver.line);
         if (res.halt) {
           setCompiled(false);
@@ -486,6 +487,7 @@ int 0x10                ; BIOS interrupt`
         setLine(driver.line);
         //	Compile code here
         setCompiled(true);
+        showSnackbar("Compiled Sucessfully");
         setHalted(false);
         set8086State(driver);
         setErrors("");
@@ -1073,6 +1075,7 @@ int 0x10                ; BIOS interrupt`
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 style={{ marginTop: 10 }}
+                // focused={true}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
