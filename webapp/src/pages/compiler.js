@@ -28,11 +28,15 @@ import Popover from "@material-ui/core/Popover";
 import Tooltip from "@material-ui/core/Tooltip";
 // Hotkeys
 import Hotkeys from "react-hot-keys";
+//
+import { useSpeechSynthesis } from "react-speech-kit";
 // Images
 import help from "../images/help.png";
 import { ReactComponent as DownloadButton } from "../images/download.svg";
 import { ReactComponent as Examples } from "../images/examples.svg";
 import { ReactComponent as CopyIcon } from "../images/copy.svg";
+import { ReactComponent as AccessibilityIcon } from "../images/accessibility.svg";
+import AntSwitch from "../components/switch";
 
 const MEM_MAX = 16 * 8;
 const MB = 1024 * 1024;
@@ -128,6 +132,11 @@ const useStyles = makeStyles((theme) => ({
   cursor: {
     cursor: "pointer",
   },
+  keyboardCMD: {
+    backgroundColor: '#777777',
+    borderRadius: '5px',
+    padding: '3px'
+  }
 }));
 
 // These are used as global state holders for interval value and output values, as when running
@@ -145,13 +154,17 @@ function Compiler(props) {
     intervalHandler = setInterval(async () => {
       try {
         let res = driver.next();
-        console.log(res);
         setLine(driver.line);
         if (res.halt) {
           setCompiled(false);
           setHalted(true);
           showSnackbar("Execution Halted!");
           stopIntervalTask();
+          if (accessibilityMode) {
+            const voice = voices[1]
+            const r = 2.5;
+            speak({ text: "Execution Halted", voice, r })
+          }
         }
         if (res.int) {
           if (res.int === 3) {
@@ -172,6 +185,11 @@ function Compiler(props) {
               stopIntervalTask();
               setHalted(true);
               showSnackbar("Please Give input for INT 21");
+              if (accessibilityMode) {
+                const voice = voices[1]
+                const r = 2.5;
+                speak({ text: "Please Give input for INT 21", voice, r })
+              }
             }
           }
         }
@@ -201,6 +219,8 @@ function Compiler(props) {
   let stopRef = useRef(null);
   let editorContainer = useRef(null);
   let downloadRef = useRef(null);
+  let startAddressRef = useRef(null);
+  const inputRef = useRef();
 
   const { currentTheme } = useContext(CustomThemeContext);
   const [openSnackbar, setOpenSnackbar] = useState(false);
@@ -403,7 +423,7 @@ function Compiler(props) {
   });
   const [code, setCode] = useState(
     localStorage.getItem("x86code") ||
-      `; Program to show use of interrupts
+    `; Program to show use of interrupts
 ; Also, Hello World program !
 hello: DB "Hello World" ; store string
 
@@ -418,6 +438,12 @@ MOV DL, 0               ; start writing from col 0
 int 0x10                ; BIOS interrupt`
   ); //State to maintain the code string
   //To add an error annotation, call this function and pas row number (starts with 0), column number (starts with 0) and error text
+  const [editorFocus, setEditorFocus] = useState(false);// To check if editor is in focus
+  const [textReader, setTextReader] = useState("");// To store the text that will be spoken
+  const [accessibilityMode, setAccessibilityMode] = useState(false);// Check if accessibility mode is on or off
+  const { speak, cancel, voices, rate } = useSpeechSynthesis();//Speech synthesis hook
+
+
   const addAnnotation = (errorText) => {
     if (errorText === "") {
       setErrorAnnotations([]);
@@ -427,7 +453,6 @@ int 0x10                ; BIOS interrupt`
       errorText = errorText.slice(0, errorText.indexOf(" ", 30)) + "...";
     }
     let re = new RegExp(/(?=(\d+))/); //to find digit
-    console.log(errorText);
     let rowNumber = 0;
     if (re.exec(errorText.slice(errorText.indexOf("at line "))) !== null) {
       rowNumber =
@@ -500,6 +525,11 @@ int 0x10                ; BIOS interrupt`
         set8086State(driver);
         setErrors("");
         addAnnotation("");
+        if (accessibilityMode) {
+          const voice = voices[1]
+          const r = 2.5;
+          speak({ text: "Compiled Successfully", voice, r })
+        }
       } catch (e) {
         // e is going to be of string type, if it is one returned from rust
         // if it is an object, or unknown type error,
@@ -509,6 +539,11 @@ int 0x10                ; BIOS interrupt`
         showSnackbar("Error Occured!");
         setErrors(e);
         addAnnotation(e);
+        if (accessibilityMode) {
+          const voice = voices[1]
+          const r = 2.5;
+          speak({ text: "Error Occured", voice, r })
+        }
       }
 
       localStorage.setItem("x86code", code);
@@ -526,6 +561,7 @@ int 0x10                ; BIOS interrupt`
   const validateAndSetAddress = (address) => {
     if (!driver) {
       setAddressError("Compile Program Before Setting Memory");
+      startAddressRef.current.blur()
       return;
     }
     if (address === "") {
@@ -538,7 +574,7 @@ int 0x10                ; BIOS interrupt`
       if (start > ALLOWED_ADDRESS_MAX) {
         setAddressError(
           "Must be between 00000 to " +
-            ALLOWED_ADDRESS_MAX.toString(16).toUpperCase()
+          ALLOWED_ADDRESS_MAX.toString(16).toUpperCase()
         );
         return;
       }
@@ -588,6 +624,11 @@ int 0x10                ; BIOS interrupt`
         setCompiled(false);
         setHalted(true);
         showSnackbar("Execution Halted!");
+        if (accessibilityMode) {
+          const voice = voices[1]
+          const r = 2.5;
+          speak({ text: "Execution Halted", voice, r })
+        }
       }
       if (res.int) {
         if (res.int === 3) {
@@ -606,6 +647,11 @@ int 0x10                ; BIOS interrupt`
           } else {
             setHalted(true);
             showSnackbar("Execution Halted!");
+            if (accessibilityMode) {
+              const voice = voices[1]
+              const r = 2.5;
+              speak({ text: "Execution Halted", voice, r })
+            }
           }
         }
       }
@@ -631,6 +677,12 @@ int 0x10                ; BIOS interrupt`
       driver.set_int_21(input.slice(0));
       setHalted(false);
       showSnackbar("Click Run or Next to continue Execution");
+      inputRef.current.blur();
+      if (accessibilityMode) {
+        const voice = voices[1]
+        const r = 2.5;
+        speak({ text: "Input submitted. Click Run or Next to continue Execution", voice, r })
+      }
     }
   };
 
@@ -692,23 +744,84 @@ int 0x10                ; BIOS interrupt`
 
   // Hotkeys
   const handleHotkeys = (s, e) => {
-    e.preventDefault();
-    if (s === "shift+c") {
+    if (s === "ctrl+shift+1") {
       compile();
-    } else if (s === "shift+r") {
-      if (compiled) {
-        runCode();
-      }
-    } else if (s === "shift+n") {
+    } else if (s === "ctrl+shift+2") {
       if (compiled) {
         executeNext();
       }
-    } else if (s === "shift+s") {
+    } else if (s === "ctrl+shift+3") {
       if (compiled) {
-        stopCode();
+        runCode();
       }
+    } else if (s === "ctrl+shift+4") {
+      stopCode();
+      if (!compiled) {
+        if (errors && errors.length) {
+          codeEditor.current.editor.gotoLine(1);
+          codeEditor.current.editor.focus();
+        }
+      }
+    } else if (s === "ctrl+shift+5" || s === "cmd+shift+5") {
+      handleInput()
+    } else if (s === "ctrl+shift+6" || s === "cmd+shift+6") {
+      startAddressRef.current.focus()
+    } else if (s === "ctrl+shift+7" || s === "cmd+shift+7") {
+      saveAddress()
+    } else if (s === "shift+a") {
+      handleAccessibilityMode()
+    } else if (s === "shift+e") {
+      codeEditor.current.editor.focus();
+    } else if (s === "shift+i") {
+      inputRef.current.focus();
     }
   };
+
+  const handleAccessibilityMode = () => {
+    setAccessibilityMode(!accessibilityMode);
+  }
+
+  const handleTextReader = (val, e) => {
+    if (accessibilityMode && editorFocus) {
+      console.log(val.doc.$lines[val.cursor.row], val.cursor.row);
+      let text = val.doc.$lines[val.cursor.row];
+      text = text.replace(/  +/g, ' '); // replace multiple spaces with single space
+      setTextReader(text);
+    } else {
+
+    }
+  };
+
+  useEffect(() => {
+    if (accessibilityMode) {
+      const voice = voices[1];
+      const r = 2.5;
+      cancel();
+      textReader
+        .trim()
+        .split("")
+        .map((val) => {
+          return speak({ text: val, voice, r });
+        });
+    }
+  }, [textReader]);
+
+  // If accessibilityMode toggle switched to off in between speaking then cancel the current operation
+  useEffect(() => {
+    if (!accessibilityMode) {
+      cancel();
+    } else {
+      showSnackbar("Editor switched to Read-only mode!");
+      const voice = voices[1]
+      const r = 2.5;
+      speak({ text: "Editor switched to Read-only mode", voice, r })
+    }
+  }, [accessibilityMode])
+
+
+  // Tooltip title component
+  const TooltipTitle = ({ content, cmd }) =>
+    <p style={{ textAlign: 'center' }}>{content}<br />{cmd}</p>
 
   return (
     <div className={classes.root}>
@@ -763,25 +876,53 @@ int 0x10                ; BIOS interrupt`
                 Code Editor
               </Typography>
             </Grid>
+            <Hotkeys
+              keyName="shift+a"
+              onKeyUp={(s, e) => {
+                handleHotkeys(s, e);
+              }}
+              filter={(event) => {
+                return true;
+              }}
+            />
             <Grid item lg={8} align="right">
+              <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', marginRight: '10px' }}>
+                <Tooltip title={<TooltipTitle content={"Accessibility Mode"} cmd={"(Shift+a)"} />} arrow>
+                  <Typography>
+                    <AccessibilityIcon
+                      style={{
+                        fill: currentTheme === "dark" ? "#ccc" : "black",
+                      }}
+                    />
+                  </Typography>
+                </Tooltip>
+                <AntSwitch checked={accessibilityMode} inputProps={{ 'aria-label': 'Accessibility Mode' }} onChange={handleAccessibilityMode} />
+              </div>
               <Hotkeys
-                keyName="shift+c"
+                keyName="ctrl+shift+1"
                 onKeyUp={(s, e) => {
                   handleHotkeys(s, e);
                 }}
+                filter={(event) => {
+                  return true;
+                }}
               />
-              <Button
-                aria-describedby={tutorialStep === 1 ? "compile" : ""}
-                variant="contained"
-                color="primary"
-                size="small"
-                ref={compileRef}
-                onClick={compile}
-                disabled={!props.wasm}
-                className={classes.compileButton}
-              >
-                COMPILE
-              </Button>
+              <Tooltip title={<TooltipTitle content={"Compile"} cmd={"(Ctrl+Shift+1 | Cmd+Shift+1)"} />} enterDelay={1000} arrow>
+                <span>
+                  <Button
+                    aria-describedby={tutorialStep === 1 ? "compile" : ""}
+                    variant="contained"
+                    color="primary"
+                    size="small"
+                    ref={compileRef}
+                    onClick={compile}
+                    disabled={!props.wasm}
+                    className={classes.compileButton}
+                  >
+                    COMPILE
+                  </Button>
+                </span>
+              </Tooltip>
               <Popover
                 id={"compile"}
                 open={tutorialStep === 1}
@@ -807,19 +948,32 @@ int 0x10                ; BIOS interrupt`
                   Next, Compile the code.
                 </Typography>
               </Popover>
-              <Button
-                variant="outlined"
-                aria-describedby={tutorialStep === 2 ? "run" : ""}
-                size="small"
-                onClick={runCode}
-                ref={runRef}
-                disabled={!compiled || halted}
-                className={
-                  compiled && !halted ? classes.runBtn : classes.topBtn
-                }
-              >
-                Run
-              </Button>
+              <Hotkeys
+                keyName="ctrl+shift+3"
+                onKeyUp={(s, e) => {
+                  handleHotkeys(s, e);
+                }}
+                filter={(event) => {
+                  return true;
+                }}
+              />
+              <Tooltip title={<TooltipTitle content={"Run"} cmd={"(Ctrl+Shift+3 | Cmd+Shift+3)"} />} enterDelay={1000} arrow>
+                <span>
+                  <Button
+                    variant="outlined"
+                    aria-describedby={tutorialStep === 2 ? "run" : ""}
+                    size="small"
+                    onClick={runCode}
+                    ref={runRef}
+                    disabled={!compiled || halted}
+                    className={
+                      compiled && !halted ? classes.runBtn : classes.topBtn
+                    }
+                  >
+                    Run
+                  </Button>
+                </span>
+              </Tooltip>
               <Popover
                 id={"run"}
                 open={tutorialStep === 2}
@@ -845,19 +999,32 @@ int 0x10                ; BIOS interrupt`
                   Run the compiled code.
                 </Typography>
               </Popover>
-              <Button
-                variant="outlined"
-                size="small"
-                ref={singleStepRef}
-                aria-describedby={tutorialStep === 3 ? "single_step" : ""}
-                onClick={executeNext}
-                disabled={!compiled || halted}
-                className={
-                  compiled && !halted ? classes.nextBtn : classes.topBtn
-                }
-              >
-                Next
-              </Button>
+              <Hotkeys
+                keyName="ctrl+shift+2"
+                onKeyUp={(s, e) => {
+                  handleHotkeys(s, e);
+                }}
+                filter={(event) => {
+                  return true;
+                }}
+              />
+              <Tooltip title={<TooltipTitle content={"Next"} cmd={"(Ctrl+Shift+2 | Cmd+Shift+2)"} />} enterDelay={1000} arrow>
+                <span>
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    ref={singleStepRef}
+                    aria-describedby={tutorialStep === 3 ? "single_step" : ""}
+                    onClick={executeNext}
+                    disabled={!compiled || halted}
+                    className={
+                      compiled && !halted ? classes.nextBtn : classes.topBtn
+                    }
+                  >
+                    Next
+                  </Button>
+                </span>
+              </Tooltip>
               <Popover
                 id={"single_step"}
                 open={tutorialStep === 3}
@@ -883,19 +1050,32 @@ int 0x10                ; BIOS interrupt`
                   Execute the next line of the instruction.
                 </Typography>
               </Popover>
-              <Button
-                variant="outlined"
-                size="small"
-                ref={stopRef}
-                aria-describedby={tutorialStep === 4 ? "stop" : ""}
-                onClick={stopCode}
-                disabled={!compiled || halted}
-                className={
-                  compiled && !halted ? classes.stopBtn : classes.topBtn
-                }
-              >
-                Stop
-              </Button>
+              <Hotkeys
+                keyName="ctrl+shift+4"
+                onKeyUp={(s, e) => {
+                  handleHotkeys(s, e);
+                }}
+                filter={(event) => {
+                  return true;
+                }}
+              />
+              <Tooltip title={<TooltipTitle content={"Stop"} cmd={"(Ctrl+Shift+4 | Cmd+Shift+4)"} />} enterDelay={1000} arrow>
+                <span>
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    ref={stopRef}
+                    aria-describedby={tutorialStep === 4 ? "stop" : ""}
+                    onClick={stopCode}
+                    disabled={!compiled || halted}
+                    className={
+                      compiled && !halted ? classes.stopBtn : classes.topBtn
+                    }
+                  >
+                    Stop
+                  </Button>
+                </span>
+              </Tooltip>
               <Popover
                 id={"stop"}
                 open={tutorialStep === 4}
@@ -1054,7 +1234,15 @@ int 0x10                ; BIOS interrupt`
                 </span>
               )}
             </div>
-
+            <Hotkeys
+              keyName="shift+e"
+              onKeyUp={(s, e) => {
+                handleHotkeys(s, e);
+              }}
+              filter={(event) => {
+                return true;
+              }}
+            />
             <AceEditor
               ref={codeEditor}
               aria-describedby={tutorialStep === 0 ? "editor" : ""}
@@ -1070,6 +1258,14 @@ int 0x10                ; BIOS interrupt`
               editorProps={{ $blockScrolling: false }}
               showGutter={true}
               annotations={errorAnnotations}
+              readOnly={accessibilityMode}
+              onCursorChange={(val, e) => handleTextReader(val, e)}
+              onFocus={(e) => {
+                setEditorFocus(true);
+              }}
+              onBlur={(e) => {
+                setEditorFocus(false)
+              }}
             />
           </Paper>
           <Popover
@@ -1095,6 +1291,8 @@ int 0x10                ; BIOS interrupt`
               <b>Step 1</b>
               <hr />
               Write your Code in the editor.
+              <br />
+              <b className={classes.keyboardCMD}>Shift+e</b> to focus on editor.
             </Typography>
           </Popover>
           {errors ? (
@@ -1104,27 +1302,47 @@ int 0x10                ; BIOS interrupt`
             </Paper>
           ) : (
             <div>
-              <Textfield
-                label="Input"
-                fullWidth
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                style={{ marginTop: 10 }}
-                // focused={true}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <Tooltip
-                        title="Use this to submit your input on runtime"
-                        arrow
-                        placement="right"
-                      >
-                        <IconButton onClick={handleInput}>&#10003;</IconButton>
-                      </Tooltip>
-                    </InputAdornment>
-                  ),
+              <Hotkeys
+                keyName="ctrl+shift+5"
+                onKeyUp={(s, e) => {
+                  handleHotkeys(s, e);
+                }}
+                filter={(event) => {
+                  return true;
                 }}
               />
+              <Hotkeys
+                keyName="shift+i"
+                onKeyUp={(s, e) => {
+                  handleHotkeys(s, e);
+                }}
+                filter={(event) => {
+                  return true;
+                }}
+              />
+              <Tooltip title={<TooltipTitle content={"Set Input"} cmd={"(Ctrl+Shift+5)"} />} enterDelay={1000}>
+                <Textfield
+                  label="Input"
+                  fullWidth
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  style={{ marginTop: 10 }}
+                  inputRef={inputRef}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <Tooltip
+                          title="Use this to submit your input on runtime"
+                          arrow
+                          placement="right"
+                        >
+                          <IconButton onClick={handleInput}>&#10003;</IconButton>
+                        </Tooltip>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </Tooltip>
               <Textfield
                 label="Output"
                 value={output}
@@ -1161,7 +1379,7 @@ int 0x10                ; BIOS interrupt`
               Check Registers values here.
             </Typography>
           </Popover>
-          <div className={classes.flex}>
+          <div ref={registerRef} className={classes.flex}>
             <Paper elevation={5} style={{ flex: 1 }}>
               <TableContainer component={Paper}>
                 <Table size="small" aria-label="simple table">
@@ -1561,23 +1779,41 @@ int 0x10                ; BIOS interrupt`
             <Grid item lg={5} md={12} sm={12} xs={12}>
               <Typography variant="h5"> Memory </Typography>
             </Grid>
+            <Hotkeys
+              keyName="ctrl+shift+6"
+              onKeyUp={(s, e) => {
+                handleHotkeys(s, e);
+              }}
+            />
             <Grid item lg={5} md={8}>
-              <Textfield
-                style={matches ? { marginTop: 20 } : { top: -4 }}
-                error={!!addressError}
-                size="small"
-                value={startAddress}
-                label="Start Address"
-                onChange={(e) => {
-                  validateAndSetAddress(e.target.value.toUpperCase());
-                }}
-                helperText={addressError}
-                className={classes.textF}
-                placeholder="Start Address"
-              />
+              <Tooltip title={<TooltipTitle content={"Start Address"} cmd={"(Ctrl+Shift+6)"} />} enterDelay={1000}>
+                <Textfield
+                  inputRef={startAddressRef}
+                  style={matches ? { marginTop: 20 } : { top: -4 }}
+                  error={!!addressError}
+                  size="small"
+                  value={startAddress}
+                  label="Start Address"
+                  onChange={(e) => {
+                    validateAndSetAddress(e.target.value.toUpperCase());
+                  }}
+                  helperText={addressError}
+                  className={classes.textF}
+                  placeholder="Start Address"
+                />
+              </Tooltip>
             </Grid>
             <Grid item lg={2} md={4} style={matches ? { marginTop: 20 } : null}>
-              <Tooltip title="Set the starting address for the below memory table">
+              <Hotkeys
+                keyName="ctrl+shift+7"
+                onKeyUp={(s, e) => {
+                  handleHotkeys(s, e);
+                }}
+                filter={(event) => {
+                  return true;
+                }}
+              />
+              <Tooltip title={<TooltipTitle content={"Set the starting address for the below memory table"} cmd={"(Ctrl+Shift+7)"} />}>
                 <Button variant="outlined" size="large" onClick={saveAddress}>
                   Set
                 </Button>
