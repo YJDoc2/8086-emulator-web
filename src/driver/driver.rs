@@ -157,7 +157,7 @@ impl WebDriver {
                                 let pos = self.source_map.get(&self.idx).unwrap();
                                 let (line, start, end) = get_err_pos(&self.lh, *pos);
                                 return Err(JsValue::from(format!(
-                                    "Error at line {} : {}, value of AH = {} is not supported for int 0x10",
+                                    "Error at line {} : {}, value of AH = {} is not supported for int 0x21",
                                     line,
                                     &self.input[start..end],
                                     ah
