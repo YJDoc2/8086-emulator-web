@@ -264,6 +264,9 @@ impl WebDriver {
             for i in ip.bytes() {
                 self.vm.mem[start + 2 + ctr] = i;
                 ctr += 1;
+                if ctr == required {
+                    break;
+                }
             }
         }
     }
