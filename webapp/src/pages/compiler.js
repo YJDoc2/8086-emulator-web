@@ -751,6 +751,7 @@ int 0x10                ; BIOS interrupt`
                 open={tutorialStep === 1}
                 anchorEl={compileRef.current}
                 onClose={() => nextTutorial()}
+                onClick={() => nextTutorial()}
                 onKeyUp={(e) => {
                   if (e.key === "Enter") {
                     nextTutorial();
@@ -789,6 +790,7 @@ int 0x10                ; BIOS interrupt`
                 open={tutorialStep === 2}
                 anchorEl={runRef.current}
                 onClose={() => nextTutorial()}
+                onClick={() => nextTutorial()}
                 onKeyUp={(e) => {
                   if (e.key === "Enter") {
                     nextTutorial();
@@ -827,6 +829,7 @@ int 0x10                ; BIOS interrupt`
                 open={tutorialStep === 3}
                 anchorEl={singleStepRef.current}
                 onClose={() => nextTutorial()}
+                onClick={() => nextTutorial()}
                 onKeyUp={(e) => {
                   if (e.key === "Enter") {
                     nextTutorial();
@@ -865,6 +868,7 @@ int 0x10                ; BIOS interrupt`
                 open={tutorialStep === 4}
                 anchorEl={stopRef.current}
                 onClose={() => nextTutorial()}
+                onClick={() => nextTutorial()}
                 onKeyUp={(e) => {
                   if (e.key === "Enter") {
                     nextTutorial();
@@ -928,6 +932,7 @@ int 0x10                ; BIOS interrupt`
               open={tutorialStep === 8}
               anchorEl={downloadRef.current}
               onClose={() => nextTutorial()}
+              onClick={() => nextTutorial()}
               onKeyUp={(e) => {
                 if (e.key === "Enter") {
                   nextTutorial();
@@ -1040,6 +1045,7 @@ int 0x10                ; BIOS interrupt`
             open={tutorialStep === 0}
             anchorEl={editorContainer.current}
             onClose={() => nextTutorial()}
+            onClick={() => nextTutorial()}
             onKeyUp={(e) => {
               if (e.key === "Enter") {
                 nextTutorial();
@@ -1103,6 +1109,7 @@ int 0x10                ; BIOS interrupt`
             open={tutorialStep === 5}
             anchorEl={registerRef.current}
             onClose={() => nextTutorial()}
+            onClick={() => nextTutorial()}
             onKeyUp={(e) => {
               if (e.key === "Enter") {
                 nextTutorial();
@@ -1125,7 +1132,7 @@ int 0x10                ; BIOS interrupt`
           </Popover>
           <div className={classes.flex}>
             <Paper elevation={5} style={{ flex: 1 }}>
-              <TableContainer component={Paper}>
+              <TableContainer component={Paper} ref={registerRef}>
                 <Table size="small" aria-label="simple table">
                   <TableHead>
                     <TableRow>
@@ -1498,6 +1505,7 @@ int 0x10                ; BIOS interrupt`
             open={tutorialStep === 6}
             anchorEl={flagRef.current}
             onClose={() => nextTutorial()}
+            onClick={() => nextTutorial()}
             onKeyUp={(e) => {
               if (e.key === "Enter") {
                 nextTutorial();
@@ -1574,6 +1582,7 @@ int 0x10                ; BIOS interrupt`
             open={tutorialStep === 7}
             anchorEl={ramRef.current}
             onClose={() => nextTutorial()}
+            onClick={() => nextTutorial()}
             onKeyUp={(e) => {
               if (e.key === "Enter") {
                 nextTutorial();
