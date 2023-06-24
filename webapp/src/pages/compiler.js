@@ -441,7 +441,7 @@ int 0x10                ; BIOS interrupt`
   const [editorFocus, setEditorFocus] = useState(false);// To check if editor is in focus
   const [textReader, setTextReader] = useState("");// To store the text that will be spoken
   const [accessibilityMode, setAccessibilityMode] = useState(false);// Check if accessibility mode is on or off
-  const { speak, cancel, voices, rate } = useSpeechSynthesis();//Speech synthesis hook
+  const { speak, cancel, voices } = useSpeechSynthesis();//Speech synthesis hook
 
 
   const addAnnotation = (errorText) => {
@@ -768,11 +768,11 @@ int 0x10                ; BIOS interrupt`
       startAddressRef.current.focus()
     } else if (s === "ctrl+shift+7" || s === "cmd+shift+7") {
       saveAddress()
-    } else if (s === "shift+a") {
+    } else if (s === "alt+a") {
       handleAccessibilityMode()
-    } else if (s === "shift+e") {
+    } else if (s === "alt+z") {
       codeEditor.current.editor.focus();
-    } else if (s === "shift+i") {
+    } else if (s === "alt+i") {
       inputRef.current.focus();
     }
   };
@@ -877,7 +877,7 @@ int 0x10                ; BIOS interrupt`
               </Typography>
             </Grid>
             <Hotkeys
-              keyName="shift+a"
+              keyName="alt+a"
               onKeyUp={(s, e) => {
                 handleHotkeys(s, e);
               }}
@@ -887,7 +887,7 @@ int 0x10                ; BIOS interrupt`
             />
             <Grid item lg={8} align="right">
               <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', marginRight: '10px' }}>
-                <Tooltip title={<TooltipTitle content={"Accessibility Mode"} cmd={"(Shift+a)"} />} arrow>
+                <Tooltip title={<TooltipTitle content={"Accessibility Mode"} cmd={"(Alt+a)"} />} arrow>
                   <Typography>
                     <AccessibilityIcon
                       style={{
@@ -1240,7 +1240,7 @@ int 0x10                ; BIOS interrupt`
               )}
             </div>
             <Hotkeys
-              keyName="shift+e"
+              keyName="alt+z"
               onKeyUp={(s, e) => {
                 handleHotkeys(s, e);
               }}
@@ -1298,7 +1298,7 @@ int 0x10                ; BIOS interrupt`
               <hr />
               Write your Code in the editor.
               <br />
-              <b className={classes.keyboardCMD}>Shift+e</b> to focus on editor.
+              <b className={classes.keyboardCMD}>Alt+Shift+e</b> to focus on editor.
             </Typography>
           </Popover>
           {errors ? (
@@ -1318,7 +1318,7 @@ int 0x10                ; BIOS interrupt`
                 }}
               />
               <Hotkeys
-                keyName="shift+i"
+                keyName="alt+i"
                 onKeyUp={(s, e) => {
                   handleHotkeys(s, e);
                 }}
