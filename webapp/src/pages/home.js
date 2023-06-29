@@ -129,7 +129,7 @@ function Home() {
                     variant="contained"
                     color="primary"
                     className={classes.bottomBtn}
-                    style={{ boxShadow: "#F4C430 0px 22px 70px 24px;" }}
+                    style={{ boxShadow: "#F4C430 0px 2px 2px -2px" }}
                   >
                     Try Online 8086 Compiler
                   </Button>
