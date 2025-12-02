@@ -130,9 +130,9 @@ export const instruction_set = [
         description:
           "Used to store a word wide number, or declare array of word or to store word strings",
         usage: [
-          "DW signed/unsigned byte number; Stores a single number",
+          "DW signed/unsigned word number; Stores a single number",
           "DW [unsigned word number]; Set given number of words to 0 (Can be used to declared arrays)",
-          "DW [signed/unsigned byte number, unsigned word number]; sets given number of words (second argument) to given value (first argument)",
+          "DW [signed/unsigned word number, unsigned word number]; sets given number of words (second argument) to given value (first argument)",
           'DW "string"; stores a string , characters or not escaped, eg : \\n will be stored as \\ and n.',
         ],
       },
@@ -1056,3 +1056,4 @@ operand`,
     ],
   },
 ];
+
