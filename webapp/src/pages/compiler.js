@@ -1,5 +1,7 @@
-import React, { useState, useContext, useRef, useEffect } from "react";
+import React, { useState, useContext, useRef, useEffect, useCallback } from "react";
 import { CustomThemeContext } from "../themes/CustomThemeProvider";
+import SEO from "../components/seo";
+import { siteConfig } from "../siteConfig";
 // Ace Editor
 import AceEditor from "react-ace";
 import "ace-builds/src-noconflict/mode-assembly_x86";
@@ -28,8 +30,6 @@ import Popover from "@material-ui/core/Popover";
 import Tooltip from "@material-ui/core/Tooltip";
 // Hotkeys
 import Hotkeys from "react-hot-keys";
-//
-import { useSpeechSynthesis } from "react-speech-kit";
 // Images
 import help from "../images/help.png";
 import { ReactComponent as DownloadButton } from "../images/download.svg";
@@ -147,6 +147,18 @@ let outputHolder = "";
 //Compiler Page
 function Compiler(props) {
   const matches = useMediaQuery("(max-width:1024px)");
+  const structuredData = [
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      name: "8086 Online Compiler",
+      applicationCategory: "DeveloperApplication",
+      operatingSystem: "Web",
+      description:
+        "Write, compile, and step through 8086 assembly code online with register, flag, memory, and output views.",
+      url: siteConfig.routes.compiler.url,
+    },
+  ];
   const startIntervalTask = () => {
     if (intervalHandler !== null) {
       return;
@@ -161,9 +173,7 @@ function Compiler(props) {
           showSnackbar("Execution Halted!");
           stopIntervalTask();
           if (accessibilityMode) {
-            const voice = voices[1]
-            const r = 2.5;
-            speak({ text: "Execution Halted", voice, r })
+            speakText("Execution Halted");
           }
         }
         if (res.int) {
@@ -186,9 +196,7 @@ function Compiler(props) {
               setHalted(true);
               showSnackbar("Please Give input for INT 21");
               if (accessibilityMode) {
-                const voice = voices[1]
-                const r = 2.5;
-                speak({ text: "Please Give input for INT 21", voice, r })
+                speakText("Please Give input for INT 21");
               }
             }
           }
@@ -441,7 +449,47 @@ int 0x10                ; BIOS interrupt`
   const [editorFocus, setEditorFocus] = useState(false);// To check if editor is in focus
   const [textReader, setTextReader] = useState("");// To store the text that will be spoken
   const [accessibilityMode, setAccessibilityMode] = useState(false);// Check if accessibility mode is on or off
-  const { speak, cancel, voices } = useSpeechSynthesis();//Speech synthesis hook
+  const speechSynthesisRef = useRef(null);
+  const [speechVoices, setSpeechVoices] = useState([]);
+
+  const getSpeechVoice = useCallback(
+    () => speechVoices[1] || speechVoices[0] || null,
+    [speechVoices]
+  );
+
+  const cancelSpeech = useCallback(() => {
+    if (speechSynthesisRef.current) {
+      speechSynthesisRef.current.cancel();
+    }
+  }, []);
+
+  const speakText = useCallback((text, options = {}) => {
+    if (
+      !accessibilityMode ||
+      !text ||
+      !speechSynthesisRef.current ||
+      typeof window === "undefined" ||
+      typeof window.SpeechSynthesisUtterance === "undefined"
+    ) {
+      return;
+    }
+
+    const { interrupt = true } = options;
+    const utterance = new window.SpeechSynthesisUtterance(text);
+    const voice = getSpeechVoice();
+
+    if (voice) {
+      utterance.voice = voice;
+    }
+
+    utterance.rate = 1.2;
+
+    if (interrupt) {
+      speechSynthesisRef.current.cancel();
+    }
+
+    speechSynthesisRef.current.speak(utterance);
+  }, [accessibilityMode, getSpeechVoice]);
 
 
   const addAnnotation = (errorText) => {
@@ -526,9 +574,7 @@ int 0x10                ; BIOS interrupt`
         setErrors("");
         addAnnotation("");
         if (accessibilityMode) {
-          const voice = voices[1]
-          const r = 2.5;
-          speak({ text: "Compiled Successfully", voice, r })
+          speakText("Compiled Successfully");
         }
       } catch (e) {
         // e is going to be of string type, if it is one returned from rust
@@ -540,9 +586,7 @@ int 0x10                ; BIOS interrupt`
         setErrors(e);
         addAnnotation(e);
         if (accessibilityMode) {
-          const voice = voices[1]
-          const r = 2.5;
-          speak({ text: "Error Occured", voice, r })
+          speakText("Error Occured");
         }
       }
 
@@ -625,9 +669,7 @@ int 0x10                ; BIOS interrupt`
         setHalted(true);
         showSnackbar("Execution Halted!");
         if (accessibilityMode) {
-          const voice = voices[1]
-          const r = 2.5;
-          speak({ text: "Execution Halted", voice, r })
+          speakText("Execution Halted");
         }
       }
       if (res.int) {
@@ -648,9 +690,7 @@ int 0x10                ; BIOS interrupt`
             setHalted(true);
             showSnackbar("Execution Halted!");
             if (accessibilityMode) {
-              const voice = voices[1]
-              const r = 2.5;
-              speak({ text: "Execution Halted", voice, r })
+              speakText("Execution Halted");
             }
           }
         }
@@ -679,9 +719,7 @@ int 0x10                ; BIOS interrupt`
       showSnackbar("Click Run or Next to continue Execution");
       inputRef.current.blur();
       if (accessibilityMode) {
-        const voice = voices[1]
-        const r = 2.5;
-        speak({ text: "Input submitted. Click Run or Next to continue Execution", voice, r })
+        speakText("Input submitted. Click Run or Next to continue Execution");
       }
     }
   };
@@ -728,6 +766,33 @@ int 0x10                ; BIOS interrupt`
     if (localStorage.getItem("tutorial") !== "done") {
       startTutorial();
     }
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined" || !("speechSynthesis" in window)) {
+      return undefined;
+    }
+
+    const synth = window.speechSynthesis;
+    speechSynthesisRef.current = synth;
+
+    const updateVoices = () => {
+      setSpeechVoices(synth.getVoices());
+    };
+
+    updateVoices();
+
+    if (typeof synth.addEventListener === "function") {
+      synth.addEventListener("voiceschanged", updateVoices);
+      return () => {
+        synth.removeEventListener("voiceschanged", updateVoices);
+      };
+    }
+
+    synth.onvoiceschanged = updateVoices;
+    return () => {
+      synth.onvoiceschanged = null;
+    };
   }, []);
 
   const copyToClipboard = () => {
@@ -794,29 +859,25 @@ int 0x10                ; BIOS interrupt`
 
   useEffect(() => {
     if (accessibilityMode) {
-      const voice = voices[1];
-      const r = 2.5;
-      cancel();
+      cancelSpeech();
       textReader
         .trim()
         .split("")
         .map((val) => {
-          return speak({ text: val, voice, r });
+          return speakText(val, { interrupt: false });
         });
     }
-  }, [textReader]);
+  }, [accessibilityMode, cancelSpeech, speakText, textReader]);
 
   // If accessibilityMode toggle switched to off in between speaking then cancel the current operation
   useEffect(() => {
     if (!accessibilityMode) {
-      cancel();
+      cancelSpeech();
     } else {
       showSnackbar("Editor switched to Read-only mode!");
-      const voice = voices[1]
-      const r = 2.5;
-      speak({ text: "Editor switched to Read-only mode", voice, r })
+      speakText("Editor switched to Read-only mode");
     }
-  }, [accessibilityMode])
+  }, [accessibilityMode, cancelSpeech, speakText])
 
 
   // Tooltip title component
@@ -825,6 +886,12 @@ int 0x10                ; BIOS interrupt`
 
   return (
     <div className={classes.root}>
+      <SEO
+        title="8086 Online Compiler - Write, Run, and Step Through Assembly"
+        description="Free 8086 assembly compiler, emulator, and simulator online to write code, run Intel 8086 programs, and inspect memory, registers, and flags with emu8086-style debugging."
+        canonical={siteConfig.routes.compiler.url}
+        structuredData={structuredData}
+      />
       <div className={classes.chatbot}>
         <df-messenger
           intent="WELCOME"

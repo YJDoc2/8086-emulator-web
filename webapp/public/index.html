@@ -7,25 +7,60 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
 	<meta name="google-site-verification" content="ZYWag5DyQvUQh0mimJB_DKeSIS7U03osu81yz-UG47k" />
 	<meta name="theme-color" content="#000000" />
-	<meta name="description" content="8086 Online Emulator. Platform Independent. Write, Compile and Execute 8086 Programs Online for Free. Single Step Execution Supported. An Open Source Project." />
-	<meta name="keywords" content="8086,online,emulator,compiler,interpreter,linux,windows,mobile,android,iphone,ios,mac,macos,code,program,X86,github,open source" />
+	<meta name="description" content="Free 8086 emulator and simulator online for writing, compiling, and running Intel 8086 assembly code in your browser, inspired by emu8086 workflows." />
+	<meta name="robots" content="index,follow" />
 	<link rel="apple-touch-icon" href="%PUBLIC_URL%/chip-memory.svg">
 	<link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+	<link rel="canonical" href="https://yjdoc2.github.io/8086-emulator-web/" />
 	<meta property="og:type" content="website" />
-	<meta property="og:url" content="https://yjdoc2.github.io/8086-emulator-web" />
-	<meta property="og:title" content="8086 Online Emulator" />
-	<meta property="og:description" content="8086 Online Emulator | Platform Independent | Code Anywhere" />
-	<meta property="og:image" itemprop="image" content="https://yjdoc2.github.io/8086-emulator-web/chip-memory.svg" />
-	<meta property="twitter:card" content="https://yjdoc2.github.io/8086-emulator-web" />
-	<meta property="twitter:url" content="https://yjdoc2.github.io/8086-emulator-web" />
-	<meta property="twitter:title" content="8086 Online Compiler" />
-	<meta property="twitter:description" content="8086 Online Emulator | Platform Independent | Code Anywhere" />
-	<meta property="twitter:image" content="https://yjdoc2.github.io/8086-emulator-web/chip-memory.svg" />
-	<title>8086 Emulator</title>
+	<meta property="og:site_name" content="8086 Emulator" />
+	<meta property="og:url" content="https://yjdoc2.github.io/8086-emulator-web/" />
+	<meta property="og:title" content="8086 Emulator Online - Run 8086 Assembly In Your Browser" />
+	<meta property="og:description" content="Free 8086 emulator and simulator for writing, compiling, and running 8086 assembly code online, inspired by emu8086-style workflows." />
+	<meta property="og:image" itemprop="image" content="https://yjdoc2.github.io/8086-emulator-web/chip-memory.png" />
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:url" content="https://yjdoc2.github.io/8086-emulator-web/" />
+	<meta name="twitter:title" content="8086 Emulator Online - Run 8086 Assembly In Your Browser" />
+	<meta name="twitter:description" content="Free 8086 emulator and simulator for writing, compiling, and running 8086 assembly code online with emu8086-style workflows." />
+	<meta name="twitter:image" content="https://yjdoc2.github.io/8086-emulator-web/chip-memory.png" />
+	<title>8086 Emulator Online - Run 8086 Assembly In Your Browser</title>
+	<script>
+		(function (l) {
+			var params = new URLSearchParams(l.search);
+			if (params.has("p")) {
+				var route = params.get("p");
+				var query = params.get("q");
+				window.history.replaceState(
+					null,
+					null,
+					l.pathname.replace(/\/$/, "") +
+						route +
+						(query ? "?" + query.replace(/~and~/g, "&") : "") +
+						l.hash
+				);
+			} else if (l.search[1] === "/" ) {
+				var decoded = l.search
+					.slice(1)
+					.split("&")
+					.map(function (entry) {
+						return entry.replace(/~and~/g, "&");
+					})
+					.join("?");
+				window.history.replaceState(
+					null,
+					null,
+					l.pathname.slice(0, -1) + decoded + l.hash
+				);
+			}
+		}(window.location));
+	</script>
 </head>
 
 <body>
-	<noscript>You need to enable JavaScript to run this app.</noscript>
+	<noscript>
+		This 8086 emulator uses JavaScript for the interactive compiler, but you can still review the project overview,
+		instruction help, and source code from the published site and GitHub repository.
+	</noscript>
 	<div id="root"></div>
 	<!--
       This HTML file is a template.
