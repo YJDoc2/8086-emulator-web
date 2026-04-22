@@ -25,7 +25,7 @@ To build install Rust and wasm-pack as instructed in https://rustwasm.github.io/
 Note that there is know issue when allocating large size arrays , even on heap in rust :
 https://github.com/rust-lang/rust/issues/53827
 As we are using memory size of 1MB (maybe we should rethink that), and there are already some other objects on stack, this causes 'runtime error: index out of bounds' if compiled normally.
-To overcome this, before compiling, create a folder named `.cargo` in root directory, make a file named `config` and add this :
+To overcome this, before compiling, create a folder named `.cargo` in the repo root and add a file named `config.toml` (Rust also accepts the legacy filename `config`) containing:
 
 ```TOML
 [target.wasm32-unknown-unknown]
@@ -39,7 +39,7 @@ This is according to : https://github.com/rustwasm/wasm-pack/issues/479
 
 We have tried to optimize stack usage by covering various structs in Box instead of allocating on stack, and manually calling std::mem::drop on them once their use is done, but that still causes same issue, so the only choice remaining was to increase the default allocated stack size.
 
-After adding above in config, run `wasm-pack build` in root folder of this project, which should build the wasm package and create a folder named `pkg`.
+After adding above in config, run `wasm-pack build --release --target web` in root folder of this project, which should build the wasm package and create a folder named `pkg`. The React app expects the **web** wasm-bindgen target.
 
 After that change directory to the webapp folder, and run
 

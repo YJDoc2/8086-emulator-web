@@ -4,19 +4,21 @@ import Compiler from "../pages/compiler";
 import InstructionSet from "../pages/instructions";
 import Navbar from "./navbar";
 import Footer from "./footer";
+import { siteConfig } from "../siteConfig";
 import {
   Route,
   BrowserRouter as Router,
   Switch,
   Redirect,
 } from "react-router-dom";
+import { loadEmulator8086Wasm } from "../loadEmulator8086Wasm";
 
 function RootRouter() {
   const [wasm, setWasm] = useState(null);
   useEffect(() => {
     async function load() {
       try {
-        const wasm = await import("emulator_8086");
+        const wasm = await loadEmulator8086Wasm();
         setWasm(wasm);
       } catch (err) {
         console.error(
@@ -27,28 +29,28 @@ function RootRouter() {
     }
     load();
   }, []);
-  const invalidRoute = () => <Redirect to="/8086-emulator-web/" />; //This will send user back to homepage
+  const invalidRoute = () => <Redirect to={siteConfig.routes.home.path} />; //This will send user back to homepage
 
   return (
     <Router>
       <div id="page-container">
         <Navbar />
-        <div className="App">
+        <main className="App">
           <Switch>
-            <Route exact path="/8086-emulator-web/" component={Home} />
+            <Route exact path={siteConfig.routes.home.path} component={Home} />
             <Route
               exact
-              path="/8086-emulator-web/compile"
+              path={siteConfig.routes.compiler.path}
               component={() => <Compiler wasm={wasm} />}
             />
             <Route
               exact
-              path="/8086-emulator-web/help"
+              path={siteConfig.routes.help.path}
               component={InstructionSet}
             />
             <Route component={invalidRoute} />
           </Switch>
-        </div>
+        </main>
       </div>
       <footer id="footer">
         <Footer />

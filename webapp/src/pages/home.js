@@ -1,5 +1,7 @@
 import React from "react";
 import HomeImage from "../images/home.jpg";
+import SEO from "../components/seo";
+import { siteConfig } from "../siteConfig";
 //Material UI Imports
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
@@ -74,6 +76,23 @@ function Home() {
   const classes = useStyles();
   return (
     <div>
+      <SEO
+        title="8086 Emulator Online - Run 8086 Assembly In Your Browser"
+        description="Free 8086 emulator and simulator online to write, compile, and run Intel 8086 assembly code in your browser with emu8086-style step-by-step execution."
+        canonical={siteConfig.routes.home.url}
+        structuredData={[
+          {
+            "@context": "https://schema.org",
+            "@type": "SoftwareApplication",
+            name: "8086 Emulator",
+            applicationCategory: "DeveloperApplication",
+            operatingSystem: "Web",
+            description:
+              "Browser-based 8086 emulator and online compiler for writing, running, and stepping through Intel 8086 assembly code.",
+            url: siteConfig.routes.home.url,
+          },
+        ]}
+      />
       <Tilty max={10} scale={1.05}>
         <Paper elevation={7} className={classes.topCard}>
           <Grid container>
@@ -92,37 +111,40 @@ function Home() {
                 className={classes.heading}
                 gutterBottom
               >
-                Online 8086 EMULATOR
+                Online 8086 Emulator and Compiler
               </Typography>
               <Typography variant="body1" className={classes.content}>
-                Platform and Device Independent!
-                <br /> Now run 8086 based assembly programs right in browser.
+                Run Intel 8086 assembly directly in your browser with a fast,
+                platform-independent emulator built with React, Rust, and
+                WebAssembly.
                 <br />
-                Open Source :{" "}
+                Compile code, execute it line by line, inspect memory, and
+                watch registers and flags update in real time while you learn
+                how 8086 programs behave.
+                <br />
+                Open Source:{" "}
                 <a
                   href="https://github.com/YJDoc2/8086-Emulator-Web/"
                   target="_blank"
                   rel="noreferrer"
                   className={classes.link}
                 >
-                  Github Repository
+                  GitHub Repository
                 </a>
                 <br />
-                Also in{" "}
+                Also available as a{" "}
                 <a
                   href="https://github.com/YJDoc2/8086-Emulator/"
                   target="_blank"
                   rel="noreferrer"
                   className={classes.link}
                 >
-                  Command line version
+                  Command-line version
                 </a>
-                <br />
-                Made Using React, WASM and Rust.
               </Typography>
               <div className={classes.btnDiv}>
                 <Link
-                  to="/8086-emulator-web/compile"
+                  to={siteConfig.routes.compiler.path}
                   className={classes.btnLink}
                 >
                   <Button
@@ -131,16 +153,19 @@ function Home() {
                     className={classes.bottomBtn}
                     style={{ boxShadow: "#F4C430 0px 2px 2px -2px" }}
                   >
-                    Try Online 8086 Compiler
+                    Open Online 8086 Compiler
                   </Button>
                 </Link>
-                <Link to="/8086-emulator-web/help" className={classes.btnLink}>
+                <Link
+                  to={siteConfig.routes.help.path}
+                  className={classes.btnLink}
+                >
                   <Button
                     variant="outlined"
                     color="primary"
                     className={classes.bottomBtn}
                   >
-                    Instruction Set
+                    Explore instruction set
                   </Button>
                 </Link>
               </div>

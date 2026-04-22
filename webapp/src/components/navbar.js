@@ -1,5 +1,6 @@
 import React, { useContext } from "react";
 import { CustomThemeContext } from "../themes/CustomThemeProvider";
+import { siteConfig } from "../siteConfig";
 // Assets
 import cpu from "../images/chip-memory.svg";
 import { ReactComponent as Terminal } from "../images/terminal.svg";
@@ -68,19 +69,19 @@ function Navbar() {
             <Typography
               color="primary"
               component="span"
-              onClick={() => history.push("/8086-emulator-web/")}
+              onClick={() => history.push(siteConfig.routes.home.path)}
               className={classes.title}
               style={{ fontSize: matches ? 30 : 24 }}
               tabIndex="0"
               onKeyUp={(e) => {
                 if (e.key === "Enter") {
-                  history.push("/8086-emulator-web/");
+                  history.push(siteConfig.routes.home.path);
                 }
               }}
               aria-label="Visit the Home Page"
               role="link"
             >
-              8086 Compiler
+              8086 Emulator
             </Typography>
           </div>
           {matches && (
@@ -101,12 +102,12 @@ function Navbar() {
               </a>
             </Tooltip>
           )}
-          {loc.pathname !== "/8086-emulator-web/help" && (
+          {loc.pathname !== siteConfig.routes.help.path && (
             <Tooltip title="Instructions Page" arrow>
               <IconButton
                 aria-label="Visit the Instructions Page"
                 role="link"
-                onClick={() => history.push("/8086-emulator-web/help")}
+                onClick={() => history.push(siteConfig.routes.help.path)}
               >
                 <span
                   style={
@@ -121,10 +122,10 @@ function Navbar() {
               </IconButton>
             </Tooltip>
           )}
-          {loc.pathname !== "/8086-emulator-web/compile" && (
+          {loc.pathname !== siteConfig.routes.compiler.path && (
             <Tooltip title="Compiler Page" arrow>
               <IconButton
-                onClick={() => history.push("/8086-emulator-web/compile")}
+                onClick={() => history.push(siteConfig.routes.compiler.path)}
                 aria-label="Visit the Compiler Page"
                 role="link"
               >
